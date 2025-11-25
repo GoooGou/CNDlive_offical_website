@@ -1,0 +1,76 @@
+---
+// 🔥 1. 必须引入 render 函数
+import { render } from 'astro:content';
+import ContentLayout from '@/layouts/ContentLayout.astro';
+import Cover from '@/components/common/Cover.astro';
+import MDXContent from '@/components/mdx/MDXContent.astro';
+import TableOfContents from '@/components/mdx/TableOfContents.astro'; // ✅ 引入目录组件
+
+interface Props {
+  post: any;
+  basePath: string;
+  parentTitle: string;
+}
+
+const { post, basePath, parentTitle } = Astro.props;
+// 🔥 获取所有标题数据 (Astro 渲染时自带的功能)
+
+// ✅ 正确写法 (Astro 5.0 标准写法)
+const { headings } = await render(post);
+---
+
+<ContentLayout
+  title={post.data.title}
+  breadcrumbItems={[
+    { label: parentTitle, href: basePath },
+    { label: post.data.title }
+  ]}
+  backHref={basePath}
+  backLabel={`Back to ${parentTitle}`}
+>
+
+  {/* 🔥 布局改造核心：
+      1. 使用 Grid 布局。
+      2. lg:grid-cols-[1fr_280px] 表示：大屏下，左边占满剩余空间，右边固定 280px 放目录。
+      3. gap-16 拉开间距。
+  */}
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12 lg:gap-16 items-start relative">
+    
+    {/* === 左侧：文章主体 === */}
+    {/* min-w-0 是防止 grid 子元素溢出的关键 */}
+    <article class="min-w-0 max-w-none w-full">
+      
+      {/* 头部信息 */}
+      <header class="mb-10 text-center lg:text-left">
+        <h1 class="text-3xl md:text-5xl font-bold mb-6 text-white leading-tight">{post.data.title}</h1>
+        <p class="text-zinc-500">By {post.data.author} • {post.data.pubDate.toLocaleDateString()}</p>
+      </header>
+
+      {/* 封面图 */}
+      <div class="rounded-2xl overflow-hidden mb-12 aspect-video border border-zinc-800 shadow-2xl">
+        <Cover src={post.data.cover} alt={post.data.title} title={post.data.title} />
+      </div>
+
+      {/* 正文渲染 */}
+      <div class="prose prose-invert prose-lg max-w-none 
+        prose-headings:text-white 
+        prose-headings:scroll-mt-24 /* 🔥 关键：点击锚点时，不会被顶部导航栏挡住 */
+        prose-p:text-zinc-300 
+        prose-img:rounded-xl">
+        
+        <MDXContent post={post} />
+        
+      </div>
+    </article>
+
+    {/* === 右侧：粘性目录 (仅在电脑端显示) === */}
+    <aside class="hidden lg:block sticky top-24 h-fit">
+      {/* 只有当有标题时才显示目录 */}
+      {headings.length > 0 && (
+        <TableOfContents headings={headings} />
+      )}
+    </aside>
+
+  </div>
+
+</ContentLayout>
