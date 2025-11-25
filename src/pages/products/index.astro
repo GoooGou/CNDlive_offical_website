@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import ResourceIndex from '@/components/common/ResourceIndex.astro';
+
+const posts = await getCollection('products');
+
+const sortedPosts = posts.sort((a, b) => b.data.order - a.data.order);
+---
+
+<ResourceIndex 
+  title="Products" 
+  subtitle="Latest updates from CNDLive."
+  posts={sortedPosts} 
+  basePath="/products" 
+/>

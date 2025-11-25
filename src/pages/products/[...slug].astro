@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+// 直接引入您封装好的组件
+import ResourcePost from '@/components/common/ResourcePost.astro';
+import MDXContent from '@/components/mdx/MDXContent.astro';
+
+export async function getStaticPaths() {
+  // 1. 改这里：获取 'products' 集合
+  const products = await getCollection('products');
+    
+  return products.map(item => ({
+    // 2. 关键点：因为您的文件名叫 [...slug].astro，
+    // 所以 params 里的 key 必须是 'slug' (不能是 id)
+    params: { slug: item.id }, 
+    
+    // 3. 传参：为了适配 ResourcePost 组件，我们将 product 作为 'post' 传递
+    props: { post: item }, 
+  }));
+}
+
+// 获取数据
+const { post } = Astro.props;
+---
+
+{/* 4. 渲染组件：只改文案参数 */}
+<ResourcePost 
+  post={post} 
+  basePath="/products"     
+  parentTitle="Products"   
+>
+  {/* 注入内容 */}
+  <MDXContent post={post} />
+</ResourcePost>

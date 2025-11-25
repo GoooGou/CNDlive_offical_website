@@ -6,8 +6,6 @@ interface Props {
 }
 
 const { headings } = Astro.props;
-
-// 1. 修改过滤逻辑：允许所有 H1 ~ H6 (或者根据你的需求保留 H1)
 const toc = headings; 
 ---
 
@@ -21,10 +19,8 @@ const toc = headings;
       <li>
         <a 
           href={`#${heading.slug}`} 
-          class="toc-link block transition-all duration-200 text-zinc-500 hover:text-white border-l-2 border-transparent py-1"
+          class="toc-link block transition-all duration-200 border-l-2 py-1 text-zinc-500 border-transparent hover:text-white"
           data-slug={heading.slug}
-          // 2. 动态缩进：根据 depth 自动计算 padding-left
-          // H1=0rem, H2=0.75rem, H3=1.5rem ...
           style={`padding-left: ${(heading.depth - 1) * 0.75}rem`}
         >
           {heading.text}
@@ -35,68 +31,105 @@ const toc = headings;
 </nav>
 
 <script>
-  // 样式配置
-  const ACTIVE_CLASS = ['text-red-600', 'font-bold', 'border-red-600', 'bg-red-500/5']; 
+  // 1. 样式配置
+  const ACTIVE_CLASS = ['text-[#AC121F]', 'font-bold', 'border-[#AC121F]', 'bg-[#AC121F]/5']; 
   const INACTIVE_CLASS = ['text-zinc-500', 'border-transparent']; 
 
-  const links = document.querySelectorAll('.toc-link');
-  const headers = document.querySelectorAll('article h1, article h2, article h3, article h4, article h5, article h6');
+  // 2. 核心逻辑封装
+  function initTOC() {
+    const links = document.querySelectorAll('.toc-link');
+    const sections = document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main h6');
+    
+    // 如果没有目录，直接退出
+    if (links.length === 0) return;
 
-  // 核心函数：设置激活状态
-  function setActive(id) {
-    links.forEach((link) => {
-      const linkSlug = link.getAttribute('data-slug');
-      if (linkSlug === id) {
-        link.classList.remove(...INACTIVE_CLASS);
-        link.classList.add(...ACTIVE_CLASS);
-      } else {
-        link.classList.remove(...ACTIVE_CLASS);
-        link.classList.add(...INACTIVE_CLASS);
+    // 辅助函数：应用样式
+    function applyStyle(activeSlug: string | null) {
+      links.forEach((link) => {
+        const linkSlug = link.getAttribute('data-slug');
+        if (linkSlug === activeSlug) {
+          link.classList.remove(...INACTIVE_CLASS);
+          link.classList.add(...ACTIVE_CLASS);
+        } else {
+          link.classList.remove(...ACTIVE_CLASS);
+          link.classList.add(...INACTIVE_CLASS);
+        }
+      });
+    }
+
+    // 核心计算函数：找出当前应该高亮的 ID
+    function onScroll() {
+      let currentActiveSlug = '';
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      // 场景 A: 如果滚到底部了，强制高亮最后一个
+      if (scrollY + windowHeight >= documentHeight - 50) {
+         const lastLink = links[links.length - 1];
+         if (lastLink) {
+            applyStyle(lastLink.getAttribute('data-slug'));
+            return;
+         }
+      }
+
+      // 场景 B: 遍历所有标题，找出“视口顶部”附近的那个
+      // 我们设定一条“阅读线”，在屏幕顶部下方 100px 处
+      const offset = 100; 
+      
+      sections.forEach((section) => {
+        // @ts-ignore
+        const sectionTop = section.offsetTop; 
+        
+        // 如果页面滚动的距离 >= 标题的位置 - 偏移量
+        // 说明这个标题已经滚上去了（或者正好在阅读位置）
+        if (scrollY >= sectionTop - offset) {
+          currentActiveSlug = section.id;
+        }
+      });
+
+      // 场景 C: 如果一个都没选中（比如在页面最顶端），默认选第一个
+      if (!currentActiveSlug && links.length > 0) {
+        currentActiveSlug = links[0].getAttribute('data-slug') || '';
+      }
+
+      applyStyle(currentActiveSlug);
+    }
+
+    // 3. 性能优化：使用 requestAnimationFrame 进行节流
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          onScroll();
+          ticking = false;
+        });
+        ticking = true;
       }
     });
+
+    // 4. 点击事件：点击瞬间高亮，不用等滚动
+    links.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const slug = link.getAttribute('data-slug');
+        applyStyle(slug);
+      });
+    });
+
+    // 5. 初始化：页面刚加载完，手动算一次！解决刷新不红的问题
+    onScroll();
   }
 
-  // 🔥 3. 点击事件监听 (Click Handler)
-  // 点击时，不管 Observer 说什么，强制激活当前点击项
-  links.forEach((link) => {
-    link.addEventListener('click', (e) => {
-      // 这里的逻辑确保点击瞬间就变红，不会闪烁
-      const slug = link.getAttribute('data-slug');
-      setActive(slug);
-      
-      // 注意：这里不需要 preventDefault，让它自然锚点跳转即可
-      // 浏览器滚动时会自动触发下方的 Observer，但因为我们已经高亮了，视觉上是连续的
-    });
-  });
+  // 启动 (兼容 Astro View Transitions)
+  initTOC();
+  document.addEventListener('astro:page-load', initTOC);
 
-  // 🔥 4. 滚动监听 (Scroll Observer)
-  const observerCallback = (entries) => {
-    // 找出所有正在视口中的标题
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        setActive(entry.target.id);
-      }
-    });
-  };
-
-  const observerOptions = {
-    root: null,
-    // 关键调整：
-    // 0px 0px -80% 0px 意味着：我们在屏幕顶部划了一道线 (top 20% 区域)
-    // 只有当标题穿过这条线时，才触发激活。这样比 threshold 更准。
-    rootMargin: '0px 0px -80% 0px',
-    threshold: 0 // 只要碰到一点点就算
-  };
-
-  const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-  headers.forEach((header) => {
-    observer.observe(header);
-  });
 </script>
 
 <style>
   .toc-container {
+    position: sticky;
+    top: 6rem; 
     max-height: calc(100vh - 200px);
     overflow-y: auto;
     scrollbar-width: none;
