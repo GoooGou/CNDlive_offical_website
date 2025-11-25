@@ -1,0 +1,21 @@
+/* src/styles/starlight-simple.css */
+:root {
+  /* 把 Starlight 的主色调改成 CNDLive 红 */
+  --sl-color-accent-low: #000000;
+  --sl-color-accent: #AC121F;
+  --sl-color-accent-high: #ffffff;
+  
+  /* 背景改成纯黑，匹配你的官网 */
+  --sl-color-bg: #000000;
+  --sl-color-bg-nav: #09090b;
+  --sl-color-bg-sidebar: #09090b;
+  
+  /* 字体 */
+  --sl-font: 'Montserrat', sans-serif;
+}
+
+/* 隐藏亮色模式切换按钮 (强制暗黑) */
+starlight-theme-select { display: none !important; }
+
+/* 调整一下顶部导航栏的高度，让它不那么“窄” */
+.site-title { font-weight: 900 !important; color: white !important; }

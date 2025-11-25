@@ -1,0 +1,107 @@
+---
+title: CNDLive Product Support
+description: 查找 CNDLive 编码器、解码器及 NDI 转换器的使用手册、固件下载与技术支持。
+template: splash
+hero:
+  tagline: Streaming The World
+  image:
+    file: ../../../assets/logo.svg
+  actions:
+    - text: 📥 前往下载中心
+      link: /support/download/
+      icon: download
+      variant: primary
+    - text: 🚀 快速推流指南
+      link: /support/guide/quick-start/
+      icon: rocket
+    - text: back to home
+      link: /
+      icon: rocket
+---
+
+import { Card, CardGrid, LinkCard, Icon } from '@astrojs/starlight/components';
+
+{/* --- 第一部分：产品文档索引 (根据截图分类) --- */}
+
+<div className="hero-section">
+  <h2>按产品系列浏览文档</h2>
+  <p>查找特定硬件型号的说明书、API 文档及固件更新日志。</p>
+</div>
+
+<CardGrid >
+  
+  {/* 1. NDI Converter 系列 */}
+  <Card title="NDI Converters" icon="random">
+    NDI 双向转换与解码方案。
+    
+    * [**A1** Bi-Directional NDI Converter](/support/products/a1/)
+    * [**NDI Go** NDI to HDMI Decoder](/support/products/ndi-go/)
+  </Card>
+
+  {/* 2. Video Encoder 系列 */}
+  <Card title="Video Encoders" icon="laptop">
+    专业级 4K 视频编码与 4G 聚合推流。
+    
+    * [**C6** 4K HDMI/3G-SDI Encoder](/support/products/c6/)
+    * [**X1** 4G Bonding Encoder](/support/products/x1/)
+  </Card>
+
+  {/* 3. Video Decoder 系列 */}
+  <Card title="Video Decoders" icon="youtube">
+    高清网络视频解码输出。
+    
+    * [**D1** 4K HDMI/3G-SDI Decoder](/support/products/d1/)
+  </Card>
+
+  {/* 4. Manage & Gateway 系列 */}
+  <Card title="Manage & IP Gateway" icon="setting">
+    集中管理软件与 IP 网关控制。
+    
+    * [CNDLive **Manager Software**](/support/software/manager/)
+    * [CNDLive **Manager Max**](/support/software/manager-max/)
+  </Card>
+
+</CardGrid>
+
+---
+
+{/* --- 第二部分：常用功能快速入口 (使用 LinkCard 更显眼) --- */}
+
+<h2>常用自助服务</h2>
+
+<CardGrid>
+  <LinkCard
+    title="OBS 推流配置教程"
+    description="如何设置 RTMP 地址、比特率及关键帧以获得最佳画质。"
+    href="/support/guide/obs-setup/"
+  />
+  <LinkCard
+    title="固件升级指南"
+    description="了解如何通过 Web 控制台或 USB 进行设备固件升级。"
+    href="/support/guide/firmware-update/"
+  />
+  <LinkCard
+    title="故障排查 (Troubleshooting)"
+    description="解决无画面、声音不同步、网络卡顿等常见问题。"
+    href="/support/faq/"
+  />
+  <LinkCard
+    title="提交工单"
+    description="遇到硬件故障？联系技术支持团队发起售后流程。"
+    href="https://cndlive.com/contact"
+  />
+</CardGrid>
+
+---
+
+{/* --- 第三部分：底部联系提示 --- */}
+
+<div style="display: flex; align-items: center; gap: 1rem; background: var(--sl-color-gray-6); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--sl-color-gray-5);">
+  <div style="font-size: 2rem;">📧</div>
+  <div>
+    <h3 style="margin: 0; font-size: 1.1rem;">没有找到您需要的内容？</h3>
+    <p style="margin: 0.2rem 0 0; color: var(--sl-color-gray-3);">
+      我们的工程师团队随时为您提供帮助。发送邮件至 <a href="mailto:support@cndlive.com" style="color: var(--sl-color-accent);">support@cndlive.com</a>
+    </p>
+  </div>
+</div>

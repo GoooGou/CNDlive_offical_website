@@ -2,6 +2,10 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+// 👇 1. 必须引入 Starlight 的这两个工具
+import { docsLoader } from '@astrojs/starlight/loaders';
+import { docsSchema } from '@astrojs/starlight/schema';
+
 const news   = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/news" }),
   schema: ({ image }) => z.object({
@@ -40,5 +44,10 @@ const solutions = defineCollection({
   }),
 });
 
-export const collections = { news, pages, solutions }; // 记得导出 
+// 👇 2. 补上 Starlight 的 docs 集合定义
+const docs = defineCollection({ 
+  loader: docsLoader(), // 这里的 loader 会自动去 src/content/docs 里找文件
+  schema: docsSchema() 
+});
+export const collections = { news, pages, solutions, docs }; // 记得导出 
 
