@@ -1,38 +1,44 @@
 ---
+// src/layouts/Layout.astro
 import { ClientRouter } from 'astro:transitions';
-import Main from '@/components/Main.astro';
-// import Footer from "@/components/Footer.astro";
 import Footer from '@/components/Footer.astro';
 import '@/styles/global.css';
 import Navbar from '@/components/navbar/Navbar.jsx';
 import FloatingTools from '@/components/ui/FloatingTools.jsx';
+
+// --- 1. 定义 CNDLive 官方 SEO 信息 (默认值) ---
+const SITE_TITLE = "CNDLive - Professional Video Streaming Solutions | Encoders & Decoders";
+const SITE_DESCRIPTION = "CNDLive provides professional video IP transmission solutions. We offer 4K HDMI/SDI video encoders, decoders, NDI converters, and 4G/5G bonding routers for broadcast and live streaming.";
+const SITE_KEYWORDS = "Video Encoder, Video Decoder, 4K Streaming, NDI Converter, SRT Encoder, RTMP, Bonding Encoder, 4G Bonding, Live Broadcasting, CNDLive";
+
 const isHomepage = Astro.url.pathname === '/';
-// 🔥 补上这一行定义
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-// src/layouts/Layout.astro
+
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
   image?: string;
-  schema?: object; // 1. 这里定义了类型
+  schema?: object;
 }
 
-// 2. 🔥 必须在这里把它解构出来！否则下面就会报 "找不到名称 schema"
 const { 
-  title, 
-  description = "Default description...", 
+  // 🔥 如果页面没传 title，就用 CNDLive 官方标题
+  title = SITE_TITLE, 
+  // 🔥 如果页面没传 description，就用官方描述
+  description = SITE_DESCRIPTION, 
   image = "/images/default-og.png", 
-  schema  // <--- 补上这个
+  schema 
 } = Astro.props;
-// 无论 image 是传进来的，还是默认的，都转成绝对路径
+
 const socialImageURL = new URL(image, Astro.site);
-// 🔥 1. 把固定的 "Organization" 数据定义在这里
+
+// 全局 Organization Schema
 const orgSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "CNDLive",
   "url": "https://cndlive.com",
-  "logo": "https://cndlive.com/logo.svg", // 注意：最好是绝对路径
+  "logo": "https://cndlive.com/logo.svg",
   "sameAs": [
     "https://www.facebook.com/cndlive",
     "https://www.linkedin.com/company/cndlive",
@@ -53,52 +59,58 @@ const orgSchema = {
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    
+    {/* --- 核心 SEO --- */}
     <title>{title}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- fonts -->
+    <meta name="description" content={description} />
+    {/* 🔥 新增：关键词标签 */}
+    <meta name="keywords" content={SITE_KEYWORDS} />
+    
+    {/* --- Fonts --- */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap"
       rel="stylesheet"
     />
-    {/* 🔥 2. 启用视图过渡 (必须放在 head 里) */}
+
+    {/* 启用视图过渡 */}
     <ClientRouter />
 
-
-    {/* 🔥 4. Canonical 标签 (SEO 必备)：防止搜索引擎觉得你有很多重复页面 */}
+    {/* --- SEO Canonical --- */}
     <link rel="canonical" href={canonicalURL} />
 
-    {/* --- Open Graph (Facebook, LinkedIn, 微信等) --- */}
+    {/* --- Open Graph (Facebook, LinkedIn) --- */}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={socialImageURL} />
+    <meta property="og:site_name" content="CNDLive" />
 
     {/* --- Twitter (X) --- */}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:domain" content={Astro.site?.host} /> {/* 告诉 Twitter 你的域名 */}
+    <meta name="twitter:domain" content={Astro.site?.host} />
     <meta name="twitter:url" content={Astro.url} />
     <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} /> {/* 补上描述 */}
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageURL} />
 
     {/* --- 结构化数据 (Schema) --- */}
-    {/* 🔥 2. 渲染动态的 Product/Article Schema (如果有的话) */}
+    
+    {/* 1. 动态 Schema (产品页/文章页) */}
     {schema && (
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     )}
 
-    {/* 🔥 3. 渲染固定的 Organization Schema (全站通用) */}
-    {/* 必须用 set:html={JSON.stringify(...)} 这种方式 */}
+    {/* 2. 固定 Organization Schema (全站通用) */}
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
     
-    </script>
   </head>
-  <body class="flex min-h-screen flex-col text-gray-900 antialiased">
-    {/* 只在首页渲染这个组件 */}
+  
+  <body class="flex min-h-screen flex-col text-gray-900 antialiased bg-surface-base text-text-main">
+    
+    {/* Navbar */}
     <div
       id="main-navbar"
       transition:persist
@@ -106,12 +118,16 @@ const orgSchema = {
     >
       <Navbar client:load />
     </div>
+
+    {/* 主体内容 */}
     <main class="relative z-0 grow" transition:animate="fade">
       <slot />
     </main>
-    {/* 🔥 放在这里，并使用 client:load 激活 JS 交互 */}
+
+    {/* 悬浮工具栏 & Footer */}
     <FloatingTools client:load transition:persist />
     <Footer transition:persist />
+    
   </body>
 </html>
 

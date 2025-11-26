@@ -2,34 +2,46 @@
 // src/layouts/ProductLayout.astro
 import ContentLayout from '@/layouts/ContentLayout.astro';
 import ProductTabs from '@/components/products/ProductTabs.astro'; 
+// 🔥 1. 引入 SEO 工具函数 (让代码变干净的关键)
+import { generateProductSchema } from '@/utils/seo';
 
 interface Props {
   post: any;
   basePath: string;
   parentTitle: string;
-  activeTabId: 'overview' | 'tech-specs' | 'download'; // 🔥 接收当前页面标识
+  activeTabId: 'overview' | 'tech-specs' | 'download';
 }
 
 const { post, basePath, parentTitle, activeTabId } = Astro.props;
 
-// 动态生成 URL
-// 假设你的产品路径是 /products/[slug]/...
-const baseUrl = `${basePath}/${post.id}`; // 比如 /products/product-1
+// 1. 动态生成 URL
+const baseUrl = `${basePath}/${post.id}`;
 
+// 2. Tab 逻辑 (保持你的修复版本，逻辑正确)
 const tabItems = [
   { id: 'overview', label: 'Overview', href: baseUrl },
-  { id: 'tech-specs', label: 'Tech Specs', href: `${baseUrl}/specs` },
-  { id: 'download', label: 'Download', href: `${baseUrl}/downloads` }
+  { id: 'tech-specs', label: 'Tech Specs', href: `${baseUrl}/specs` }
 ];
 
-// 如果有下载资源，才显示 Download 链接
-if (post.data.downloadUrl || post.data.manualPdf) {
+// 只有当有下载资源时，才动态添加 Download Tab
+if (post.data.downloadUrl || post.data.manualPdf || (post.data.downloads && post.data.downloads.length > 0)) {
   tabItems.push({ id: 'download', label: 'Download', href: `${baseUrl}/downloads` });
 }
----
 
+// --- 🔥 3. 极简生成 SEO Schema ---
+// 以前这里有几十行代码，现在只需要一行
+// 注意：必须传入 Astro.site 以生成绝对路径
+// 如果 Astro.site 是空的，就用后面这个临时的
+const productSchema = generateProductSchema(post, Astro.site || new URL("https://cndlive.com"));---
+---
 <ContentLayout
   title={post.data.title}
+  
+  {/* 🔥 4. 传递数据给 ContentLayout */}
+  description={post.data.description}
+  image={post.data.cover}
+  schema={productSchema}
+
   breadcrumbItems={[
     { label: parentTitle, href: basePath },
     { label: post.data.title }
@@ -37,22 +49,24 @@ if (post.data.downloadUrl || post.data.manualPdf) {
   backHref={basePath}
   backLabel={`Back to ${parentTitle}`}
 >
- {/* 2. Tab 导航 (传入 activeId) */}
-    <ProductTabs items={tabItems} activeId={activeTabId} />
+
+  {/* 2. Tab 导航 */}
+  <ProductTabs items={tabItems} activeId={activeTabId} />
+
+  {/* 页面主体容器 */}
   <div class="max-w-5xl mx-auto w-full relative min-h-[60vh]">
     
     {/* 1. 公共头部 */}
     <header class="mb-8 text-center pt-8">
-        <h1 class="text-3xl md:text-5xl font-bold mb-4 text-white leading-tight">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4 text-text-main leading-tight">
             {post.data.title}
         </h1>
         {post.data.description && (
-          <p class="text-xl text-zinc-400 max-w-2xl mx-auto">{post.data.description}</p>
+          <p class="text-xl text-text-muted max-w-2xl mx-auto">{post.data.description}</p>
         )}
     </header>
 
-
-    {/* 3. 不同的页面内容在这里渲染 */}
+    {/* 3. 不同的页面内容在这里渲染 (Slot) */}
     <article class="w-full mt-8 animate-in fade-in duration-500">
       <slot />
     </article>

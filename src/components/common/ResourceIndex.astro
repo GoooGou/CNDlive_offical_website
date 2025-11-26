@@ -1,6 +1,8 @@
 ---
 import ContentLayout from '@/layouts/ContentLayout.astro';
 import PostGrid from '@/components/common/PostGrid.astro'; // 🔥 引入你的超级网格组件
+// 🔥 1. 修改引入：引入列表生成器，而不是产品生成器
+import { generateItemListSchema } from '@/utils/seo';
 
 interface Props {
   title: string;        // 页面标题 "Newsroom"
@@ -10,6 +12,15 @@ interface Props {
 }
 
 const { title, subtitle, posts, basePath } = Astro.props;
+// 🔥 2. 生成列表结构化数据
+// 告诉 Google：这是一个清单，里面有这些文章，顺序是这样的
+// 🔥 2. 修改调用：改为 generateItemListSchema
+const listSchema = generateItemListSchema(
+  title, 
+  posts, 
+  basePath, 
+  Astro.site || new URL("https://cndlive.com")
+);
 //
 ---
 
@@ -18,6 +29,7 @@ const { title, subtitle, posts, basePath } = Astro.props;
   title={title}
   breadcrumbItems={[{ label: title }]} 
   backHref="/"
+  schema={listSchema}
   backLabel="Back to Home"
 >
 
