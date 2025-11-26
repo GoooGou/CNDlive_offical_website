@@ -7,59 +7,29 @@ interface Props {
   post: any;
   basePath: string;
   parentTitle: string;
-  activeTabId: 'overview' | 'tech-specs' | 'download';
+  activeTabId: 'overview' | 'tech-specs' | 'download'; // 🔥 接收当前页面标识
 }
 
 const { post, basePath, parentTitle, activeTabId } = Astro.props;
 
-// 1. 动态生成 URL
-const baseUrl = `${basePath}/${post.id}`;
+// 动态生成 URL
+// 假设你的产品路径是 /products/[slug]/...
+const baseUrl = `${basePath}/${post.id}`; // 比如 /products/product-1
 
-// 2. 初始化 Tab (注意：不要在这里写 'download'，否则后面判断后会重复)
 const tabItems = [
   { id: 'overview', label: 'Overview', href: baseUrl },
-  { id: 'tech-specs', label: 'Tech Specs', href: `${baseUrl}/specs` }
+  { id: 'tech-specs', label: 'Tech Specs', href: `${baseUrl}/specs` },
+  { id: 'download', label: 'Download', href: `${baseUrl}/downloads` }
 ];
 
-// 3. 只有当有下载资源时，才添加 Download Tab
-// (这里适配了我们之前改过的 downloads 数组结构)
-if (post.data.downloads && post.data.downloads.length > 0) {
+// 如果有下载资源，才显示 Download 链接
+if (post.data.downloadUrl || post.data.manualPdf) {
   tabItems.push({ id: 'download', label: 'Download', href: `${baseUrl}/downloads` });
 }
-
-// --- 🔥 4. 构造 SEO Schema (新增) ---
-// Google 必须要求图片是绝对路径 (https://...)
-const coverImageAbsolute = new URL(post.data.cover, Astro.site).toString();
-
-const productSchema = {
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": post.data.title,
-  "image": coverImageAbsolute,
-  "description": post.data.description,
-  "brand": {
-    "@type": "Brand",
-    "name": "CNDLive"
-  },
-  "sku": post.id,
-  "offers": {
-    "@type": "Offer",
-    "url": Astro.url.href,
-    "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock",
-    "price": "0" // B端产品通常不直接显示价格，或者标记为 "PreOrder"
-  }
-};
 ---
 
 <ContentLayout
   title={post.data.title}
-  
-  {/* 🔥 5. 传递 SEO 数据给父级 Layout */}
-  description={post.data.description}
-  image={post.data.cover}  {/* 社交分享图 */}
-  schema={productSchema}   {/* 谷歌结构化数据 */}
-
   breadcrumbItems={[
     { label: parentTitle, href: basePath },
     { label: post.data.title }
@@ -67,26 +37,22 @@ const productSchema = {
   backHref={basePath}
   backLabel={`Back to ${parentTitle}`}
 >
-
-  {/* 容器：调整了最大宽度和间距 */}
+ {/* 2. Tab 导航 (传入 activeId) */}
+    <ProductTabs items={tabItems} activeId={activeTabId} />
   <div class="max-w-5xl mx-auto w-full relative min-h-[60vh]">
     
-    {/* 1. 公共头部 (标题) */}
-    {/* 颜色修改：text-white -> text-text-main 以适配黑白主题 */}
+    {/* 1. 公共头部 */}
     <header class="mb-8 text-center pt-8">
-        <h1 class="text-3xl md:text-5xl font-bold mb-4 text-text-main leading-tight">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4 text-white leading-tight">
             {post.data.title}
         </h1>
         {post.data.description && (
-          <p class="text-xl text-text-muted max-w-2xl mx-auto">{post.data.description}</p>
+          <p class="text-xl text-zinc-400 max-w-2xl mx-auto">{post.data.description}</p>
         )}
     </header>
 
-    {/* 2. Tab 导航 */}
-    {/* 建议放在 Header 下方，内容上方 */}
-    <ProductTabs items={tabItems} activeId={activeTabId} />
 
-    {/* 3. 页面具体内容插槽 */}
+    {/* 3. 不同的页面内容在这里渲染 */}
     <article class="w-full mt-8 animate-in fade-in duration-500">
       <slot />
     </article>

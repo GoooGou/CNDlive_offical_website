@@ -1,0 +1,32 @@
+---
+// src/components/mdx/ArticleBody.astro
+import MDXContent from '@/components/mdx/MDXContent.astro';
+
+interface Props {
+  post: any;
+  className?: string; // 允许外部传入额外的 class
+}
+
+const { post, className = "" } = Astro.props;
+---
+
+<div 
+  class:list={[
+    // 1. 基础排版类
+    "prose prose-lg max-w-none mx-auto",
+    
+    // 2. 颜色适配 (这里是你原来的硬编码颜色，深色模式专用)
+    "prose-invert", 
+    "prose-headings:text-white",
+    "prose-p:text-zinc-300",
+    
+    // 3. 功能样式
+    "prose-headings:scroll-mt-24", // 锚点偏移
+    "prose-img:rounded-xl prose-img:shadow-lg",
+    
+    // 4. 外部传入的样式
+    className
+  ]}
+>
+  <MDXContent post={post} />
+</div>

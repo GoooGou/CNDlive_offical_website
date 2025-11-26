@@ -5,6 +5,7 @@ import ContentLayout from '@/layouts/ContentLayout.astro';
 import Cover from '@/components/common/Cover.astro';
 import MDXContent from '@/components/mdx/MDXContent.astro';
 import TableOfContents from '@/components/mdx/TableOfContents.astro'; // ✅ 引入目录组件
+import ArticleBody from '../mdx/ArticleBody.astro';
 
 interface Props {
   post: any;
@@ -51,16 +52,7 @@ const { headings } = await render(post);
         <Cover src={post.data.cover} alt={post.data.title} title={post.data.title} />
       </div>
 
-      {/* 正文渲染 */}
-      <div class="prose prose-invert prose-lg max-w-none 
-        prose-headings:text-white 
-        prose-headings:scroll-mt-24 /* 🔥 关键：点击锚点时，不会被顶部导航栏挡住 */
-        prose-p:text-zinc-300 
-        prose-img:rounded-xl">
-        
-        <MDXContent post={post} />
-        
-      </div>
+      <ArticleBody post={post} />
     </article>
 
     {/* === 右侧：粘性目录 (仅在电脑端显示) === */}
