@@ -1,0 +1,68 @@
+---
+// src/pages/products/index.astro
+import { getCollection } from 'astro:content';
+import ContentLayout from '@/layouts/ContentLayout.astro';
+// 🔥 1. 引入您的 Cover 组件
+import Cover from '@/components/common/Cover.astro';
+
+// 获取所有产品
+const products = await getCollection('products');
+---
+
+<ContentLayout 
+  title="Product Center - CNDLive" 
+  description="Explore our professional range of Video Encoders, Decoders and NDI Converters."
+  breadcrumbItems={[{ label: 'Products' }]}
+>
+  
+  <div class="max-w-7xl mx-auto py-12">
+    
+    <header class="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <h1 class="text-4xl md:text-5xl font-bold text-text-main mb-4">Product Center</h1>
+      <p class="text-text-muted text-lg max-w-2xl mx-auto">
+        Professional IP Video Transmission Solutions for Broadcast and AV.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {products.map((product) => (
+        <a 
+          href={`/products/${product.id}`} 
+          class="group block bg-surface-card border border-surface-border rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-1"
+        >
+          {/* 🔥 2. 图片区域改造 
+             - 移除了 p-6 (内边距)，让 Cover 填满整个头部区域
+             - 移除了 flex/items-center (Cover 内部处理了布局)
+          */}
+          <div class="aspect-video w-full border-b border-surface-border relative">
+             <Cover 
+               src={product.data.cover} 
+               alt={product.data.title} 
+               title={product.data.title} 
+               className="group-hover:scale-105 transition-transform duration-700"
+             />
+          </div>
+
+          {/* 文字内容 */}
+          <div class="p-6">
+            <h3 class="text-2xl font-bold text-text-main mb-2 group-hover:text-primary transition-colors">
+              {product.data.title}
+            </h3>
+            <p class="text-text-muted text-sm line-clamp-2 mb-4">
+              {product.data.description}
+            </p>
+            
+            <div class="flex items-center text-primary font-medium text-sm font-bold">
+              Learn More 
+              <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+
+</ContentLayout>
