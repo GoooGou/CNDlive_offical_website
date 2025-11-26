@@ -1,16 +1,49 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import Main from "@/components/Main.astro";
+import Main from '@/components/Main.astro';
 // import Footer from "@/components/Footer.astro";
-import Footer from "@/components/Footer.astro";
-import "@/styles/global.css";
-import Navbar from "@/components/navbar/Navbar.jsx";
-import FloatingTools from "@/components/ui/FloatingTools.jsx";
+import Footer from '@/components/Footer.astro';
+import '@/styles/global.css';
+import Navbar from '@/components/navbar/Navbar.jsx';
+import FloatingTools from '@/components/ui/FloatingTools.jsx';
+const isHomepage = Astro.url.pathname === '/';
+// 🔥 补上这一行定义
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// src/layouts/Layout.astro
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
+  schema?: object; // 1. 这里定义了类型
 }
 
-const { title } = Astro.props;
+// 2. 🔥 必须在这里把它解构出来！否则下面就会报 "找不到名称 schema"
+const { 
+  title, 
+  description = "Default description...", 
+  image = "/images/default-og.png", 
+  schema  // <--- 补上这个
+} = Astro.props;
+// 无论 image 是传进来的，还是默认的，都转成绝对路径
+const socialImageURL = new URL(image, Astro.site);
+// 🔥 1. 把固定的 "Organization" 数据定义在这里
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "CNDLive",
+  "url": "https://cndlive.com",
+  "logo": "https://cndlive.com/logo.svg", // 注意：最好是绝对路径
+  "sameAs": [
+    "https://www.facebook.com/cndlive",
+    "https://www.linkedin.com/company/cndlive",
+    "https://www.youtube.com/@cndlive"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+86-0755-26888079",
+    "contactType": "customer support"
+  }
+};
 ---
 
 <!doctype html>
@@ -32,25 +65,54 @@ const { title } = Astro.props;
     />
     {/* 🔥 2. 启用视图过渡 (必须放在 head 里) */}
     <ClientRouter />
+
+
+    {/* 🔥 4. Canonical 标签 (SEO 必备)：防止搜索引擎觉得你有很多重复页面 */}
+    <link rel="canonical" href={canonicalURL} />
+
+    {/* --- Open Graph (Facebook, LinkedIn, 微信等) --- */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImageURL} />
+
+    {/* --- Twitter (X) --- */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:domain" content={Astro.site?.host} /> {/* 告诉 Twitter 你的域名 */}
+    <meta name="twitter:url" content={Astro.url} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} /> {/* 补上描述 */}
+    <meta name="twitter:image" content={socialImageURL} />
+
+    {/* --- 结构化数据 (Schema) --- */}
+    {/* 🔥 2. 渲染动态的 Product/Article Schema (如果有的话) */}
+    {schema && (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    )}
+
+    {/* 🔥 3. 渲染固定的 Organization Schema (全站通用) */}
+    {/* 必须用 set:html={JSON.stringify(...)} 这种方式 */}
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    
+    </script>
   </head>
-  <body class=" antialiased text-gray-900 flex flex-col min-h-screen">
-    <div id="main-navbar" 
-  transition:persist 
-  class="sticky top-0 z-50 w-full h-20">
-     <Navbar client:load  />
-
+  <body class="flex min-h-screen flex-col text-gray-900 antialiased">
+    {/* 只在首页渲染这个组件 */}
+    <div
+      id="main-navbar"
+      transition:persist
+      class="sticky top-0 z-50 h-20 w-full"
+    >
+      <Navbar client:load />
     </div>
-      <main class="grow relative z-0  " transition:animate="fade" >
-        <slot />
-      </main>
-      {/* 🔥 放在这里，并使用 client:load 激活 JS 交互 */}
-    <FloatingTools client:load  transition:persist/>
-    <Footer   transition:persist/>
-
+    <main class="relative z-0 grow" transition:animate="fade">
+      <slot />
+    </main>
+    {/* 🔥 放在这里，并使用 client:load 激活 JS 交互 */}
+    <FloatingTools client:load transition:persist />
+    <Footer transition:persist />
   </body>
 </html>
 
-<style is:global>
-
- 
-</style>
+<style is:global></style>

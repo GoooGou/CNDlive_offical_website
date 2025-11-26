@@ -5,6 +5,9 @@ import BackButton from '@/components/ui/BackButton.astro';
 
 interface Props {
   title: string;           // 页面标题 (传给 SEO)
+  description?: string; 
+  image?: string;       // 社交分享图
+  schema?: object;      // 结构化数据
   breadcrumbItems?: { label: string; href?: string }[]; // 面包屑数据
   backHref?: string;       // 返回按钮链接 (如果有才显示)
   backLabel?: string;      // 返回按钮文字
@@ -12,6 +15,10 @@ interface Props {
 
 const { 
   title, 
+  // 🔥 2. 解构：把它们取出来
+  description,
+  image,
+  schema,
   breadcrumbItems = [], 
   backHref, 
   backLabel = "Back" 
@@ -19,7 +26,7 @@ const {
 ---
 
 {/* 1. 继承最基础的全局 Layout */}
-<Layout title={title}>
+<Layout title={title} description={description} image={image} schema={schema}>
   
   <main class="py-12 bg-black min-h-screen text-white ">
     <div class="container mx-auto px-4 max-w-7xl">
