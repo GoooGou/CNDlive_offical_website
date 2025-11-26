@@ -11,6 +11,7 @@ import LogoMarquee from "@/components/ui/LogoMarquee.astro";
 import Intro from "@/components/sections/Intro.astro";
 import { Reveal } from "@/components/ui/Reveal";
 import NewsSection from "@/components/sections/NewSection.astro";
+import CaseSection from "@/components/sections/CaseSection.astro";
 
 ---
 
@@ -39,6 +40,10 @@ import NewsSection from "@/components/sections/NewSection.astro";
     {/* 4. 特性 BentoGrid */}
     <Reveal client:load layout="full">
       <Features />
+    </Reveal>
+     {/* 5. 新闻列表 */}
+    <Reveal client:load layout="narrow">
+      <CaseSection />
     </Reveal>
   </Main>
 </Layout>

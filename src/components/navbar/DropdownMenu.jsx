@@ -21,7 +21,7 @@ export default function DropdownMenu({ isOpen, items, onMouseEnter, onMouseLeave
           <a 
             key={index}
             href={item.href}
-            className="block px-6 py-3 text-sm text-gray-400 hover:text-primary hover:bg-white/5 transition-colors"
+            className="block px-6 py-3 text-sm text-white hover:text-primary hover:bg-white/5 transition-colors font-medium"
           >
             {item.label}
             {item.badge && (

@@ -1,15 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import ResourceIndex from '@/components/common/ResourceIndex.astro';
-// 从新闻集合中获取所有文章
-const posts = await getCollection('news');
-// 按发布日期排序 (最新的在前面)
+
+const posts = await getCollection('cases');
 const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <ResourceIndex 
-  title="Newsroom" 
-  subtitle="Latest updates from CNDLive."
+  title="Case Studies" 
+  subtitle="Real-world examples of CNDLive in action."
   posts={sortedPosts} 
-  basePath="/news" 
+  basePath="/cases" 
 />

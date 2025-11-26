@@ -36,7 +36,7 @@ export const MENU_DATA: NavItem[] = [
         items: [
           {
             label: "D1 4K HDMI/3G-SDI Decoder",
-            href: "#",
+            href: "/products/decoder-d1",
             badge: "New",
             active: true,
           },
@@ -73,9 +73,7 @@ export const MENU_DATA: NavItem[] = [
     type: "dropdown", // 🔥 新增：普通下拉菜单
     items: [
       { label: "News", href: "/news" },
-      { label: "Blog", href: "/blog" },
       { label: "Case Studies", href: "/cases" },
-      { label: "Downloads", href: "/downloads" },
     ],
   },
   { label: "About US", type: "link", href: "/about" },

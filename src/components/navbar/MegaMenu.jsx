@@ -28,11 +28,12 @@ export default function MegaMenu({ isOpen, groups, onMouseEnter, onMouseLeave })
                   <a 
                     key={idx} 
                     href={item.href}
-                    className="group/link flex items-center text-sm text-gray-400 hover:text-primary transition-colors"
+                    className="group/link flex items-center text-sm text-white/60 hover:text-primary transition-colors font-medium"
                   >
-                    <span className={clsx(item.active && "text-primary font-medium")}>
+                    <span className={clsx(item.active )}> 
                       {item.label}
                     </span>
+
                     {item.badge && (
                       <span className="ml-2 px-1.5 py-0.5 text-[10px] font-bold text-white bg-[#5BA63D] rounded">
                         {item.badge}

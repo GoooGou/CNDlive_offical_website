@@ -20,6 +20,22 @@ const news   = defineCollection({
     cover: image().optional(), 
   }),
 });
+
+const cases   = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/cases" }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.date(),
+    author: z.string(),
+    tags: z.array(z.string()),
+    
+    // 修改处：加上 .optional()
+    // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
+    cover: image().optional(), 
+  }),
+});
+
 // 🔥 新增：pages 集合 (用于 About, Contact, Privacy Policy 等单页)
 // 🔥 必须有 pages 的定义
 const pages = defineCollection({
@@ -70,6 +86,29 @@ const products = defineCollection({
     
     // 3. 补上作者字段（可选，给个默认值）
     author: z.string().default('CNDLive'),
+    // 🔥 新增复杂的 downloads 结构
+    downloads: z.array(
+      z.object({
+        category: z.string(), // 例如 "Documents" 或 "Firmware"
+        items: z.array(
+          z.object({
+            title: z.string(),        // 例如 "Quick Start Guide" 或 "C6-V1.01.0031"
+            fileUrl: z.string(),      // 文件路径
+            date: z.string().optional(), // 例如 "2024.10"
+            releaseNotes: z.string().optional(), // 固件更新日志 (支持 Markdown)
+          })
+        )
+      })
+    ).optional(),
+    manualPdf: z.string().optional(),
+    // 🔥 2. 新增：技术参数 (数组格式，方便遍历渲染表格)
+    // 保持这个结构不变
+    specs: z.array(
+      z.object({
+        label: z.string(), 
+        value: z.string(), // 这里存长文本 (Markdown)
+      })
+    ).optional(),
   }),
 });
 
@@ -78,5 +117,5 @@ const docs = defineCollection({
   loader: docsLoader(), // 这里的 loader 会自动去 src/content/docs 里找文件
   schema: docsSchema() 
 });
-export const collections = { news, pages, solutions, docs, products }; // 记得导出 
+export const collections = { news, pages, solutions, docs, products, cases }; // 记得导出 
 

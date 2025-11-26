@@ -1,0 +1,70 @@
+---
+// src/pages/products/[id]/specs.astro
+import { getCollection } from 'astro:content';
+import ProductLayout from '@/components/products/ProductLayout.astro';
+import { marked } from 'marked'; // 🔥 1. 引入解析器
+
+export async function getStaticPaths() {
+  const posts = await getCollection('products');
+  return posts.map(post => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const basePath = '/products';
+const specs = post.data.specs || [];
+---
+
+<ProductLayout 
+  post={post} 
+  basePath={basePath} 
+  parentTitle="Products" 
+  activeTabId="tech-specs"
+>
+  
+  <div class="max-w-4xl mx-auto py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <h2 class="text-3xl font-bold text-white mb-8 text-center">Technical Specifications</h2>
+
+    {specs.length > 0 ? (
+      <div class="border border-white/10 rounded-xl overflow-hidden bg-zinc-900 shadow-2xl">
+        <table class="w-full text-left border-collapse">
+          <tbody>
+            {specs.map((item, index) => (
+              <tr class={`border-b border-white/10 last:border-0 ${index % 2 === 0 ? 'bg-white/[0.02]' : 'bg-transparent'}`}>
+                
+                {/* 左侧 Label */}
+                <td class="p-6 text-zinc-400 font-bold text-sm uppercase tracking-wide w-1/4 align-top border-r border-white/10">
+                  {item.label}
+                </td>
+                
+                {/* 右侧 Value (Markdown 渲染区) */}
+                <td class="p-6 text-zinc-200 align-top">
+                  {/* 🔥 核心修改： 
+                     1. marked.parse(item.value) 把 markdown 转成 html
+                     2. set:html 将其插入
+                     3. prose 类名用于还原列表样式 (ul, li, strong)
+                  */}
+                  <div 
+                    class="prose prose-invert prose-sm max-w-none 
+                           prose-ul:list-disc prose-ul:pl-4 prose-ul:my-2 
+                           prose-li:my-1 prose-li:text-zinc-300
+                           prose-strong:text-white prose-strong:font-bold
+                           prose-p:my-2 prose-p:leading-relaxed"
+                    set:html={marked.parse(item.value)} 
+                  />
+                </td>
+
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <p class="text-center text-zinc-500 py-12">No specifications available.</p>
+    )}
+    
+  </div>
+
+</ProductLayout>

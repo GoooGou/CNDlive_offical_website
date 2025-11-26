@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import ProductLayout from '@/components/products/ProductLayout.astro';
+import Cover from '@/components/common/Cover.astro';
+import ProductTabs from '@/components/products/ProductTabs.astro';
+import MDXContent from '@/components/mdx/MDXContent.astro';
+
+// 生成所有产品的路径
+export async function getStaticPaths() {
+  const posts = await getCollection('products');
+  return posts.map(post => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const basePath = '/products'; // 你的列表页路径
+---
+
+<ProductLayout 
+  post={post} 
+  basePath={basePath} 
+  parentTitle="Products" 
+  activeTabId="overview"
+>
+  {/* 只展示 Overview 的内容：封面图 + 咨询按钮 */}
+  <div class="rounded-2xl overflow-hidden mb-10 border border-white/10 bg-zinc-900 shadow-2xl">
+    <Cover src={post.data.cover} alt={post.data.title} title={post.data.title} />
+  </div>
+
+  <div class="flex justify-center mb-16">
+      <a href="/contact" class="bg-primary text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-primary/80 transition shadow-lg shadow-primary/20">
+        Enquire Now
+      </a>
+  </div>
+    <MDXContent post={post} />
+
+  {/* 如果你想在 Overview 页也显示一部分简介文字，可以在这里渲染 content 的一部分，或者只放图 */}
+</ProductLayout>

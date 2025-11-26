@@ -6,6 +6,62 @@ description: "这是一个测试"
 # ✅ 必须写: "Video Encoder"
 category: "Video Encoder"
 cover: "./covers/c6-product.webp"
+specs:
+  - label: "Model"
+    value: "C6"
+
+  - label: "Video Inputs"
+    value: |
+      * 1× 3G-SDI (SMPTE 424M), compatible with HD-SDI and SD-SDI
+      * 1× HDMI 2.0
+
+  - label: "Video Outputs"
+    value: "1× 3G-SDI and 1× HDMI"
+
+  - label: "Video Resolutions"
+    # 🔥 注意这里的写法：使用 | 符号，然后缩进
+    value: |
+      **SDI:**
+      * 1920×1080p 23.98/24/25/29.97/30/50/59.94/60fps
+      * 1920×1080i 50/59.94/60fps
+      * 720×576i 50fps (PAL SD)
+
+      **HDMI:**
+      * 3840×2160p 30fps
+      * 1920×1080p 23.98/24/25/29.97/30/50/59.94/60fps
+
+  - label: "Video Encoding"
+    value: |
+      * H.264(AVC): Baseline/Main/High profile, Level 5.1
+      * H.265(HEVC): Main profile, Level 5.0
+# 🔥 对应图片的复杂下载数据
+downloads:
+  - category: "Documents"
+    items:
+      - title: "Quick Start Guide for C6"
+        date: "2024.10"
+        fileUrl: "/downloads/c6-quick-start.pdf"
+      - title: "User Manual for C6"
+        date: "2024.09"
+        fileUrl: "/downloads/c6-manual.pdf"
+
+  - category: "Firmware"
+    items:
+      - title: "C6-V1.01.0031"
+        fileUrl: "/downloads/fw-v1.01.0031.zip"
+        # 使用 | 符号开启多行文本
+        releaseNotes: |
+          1. Optimization of Video Recording Module
+          2. Removal of Encoding Frame Rate Limit for Interlaced SDI Signals
+          3. Optimization of OSD Module
+          4. Adjustment of Disk Display Strategy
+      
+      - title: "C6-V1.01.0017"
+        fileUrl: "/downloads/fw-v1.01.0017.zip"
+        releaseNotes: |
+          1. Added voice intercom functionality
+          2. Optimized the video recording module
+          3. Fixed known bugs
 order: 1
 ---
 
