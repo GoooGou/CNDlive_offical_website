@@ -15,6 +15,8 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   site: 'http://www.pixelcool.site',
+
+  // site: 'http://www.cndlive.com/',
   integrations: [
     // 1. Starlight 配置 (建议放在最前面)
     // 2. React 支持
