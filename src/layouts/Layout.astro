@@ -2,7 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import Main from "@/components/Main.astro";
 // import Footer from "@/components/Footer.astro";
-import Footer from "@/components/footer/Footer.jsx";
+import Footer from "@/components/Footer.astro";
 import "@/styles/global.css";
 import Navbar from "@/components/navbar/Navbar.jsx";
 import FloatingTools from "@/components/ui/FloatingTools.jsx";
@@ -45,7 +45,7 @@ const { title } = Astro.props;
       </main>
       {/* 🔥 放在这里，并使用 client:load 激活 JS 交互 */}
     <FloatingTools client:load  transition:persist/>
-    <Footer client:load  transition:persist/>
+    <Footer   transition:persist/>
 
   </body>
 </html>

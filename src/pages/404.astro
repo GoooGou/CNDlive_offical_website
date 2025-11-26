@@ -1,0 +1,84 @@
+---
+// src/pages/404.astro
+import ContentLayout from '@/layouts/ContentLayout.astro';
+import { Home, Mail, BookOpen, WifiOff } from 'lucide-react';
+
+const title = "404 - Signal Lost";
+---
+
+<ContentLayout title={title}>
+  <div class="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 py-16">
+    
+    {/* 1. 插画区域 (这里使用 SVG 代码，您也可以换成 <Image />) */}
+    <div class="mb-8 relative group">
+      {/* 背景光效 */}
+      <div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full group-hover:bg-primary/30 transition-all duration-500"></div>
+      
+      {/* 404 SVG 插画 */}
+      <svg width="300" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" class="relative z-10 w-64 h-64 md:w-80 md:h-80 drop-shadow-2xl">
+         {/* 电视/屏幕外框 */}
+         <rect x="50" y="50" width="300" height="200" rx="16" class="fill-surface-card stroke-surface-border" stroke-width="4"/>
+         {/* 屏幕内部杂讯 */}
+         <rect x="66" y="66" width="268" height="168" rx="8" class="fill-surface-base"/>
+         <path d="M100 150 L300 150" stroke="currentColor" stroke-width="2" stroke-dasharray="10 10" class="text-surface-border animate-pulse"/>
+         <path d="M150 120 L250 180" stroke="currentColor" stroke-width="2" class="text-surface-border"/>
+         <path d="M250 120 L150 180" stroke="currentColor" stroke-width="2" class="text-surface-border"/>
+         
+         {/* 巨大的 404 文字 */}
+         <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="80" class="fill-primary/90">404</text>
+         
+         {/* 底部支架 */}
+         <path d="M170 260 L230 260 L240 280 L160 280 Z" class="fill-surface-card"/>
+      </svg>
+    </div>
+
+    {/* 2. 文字提示 */}
+    <div class="space-y-4 max-w-lg mx-auto mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-text-main tracking-tight">
+        信号丢失
+      </h1>
+      <p class="text-xl text-text-muted">
+        抱歉，您访问的频道（页面）不存在或已被移除。<br/>
+        请检查链接是否正确，或尝试重新连接。
+      </p>
+    </div>
+
+    {/* 3. 三个操作按钮 */}
+    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+      
+      {/* 按钮 A: 返回首页 (主要操作) */}
+      <a 
+        href="/" 
+        class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition-transform hover:scale-105 shadow-lg shadow-primary/20"
+      >
+        <Home className="w-5 h-5" />
+        返回主站
+      </a>
+
+      {/* 按钮 B: 文档中心 (次要操作) */}
+      <a 
+        href="/support" 
+        class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-surface-card border border-surface-border text-text-main font-medium hover:border-primary hover:text-primary transition-colors"
+      >
+        <BookOpen className="w-5 h-5" />
+        文档中心
+      </a>
+
+      {/* 按钮 C: 联系我们 (次要操作) */}
+      <a 
+        href="/contact" 
+        class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-surface-card border border-surface-border text-text-main font-medium hover:border-primary hover:text-primary transition-colors"
+      >
+        <Mail className="w-5 h-5" />
+        联系支持
+      </a>
+
+    </div>
+
+    {/* 底部小字 */}
+    <div class="mt-16 text-sm text-text-muted opacity-60">
+      Error Code: 404_NOT_FOUND | CNDLive Server
+    </div>
+
+  </div>
+</ContentLayout>

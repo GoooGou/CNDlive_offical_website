@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cndlive.com/sitemap-index.xml

@@ -1,6 +1,6 @@
 // src/components/navbar/Navbar.jsx
 import React, { useState, useEffect } from 'react';
-import { Search, Menu, X, ChevronDown } from 'lucide-react';
+import {  Menu, X, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
 import { MENU_DATA } from '@/components/navbar/menuData';
 import AnimatedButton from '@/components/ui/AnimatedButton';

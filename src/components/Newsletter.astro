@@ -1,0 +1,157 @@
+---
+// src/components/Newsletter.astro
+import { Rss } from 'lucide-react'; // 记得安装 lucide-react: npm install lucide-react
+
+// 你的 Web3Forms Key
+const NEWSLETTER_KEY = "aa01d43d-5d5c-42b9-99ac-47adb38b6b5d"; 
+---
+
+<div class="bg-surface-muted rounded-2xl p-8 border border-surface-border flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+  
+  {/* --- 左侧：文案 + RSS 按钮 --- */}
+  <div class="w-full lg:w-5/12 text-center lg:text-left">
+    <h3 class="text-2xl font-bold text-text-main mb-3">Subscribe to updates</h3>
+    <p class="text-text-muted mb-6">
+      Get the latest firmware updates, case studies, and industry news directly to your inbox.
+    </p>
+    
+    {/* 🔥 新增：RSS 订阅按钮 */}
+    <div class="flex justify-center lg:justify-start">
+      <a 
+        href="/rss.xml" 
+        target="_blank" 
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-surface-border bg-surface-base text-sm font-medium text-text-muted hover:text-primary hover:border-primary transition-colors duration-300 group"
+      >
+        <Rss className="w-4 h-4 group-hover:scale-110 transition-transform" />
+        <span>Subscribe via RSS Feed</span>
+      </a>
+    </div>
+  </div>
+
+  {/* --- 右侧：Web3Forms 表单 (Name + Email) --- */}
+  <div class="w-full lg:w-7/12">
+    <form 
+      id="newsletter-form"
+      class="relative"
+    >
+      <input type="hidden" name="access_key" value={NEWSLETTER_KEY}>
+      <input type="hidden" name="subject" value="New Newsletter Subscription (with Name)">
+      <input type="hidden" name="from_name" value="CNDLive Footer">
+      
+      {/* 蜜罐字段 */}
+      <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+      
+      {/* 输入框区域：使用 Grid 布局 */}
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+        
+        {/* 🔥 新增：名字输入框 (占 4/12) */}
+        <div class="sm:col-span-4">
+          <input 
+            type="text" 
+            name="name" 
+            id="newsletter-name"
+            required
+            placeholder="Name" 
+            class="w-full h-12 bg-surface-base text-text-main border border-surface-border rounded-lg px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:opacity-50"
+          />
+        </div>
+
+        {/* 邮箱输入框 (占 5/12) */}
+        <div class="sm:col-span-5">
+          <input 
+            type="email" 
+            name="email" 
+            id="newsletter-email"
+            required
+            placeholder="Email address" 
+            class="w-full h-12 bg-surface-base text-text-main border border-surface-border rounded-lg px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:opacity-50"
+          />
+        </div>
+        
+        {/* 提交按钮 (占 3/12) */}
+        <div class="sm:col-span-3">
+          <button 
+            type="submit" 
+            id="newsletter-btn"
+            class="w-full h-12 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap shadow-lg shadow-primary/20"
+          >
+            Subscribe
+          </button>
+        </div>
+      </div>
+    </form>
+
+    {/* 结果反馈信息 */}
+    <p id="newsletter-result" class="hidden text-sm mt-3 text-center lg:text-left"></p>
+  </div>
+</div>
+
+<script is:inline>
+  const form = document.getElementById('newsletter-form');
+  const nameInput = document.getElementById('newsletter-name');
+  const emailInput = document.getElementById('newsletter-email');
+  const btn = document.getElementById('newsletter-btn');
+  const result = document.getElementById('newsletter-result');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // 1. 锁定状态
+    const originalText = btn.innerText;
+    btn.innerText = "...";
+    btn.disabled = true;
+    nameInput.disabled = true;
+    emailInput.disabled = true;
+    result.classList.add('hidden');
+
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    // 2. 发送请求
+    fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: json
+    })
+    .then(async (response) => {
+        let json = await response.json();
+        if (response.status == 200) {
+            // ✅ 成功
+            result.innerHTML = `🎉 Thanks ${object.name || ''}! You've subscribed successfully.`;
+            result.classList.remove('hidden', 'text-red-500');
+            result.classList.add('text-green-500');
+            form.reset();
+        } else {
+            // ❌ 失败
+            console.log(response);
+            result.innerHTML = json.message || "Something went wrong.";
+            result.classList.remove('hidden', 'text-green-500');
+            result.classList.add('text-red-500');
+        }
+    })
+    .catch(error => {
+        console.log(error);
+        result.innerHTML = "Network error. Please try again.";
+        result.classList.remove('hidden', 'text-green-500');
+        result.classList.add('text-red-500');
+    })
+    .then(function() {
+        // 3. 恢复状态
+        btn.innerText = originalText;
+        btn.disabled = false;
+        nameInput.disabled = false;
+        emailInput.disabled = false;
+        
+        // 5秒后隐藏成功提示
+        setTimeout(() => {
+            if (result.classList.contains('text-green-500')) {
+                result.classList.add('hidden');
+            }
+        }, 5000);
+    });
+  });
+</script>
