@@ -17,27 +17,23 @@ if (!post) {
   backHref="/"
   backLabel="Back to Home"
 >
-  <article class="max-w-4xl mx-auto">
-    
+  <article class="mx-auto max-w-4xl">
     {/* 头部标题区 */}
-    <div class="text-center mb-16">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white tracking-tight">
+    <div class="mb-16 text-center">
+      <h1 class="mb-6 text-4xl font-bold tracking-tight md:text-6xl">
         {post.data.title}
       </h1>
-      <p class="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+      <p class="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-400">
         {post.data.description}
       </p>
     </div>
 
     {/* 正文渲染区 */}
-    <div class="prose prose-invert prose-lg max-w-none 
-      prose-headings:text-white prose-headings:font-bold
-      prose-p:text-zinc-300 prose-strong:text-white">
-      
+    <div
+      class="prose prose-invert prose-lg prose-headings:text-white prose-headings:font-bold prose-p:text-zinc-300 prose-strong:text-white max-w-none"
+    >
       {/* 🔥 完美复用！自动注入 Callout, Video, Steps 等所有组件 */}
       <MDXContent post={post} />
-      
     </div>
-
   </article>
 </ContentLayout>

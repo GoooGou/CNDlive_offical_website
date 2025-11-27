@@ -102,16 +102,16 @@
   /* MDX 文章: 自动反色 */
   /* 🔥 核心修复：强制 Prose 使用我们的主题变量 */
   .prose {
-    /* 1. 正文颜色 -> 你的次要文字色 (灰/浅灰) */
+    /* 1. 正文颜色 -> 映射到你的次要文字色 (亮色灰/深色浅灰) */
     --tw-prose-body: var(--color-text-muted);
 
-    /* 2. 标题颜色 -> 你的主要文字色 (黑/白) */
+    /* 2. 标题颜色 -> 映射到你的主要文字色 (亮色黑/深色白) */
     --tw-prose-headings: var(--color-text-main);
 
-    /* 3. 链接颜色 -> 你的品牌红 */
+    /* 3. 链接颜色 -> 映射到你的品牌红 */
     --tw-prose-links: var(--color-primary);
 
-    /* 4. 粗体颜色 -> 你的主要文字色 */
+    /* 4. 粗体颜色 -> 映射到你的主要文字色 */
     --tw-prose-bold: var(--color-text-main);
 
     /* 5. 列表圆点/数字颜色 */
@@ -125,12 +125,12 @@
     /* 7. 分割线颜色 */
     --tw-prose-hr: var(--color-surface-border);
 
-    /* 8. 代码块颜色 (代码块通常保持深色背景，比较好看) */
+    /* 8. 代码块颜色 (保持深色背景通常比较好看) */
     --tw-prose-code: var(--color-primary);
-    --tw-prose-pre-code: #e4e4e7;
-    --tw-prose-pre-bg: #18181b;
+    --tw-prose-pre-code: #e4e4e7; /* 代码文字固定浅色 */
+    --tw-prose-pre-bg: #18181b; /* 代码背景固定深色 */
 
-    /* 最大宽度限制取消，填满容器 */
+    /* 可选：取消最大宽度限制，让文章填满容器 */
     max-width: none;
   }
 }

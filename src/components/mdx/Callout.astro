@@ -52,16 +52,13 @@ const currentStyle = styles[type];
 const Icon = currentStyle.iconType;
 ---
 
-{
-  /* 🔥 核心修改：添加 `not-prose` 类 
-  这会告诉 Tailwind Typography 插件："不要碰这个 div 里的任何样式"
-*/
-}
 <div
   class={`
   not-prose
   my-6 p-4 rounded-lg border-l-4 flex gap-4 items-start transition-colors duration-300
   ${currentStyle.container}
+  /* 🔥 第一层保险：容器强制颜色 */
+  !text-black dark:!text-zinc-100
 `}
 >
   <Icon className={`mt-0.5 h-6 w-6 shrink-0 ${currentStyle.icon}`} />
@@ -69,22 +66,19 @@ const Icon = currentStyle.iconType;
   <div class="w-full min-w-0 space-y-1">
     {
       title && (
-        <p class="text-base font-bold text-black dark:text-white">{title}</p>
+        <p class="text-base font-bold !text-black dark:!text-white">{title}</p>
       )
     }
 
     {
-      /* 🔥 样式重写：
-      因为用了 not-prose，这里的 p, a, strong 都没有默认样式了。
-      我们使用 [&_标签] 的方式重新定义它们，确保绝对受控。
-      
-      [&_p]: 所有段落
-      [&_a]: 所有链接
-      [&_strong]: 所有加粗
+      /* 🔥 第二层保险：内部元素强制颜色
+       !text-black : 亮色模式强制纯黑
+       dark:!text-zinc-100 : 深色模式强制亮白
+       [&_标签] : 暴力选中内部所有对应标签
     */
     }
     <div
-      class="/* 给段落一点微小的间距 */ text-sm leading-relaxed text-black dark:text-zinc-100 [&_a]:font-bold [&_a]:text-black [&_a]:underline hover:[&_a]:opacity-80 dark:[&_a]:text-white [&_p]:my-1 [&_p]:text-black dark:[&_p]:text-zinc-100 [&_strong]:font-extrabold [&_strong]:text-black dark:[&_strong]:text-white"
+      class="text-sm leading-relaxed !text-black dark:!text-zinc-100 [&_a]:font-bold [&_a]:!text-black [&_a]:underline dark:[&_a]:!text-white [&_li]:!text-black dark:[&_li]:!text-zinc-100 [&_p]:my-1 [&_p]:!text-black dark:[&_p]:!text-zinc-100 [&_span]:!text-black dark:[&_span]:!text-zinc-100 [&_strong]:font-extrabold [&_strong]:!text-black dark:[&_strong]:!text-white"
     >
       <slot />
     </div>

@@ -111,23 +111,36 @@ const orgSchema = {
 
     {/* 2. 固定 Organization Schema (全站通用) */}
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
-    <!-- 防止主体闪烁 -->
-    {/* 🔥 核心脚本：放在这里，页面一加载就会立刻执行，不会闪烁 */}
+    {/* 🔥 1. 启用 ViewTransitions (可选，但推荐，能让切换更丝滑) */}
+
+    {/* 🔥 2. 核心：主题防抖动脚本 (必须放在 head 最上面) */}
     <script is:inline>
-      (function () {
-        // 1. 获取本地存储的主题
-        const storedTheme = localStorage.getItem('theme');
+      // 定义一个函数来设置主题，方便复用
+      function applyTheme() {
+        // 1. 获取用户设置
+        const storedTheme =
+          typeof localStorage !== 'undefined' && localStorage.getItem('theme');
 
         // 2. 逻辑判断：
-        // 如果用户明确设置过 'light'，那就移除 dark 类
+        // 如果用户明确设为 'light'，才显示亮色
+        // 否则（没设置过的首次访问、或设为 dark），一律强制深色
         if (storedTheme === 'light') {
           document.documentElement.classList.remove('dark');
-        }
-        // 3. 否则（用户没设置过，或者是 'dark'），都默认添加 dark 类
-        else {
+        } else {
           document.documentElement.classList.add('dark');
+          // 如果是第一次来，顺手存一下 dark，保持状态一致
+          if (!storedTheme) {
+            localStorage.setItem('theme', 'dark');
+          }
         }
-      })();
+      }
+
+      // A. 页面初次加载时，立即执行
+      applyTheme();
+
+      // B. 适配 Astro View Transitions (如果你用了 client router)
+      // 每次页面切换完成后，重新执行一遍，防止样式丢失
+      document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
 

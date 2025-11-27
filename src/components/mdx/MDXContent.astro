@@ -15,7 +15,7 @@ import TeamMember from './TeamMember.astro';
 import StatsGrid from './StatsGrid.astro';
 import StatItem from './StatItem.astro';
 // 这里的 Cover 如果是在 common 目录下，请注意路径，如果在 mdx 目录下则用 './Cover.astro'
-import Cover from '../common/Cover.astro'; 
+import Cover from '../common/Cover.astro';
 
 interface Props {
   post: any; // 接收文章数据对象
@@ -30,10 +30,10 @@ const { Content } = await render(post);
 // 左边是 MDX/HTML 标签名，右边是你的组件
 const mdxComponents = {
   // === 替换标准 Markdown 语法 ===
-  img: PostImage,       // ![alt](src) -> <PostImage />
+  img: PostImage, // ![alt](src) -> <PostImage />
   blockquote: Blockquote, // > 引用 -> <Blockquote />
-  a: Link,              // [link](url) -> <Link />
-  
+  a: Link, // [link](url) -> <Link />
+
   // === 注册自定义组件 (让 MDX 认识这些标签) ===
   Callout,
   Video,
@@ -44,7 +44,7 @@ const mdxComponents = {
   TeamMember,
   StatsGrid,
   StatItem,
-  Cover
+  Cover,
 };
 ---
 

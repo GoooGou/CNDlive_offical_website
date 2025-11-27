@@ -15,15 +15,28 @@ const { post, className = '' } = Astro.props;
     // 1. 基础排版类
     'prose prose-lg mx-auto max-w-none',
 
-    // 🔥 2. [核心修改] 删除所有颜色类！
-    // ❌ 删除 'prose-invert' (它会强制反色)
-    // ❌ 删除 'prose-headings:text-white' (它会强制白色，导致亮色模式看不见)
-    // ❌ 删除 'prose-p:text-zinc-300'
+    // 🔥 2. [加固修复] 显式绑定我们的主题变量
+    // 这能确保：无论全局 CSS 有没有生效，这里都会强制使用正确的颜色
 
-    // ✅ 现在，它会自动读取你在 global.css 里定义的 --tw-prose-headings 变量
-    // 从而实现：亮色变黑，深色变白。
+    // 默认文字颜色 (灰色)
+    'text-text-muted',
 
-    // 3. 功能样式 (保留)
+    // 标题颜色 (亮色黑 / 深色白)
+    'prose-headings:text-text-main',
+
+    // 段落颜色 (亮色灰 / 深色浅灰)
+    'prose-p:text-text-muted',
+
+    // 粗体颜色 (亮色黑 / 深色白)
+    'prose-strong:text-text-main',
+
+    // 列表颜色
+    'prose-li:text-text-muted',
+
+    // 链接颜色 (品牌红)
+    'prose-a:text-primary hover:prose-a:text-primary-dark',
+
+    // 3. 功能样式
     'prose-headings:scroll-mt-24', // 锚点偏移
     'prose-img:rounded-xl prose-img:shadow-lg',
 
