@@ -4,29 +4,58 @@
 interface Props {
   title: string;
   description: string;
-  class?: string; // 允许传入 col-span-2 等类名来控制大小
+  class?: string;
 }
 
-// 接收参数
 const { title, description, class: className } = Astro.props;
 ---
 
-<div class:list={[
-  "group relative overflow-hidden rounded-3xl bg-zinc-900/50 p-8 border border-white/10 hover:border-red-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/20",
-  className
-]}>
-  
-  <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-gradient-to-br from-red-600/10 to-transparent blur-[60px] group-hover:from-red-600/30 transition-all duration-500"></div>
-  
-  <div class="relative z-10 flex flex-col h-full justify-between">
-    <div class="mb-4 text-zinc-500 group-hover:text-white transition-colors duration-300">
+<div
+  class:list={[
+    /* 1. 布局与形状保持不变
+     */
+    'group relative overflow-hidden rounded-3xl p-8 transition-all duration-500',
+
+    /* 2. ✅ 背景色与边框适配 
+     old: bg-zinc-900/50 border-white/10
+     new: bg-surface-card border-surface-border
+     这样在浅色模式是白卡片/灰边框，深色模式是黑卡片/深边框
+  */
+    'bg-surface-card border-surface-border border',
+
+    /* 3. 悬停效果
+     红色的品牌色 (red-500) 通常在深浅模式下都通用，予以保留。
+     如果你有定义 brand 变量，也可以换成 hover:border-primary
+  */
+    'hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-900/20',
+
+    className,
+  ]}
+>
+  <div
+    class="absolute -right-12 -bottom-12 h-48 w-48 bg-gradient-to-br from-red-600/10 to-transparent blur-[60px] transition-all duration-500 group-hover:from-red-600/30"
+  >
+  </div>
+
+  <div class="relative z-10 flex h-full flex-col justify-between">
+    <div
+      class="text-text-muted group-hover:text-text-main mb-4 transition-colors duration-300"
+    >
       <slot name="icon" />
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-white mb-2 group-hover:translate-x-1 transition-transform duration-300">{title}</h3>
-      <p class="text-zinc-400 text-sm leading-relaxed group-hover:text-zinc-300 transition-colors">{description}</p>
+      <h3
+        class="text-text-main mb-2 text-xl font-bold transition-transform duration-300 group-hover:translate-x-1"
+      >
+        {title}
+      </h3>
+
+      <p
+        class="text-text-muted group-hover:text-text-main text-sm leading-relaxed transition-colors"
+      >
+        {description}
+      </p>
     </div>
   </div>
-
 </div>
