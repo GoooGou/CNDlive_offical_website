@@ -1,77 +1,35 @@
 ---
 // src/components/mdx/Callout.astro
-import {
-  Info,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Lightbulb,
-} from 'lucide-react';
+import { Info } from 'lucide-react';
 
 interface Props {
-  type?: 'info' | 'warning' | 'success' | 'error' | 'tip';
   title?: string;
 }
-
-const { type = 'info', title } = Astro.props;
-
-// 🎨 1. 颜色配置：只定义 "图标颜色" 和 "左边框颜色"
-// 不再定义背景色，背景统一用白/黑，确保文字绝对清晰
-const styles = {
-  info: {
-    base: 'border-l-blue-500',
-    icon: 'text-blue-600 dark:text-blue-400',
-    IconComponent: Info,
-  },
-  warning: {
-    base: 'border-l-amber-500',
-    icon: 'text-amber-600 dark:text-amber-400',
-    IconComponent: AlertTriangle,
-  },
-  success: {
-    base: 'border-l-emerald-500',
-    icon: 'text-emerald-600 dark:text-emerald-400',
-    IconComponent: CheckCircle,
-  },
-  error: {
-    base: 'border-l-red-500',
-    icon: 'text-red-600 dark:text-red-400',
-    IconComponent: XCircle,
-  },
-  tip: {
-    base: 'border-l-purple-500',
-    icon: 'text-purple-600 dark:text-purple-400',
-    IconComponent: Lightbulb,
-  },
-};
-
-const current = styles[type];
-const Icon = current.IconComponent;
+const { title } = Astro.props;
 ---
 
-{
-  /* 🔥 核心修改：
-  1. not-prose: 彻底隔离外部样式
-  2. bg-white / dark:bg-[#111]: 背景永远是干净的
-  3. border-l-4: 用左侧粗边框来区分类型
-*/
-}
 <div
-  class={`
-  not-prose
-  my-6 p-4 rounded-r-lg border-surface-border border
-  ${current.base}
-`}
+  class="my-6 flex gap-4 rounded-lg border border-l-4 border-zinc-200 border-l-blue-500 p-4 dark:border-zinc-800"
 >
-  {/* 图标 */}
-  <Icon className={`mt-0.5 h-6 w-6 shrink-0 ${current.icon}`} />
+  <Info className="h-6 w-6 shrink-0 text-blue-500" />
 
-  <div class="w-full min-w-0 space-y-1">
-    {/* 标题：强制黑/白 */}
-    {title && <p class="text-base font-bold">{title}</p>}
+  <div class="flex w-full min-w-0 flex-col gap-2">
+    {
+      title && (
+        // 添加 m-0 覆盖 prose 默认的 heading margin
+        <h4 class="m-0 text-base font-bold text-zinc-900 dark:text-zinc-100">
+          {title}
+        </h4>
+      )
+    }
 
-    {/* 正文内容：使用 [&_] 选择器重置内部样式，确保清晰 */}
-    <div class="text-base font-bold">
+    {
+      /* 1. 移除了具体的 text 颜色，让其继承 prose 的默认颜色。
+       2. 添加了 first-child 和 last-child 选择器，去除 prose 内容自带的上下边距，
+          防止在边框内产生多余空白。
+    */
+    }
+    <div class="text-sm [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
       <slot />
     </div>
   </div>

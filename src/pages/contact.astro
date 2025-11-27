@@ -7,7 +7,7 @@ import { MapPin, Phone, Mail, ArrowRight } from 'lucide-react';
 const contactInfo = [
   {
     icon: MapPin,
-    title: 'Global HQ', // 改个更有气势的名字
+    title: 'Global Headquarters',
     lines: [
       '3rd&5th Floor, Building 7,',
       'Xinhua Industrial Building, Nanshan,',
@@ -28,10 +28,18 @@ const contactInfo = [
 ---
 
 <Layout title="Contact Us | CNDLive">
-  <main class="relative min-h-screen overflow-hidden bg-black">
-    {/* ✨ 1. 背景氛围灯光 (红色光晕) */}
+  {
+    /* 1. 使用 bg-surface-base 和 text-text-main
+      不需要写 dark:bg-xxx，因为 CSS 变量会自动切换值 
+  */
+  }
+  <main
+    class="bg-surface-base text-text-main relative min-h-screen overflow-hidden transition-colors duration-300"
+  >
+    {/* ✨ 背景氛围灯光 */}
+    {/* 使用 bg-primary (你在 CSS 里定义了它在深浅模式下的红色值) */}
     <div
-      class="pointer-events-none absolute top-0 left-1/2 -z-10 h-[600px] w-[1000px] -translate-x-1/2 rounded-full bg-red-900/20 mix-blend-screen blur-[120px]"
+      class="bg-primary/10 pointer-events-none absolute top-0 left-1/2 -z-10 h-[600px] w-[1000px] -translate-x-1/2 rounded-full blur-[100px]"
     >
     </div>
 
@@ -44,33 +52,36 @@ const contactInfo = [
           {/* 标题区 */}
           <div>
             <h1
-              class="mb-6 text-3xl leading-tight font-black tracking-tight text-white uppercase md:text-6xl"
+              class="text-text-main mb-6 text-3xl leading-tight font-black tracking-tight uppercase md:text-6xl"
             >
-              contact
-              <span class="text-primary"> us </span>
+              contact <span class="text-primary"> us </span>
             </h1>
-            <p class="max-w-md text-xl leading-relaxed text-white/80">
+            <p class="text-text-muted max-w-md text-xl leading-relaxed">
               Whether you have a technical question or need a custom solution,
               our team is ready to help.
             </p>
           </div>
 
-          {/* 信息卡片列表 (垂直排列) */}
+          {/* 信息卡片列表 */}
           <div class="grid gap-6">
             {
               contactInfo.map((item) => (
-                <div class="group flex items-start gap-6 rounded-2xl border border-white/5 bg-zinc-900/40 p-6 transition-all duration-300 hover:border-red-500/30 hover:bg-zinc-900/80">
-                  {/* 图标 */}
-                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-zinc-800 transition-colors duration-300 group-hover:bg-red-600 group-hover:text-white">
-                    <item.icon className="w-5 h-5 text-zinc-400 group-hover:text-white" />
+                <div class="group border-surface-border bg-surface-card hover:border-primary/30 hover:bg-surface-hover flex items-start gap-6 rounded-2xl border p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+                  {/* 图标容器：
+                    bg-surface-muted -> 自动变深灰/浅灰
+                    text-text-muted -> 自动变灰
+                    group-hover -> 激活品牌色 
+                */}
+                  <div class="bg-surface-muted text-text-muted group-hover:bg-primary flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors duration-300 group-hover:text-white">
+                    <item.icon className="h-5 w-5" />
                   </div>
 
-                  {/* 文字 */}
+                  {/* 文字内容 */}
                   <div>
-                    <h3 class="mb-2 text-lg font-bold text-white">
+                    <h3 class="text-text-main mb-2 text-lg font-bold">
                       {item.title}
                     </h3>
-                    <div class="space-y-1 text-sm text-zinc-400">
+                    <div class="text-text-muted space-y-1 text-sm">
                       {item.lines.map((line) => (
                         <p>{line}</p>
                       ))}
@@ -82,33 +93,31 @@ const contactInfo = [
           </div>
         </div>
 
-        {/* === 右侧：表单区域 (悬浮卡片风格) === */}
+        {/* === 右侧：表单区域 === */}
         <div
           class="animate-in fade-in slide-in-from-right-8 delay-100 duration-700 lg:sticky lg:top-32"
         >
-          {/* 外层渐变边框 */}
+          {/* 边框渐变：从 border 颜色到透明 */}
           <div
-            class="relative rounded-3xl bg-gradient-to-b from-white/10 to-transparent p-[1px] shadow-2xl shadow-black/50"
+            class="from-surface-border relative rounded-3xl bg-gradient-to-b to-transparent p-[1px] shadow-2xl shadow-black/5"
           >
-            {/* 内部背景 */}
+            {/* 内部卡片背景：bg-surface-card (自动切换纯白/深灰) */}
             <div
-              class="relative overflow-hidden rounded-[23px] bg-[#0a0a0a] p-8 md:p-10"
+              class="bg-surface-card relative overflow-hidden rounded-[23px] p-8 md:p-10"
             >
-              {/* 装饰：右上角红色光点 */}
+              {/* 内部装饰光点 */}
               <div
-                class="pointer-events-none absolute -top-20 -right-20 h-60 w-60 rounded-full bg-red-600/10 blur-[60px]"
+                class="bg-primary/10 pointer-events-none absolute -top-20 -right-20 h-60 w-60 rounded-full blur-[60px]"
               >
               </div>
 
               <div class="relative z-10">
                 <h3
-                  class="mb-6 flex items-center gap-2 text-2xl font-bold text-white"
+                  class="text-text-main mb-6 flex items-center gap-2 text-2xl font-bold"
                 >
                   Send us a message
-                  <ArrowRight className="h-5 w-5 text-red-600" />
+                  <ArrowRight className="text-primary h-5 w-5" />
                 </h3>
-
-                {/* 调用表单组件 */}
                 <ContactForm />
               </div>
             </div>
@@ -117,30 +126,34 @@ const contactInfo = [
       </div>
     </div>
 
-    {/* === 底部：全宽地图 (带融合遮罩) === */}
-    <section class="relative h-[500px] w-full border-t border-zinc-800">
-      {/* 地图滤镜：变暗 + 反色 + 降饱和度 */}
+    {/* === 底部：全宽地图 === */}
+    <section class="border-surface-border relative h-[500px] w-full border-t">
+      {
+        /* 地图 iframe 本身没有语义化变量可用，所以这里保留 dark: 语法来处理滤镜 
+          (inverted map 在深色模式下看起来更酷)
+      */
+      }
       <iframe
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3692.579576640236!2d113.91461731157742!3d22.25601197963891!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3403fc0423722a29%3A0x1e02900000000000!2sShenzhen!5e0!3m2!1sen!2scn!4v1620000000000!5m2!1sen!2scn"
         width="100%"
         height="100%"
-        style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);"
+        style="border:0;"
         allowfullscreen=""
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        class="opacity-80 transition-opacity duration-500 hover:opacity-100"
+        class="h-full w-full opacity-80 contrast-[0.9] grayscale transition-all duration-500 hover:opacity-100 dark:contrast-[0.83] dark:grayscale dark:invert"
       >
       </iframe>
 
-      {/* 顶部融合遮罩 (让地图和上面内容的连接处变柔和) */}
+      {/* 顶部融合遮罩：关键！使用 from-surface-base 确保完美融合页面背景 */}
       <div
-        class="pointer-events-none absolute top-0 left-0 h-32 w-full bg-gradient-to-b from-black to-transparent"
+        class="from-surface-base pointer-events-none absolute top-0 left-0 h-32 w-full bg-gradient-to-b to-transparent"
       >
       </div>
 
-      {/* 红色覆盖层 (让地图带一点点品牌色调) */}
+      {/* 品牌色覆盖层 */}
       <div
-        class="pointer-events-none absolute inset-0 bg-red-900/5 mix-blend-overlay"
+        class="bg-primary/5 pointer-events-none absolute inset-0 mix-blend-multiply dark:mix-blend-overlay"
       >
       </div>
     </section>

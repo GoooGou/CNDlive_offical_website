@@ -1,0 +1,35 @@
+---
+// src/components/Prose.astro
+interface Props {
+  className?: string; // 允许外部传入额外的 class (比如调整 margin)
+}
+
+const { className = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    // 1. 基础排版开启
+    'prose prose-lg mx-auto max-w-none',
+
+    // 2. 核心颜色适配
+    // 因为我们在 global.css 里用了 !important 强制接管了颜色，
+    // 这里其实不需要写 dark:prose-invert 了。
+    // 但为了保险起见，或者如果你以后删了 global.css，写上它也是个好习惯。
+    'dark:prose-invert',
+
+    // 3. 细节修饰 (匹配你的品牌风格)
+    // 链接颜色：你的品牌红
+    'prose-a:text-[#ac121f] hover:prose-a:text-[#8a0e19] prose-a:no-underline hover:prose-a:underline prose-a:font-bold prose-a:transition-colors prose-a:duration-200 prose-a:line-height-1.5',
+    // 图片样式
+    'prose-img:rounded-xl prose-img:shadow-lg',
+
+    // 标题样式
+    'prose-headings:scroll-mt-24', // 锚点偏移
+
+    // 4. 外部传入的 class
+    className,
+  ]}
+>
+  <slot />
+</div>

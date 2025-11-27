@@ -1,6 +1,7 @@
 ---
 // src/components/mdx/ArticleBody.astro
 import MDXContent from '@/components/mdx/MDXContent.astro';
+import Prose from '@/components/mdx/Prose.astro'; // 引入刚才创建的组件
 
 interface Props {
   post: any;
@@ -10,22 +11,6 @@ interface Props {
 const { post, className = '' } = Astro.props;
 ---
 
-<div
-  class:list={[
-    // 1. 基础排版类 (必须保留)
-    'prose prose-lg mx-auto',
-
-    // 🔥 2. [关键点] 这里不需要任何颜色类了！
-    // 因为你的 global.css 里的 .prose 规则已经用 !important 强制接管了一切。
-    // 无论是 text-xxx 还是 prose-headings:xxx 都不需要了。
-
-    // 3. 功能样式 (保留非颜色类的样式)
-    'prose-headings:scroll-mt-24', // 锚点偏移
-    'prose-img:rounded-xl prose-img:shadow-lg', // 图片圆角和阴影
-
-    // 4. 外部传入的样式
-    className,
-  ]}
->
+<Prose className={className}>
   <MDXContent post={post} />
-</div>
+</Prose>

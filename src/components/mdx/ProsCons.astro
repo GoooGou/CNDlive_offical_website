@@ -1,26 +1,29 @@
 ---
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 ---
-<div class="not-prose grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-  
+
+<div class="not-prose my-8 grid grid-cols-1 gap-4 md:grid-cols-2">
   {/* Pros (优点) */}
-  <div class="p-6 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-    <div class="flex items-center gap-2 mb-4 text-emerald-400 font-bold uppercase tracking-wider text-sm">
-      <ThumbsUp className="w-4 h-4" /> Pros
+  <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-6">
+    <div
+      class="mb-4 flex items-center gap-2 text-sm font-bold tracking-wider text-emerald-400 uppercase"
+    >
+      <ThumbsUp className="h-4 w-4" /> Pros
     </div>
-    <div class="space-y-2 text-zinc-300 text-sm">
+    <div class="space-y-2 text-sm">
       <slot name="pros" />
     </div>
   </div>
 
   {/* Cons (缺点) */}
-  <div class="p-6 rounded-xl bg-red-500/5 border border-red-500/20">
-    <div class="flex items-center gap-2 mb-4 text-red-400 font-bold uppercase tracking-wider text-sm">
-      <ThumbsDown className="w-4 h-4" /> Cons
+  <div class="rounded-xl border border-red-500/20 bg-red-500/5 p-6">
+    <div
+      class="mb-4 flex items-center gap-2 text-sm font-bold tracking-wider text-red-400 uppercase"
+    >
+      <ThumbsDown className="h-4 w-4" /> Cons
     </div>
-    <div class="space-y-2 text-zinc-300 text-sm">
+    <div class="space-y-2 text-sm">
       <slot name="cons" />
     </div>
   </div>
-
 </div>

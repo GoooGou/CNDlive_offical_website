@@ -4,7 +4,10 @@
 /* =========================================
    1. 定义变量逻辑 (Theme Logic)
    ========================================= */
-
+/* 3. 配置暗色模式：Class 策略 */
+/* 这行代码的意思是：当父元素(html)有 .dark 类时，触发 dark: 修饰符 */
+/* 这替代了原来的 darkMode: 'class' */
+@variant dark (&:where(.dark, .dark *));
 /* --- 默认：亮色模式 (Light Mode) --- */
 :root {
   /* 品牌色 */
@@ -100,60 +103,25 @@
   }
 
   /* MDX 文章: 自动反色 */
-  /* 🔥 核心修复：强制 Prose 使用我们的主题变量 */
-  .prose {
-    /* 1. 默认正文颜色 (自动适配灰/浅灰) */
-    color: var(--color-text-muted) !important;
+}
 
-    /* 2. 所有标题 (h1-h6) 颜色 (自动适配黑/白) */
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      color: var(--color-text-main) !important;
-    }
+/* 1. 定义你的语义化变量 */
+@layer base {
+  :root {
+    /* 亮色模式下的颜色 */
+    --color-text-main: #18181b; /* 纯黑 */
+    --color-text-muted: #52525b; /* 深灰 */
+    --color-primary: #ac121f; /* 品牌红 */
+    --color-border: #e4e4e7; /* 浅灰边框 */
+    --color-bg-code: #f4f4f5; /* 代码块背景 */
+  }
 
-    /* 3. 粗体 (strong) 颜色 */
-    strong {
-      color: var(--color-text-main) !important;
-    }
-
-    /* 4. 链接 (a) 颜色 (品牌红) */
-    a {
-      color: var(--color-primary) !important;
-      text-decoration: none;
-    }
-    a:hover {
-      color: var(--color-primary-dark) !important;
-      text-decoration: underline;
-    }
-
-    /* 5. 列表项目符号 (li marker) */
-    li::marker {
-      color: var(--color-text-muted) !important;
-    }
-
-    /* 6. 引用块 (blockquote) */
-    blockquote {
-      color: var(--color-text-muted) !important;
-      border-left-color: var(--color-primary) !important;
-    }
-
-    /* 7. 代码块 (code) - 保持深色背景比较好看 */
-    code {
-      color: #ef4444 !important; /* 红色文字 */
-      background-color: rgba(125, 125, 125, 0.1);
-      padding: 0.2em 0.4em;
-      border-radius: 0.25rem;
-    }
-    pre {
-      background-color: #18181b !important; /* 黑色背景 */
-      color: #e4e4e7 !important; /* 浅色文字 */
-    }
-
-    /* 取消最大宽度限制 */
-    max-width: none !important;
+  :root.dark {
+    /* 深色模式下的颜色 */
+    --color-text-main: #fafafa; /* 纯白 */
+    --color-text-muted: #a1a1a1; /* 浅灰 */
+    --color-primary: #ef4444; /* 亮红 (深色模式下稍微亮一点) */
+    --color-border: #27272a; /* 深灰边框 */
+    --color-bg-code: #18181b; /* 代码块背景 */
   }
 }

@@ -103,10 +103,10 @@ import {
 
     {/* 右侧：核心卖点 */}
     <div>
-      <h1 className="text-4xl font-extrabold mb-4 text-white">C6 4K Video Encoder</h1>
+      <h1 className="text-4xl font-extrabold mb-4 ">C6 4K Video Encoder</h1>
       <p className="text-xl text-[#AC121F] font-semibold mb-6">NDI | SRT | RTMP | KVM | H.265</p>
 
-      <p className="text-gray-400 mb-8 leading-relaxed">
+      <p className=" mb-8 leading-relaxed">
         C6 是一款专业级视频编码器，支持 HDMI 4K 或 3G-SDI 输入。它具备强大的多协议支持（NDI HX, SRT, RTMP），并独创性地集成了 KVM 功能，不仅能推流，还能远程管理您的信号源设备。
       </p>
 
@@ -177,15 +177,21 @@ import {
 
   <TabItem label="技术规格" icon="setting">
     
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-sm">
+    <div className="overflow-x-auto ">
+      {/* 1. text-zinc-900 dark:text-zinc-100: 确保文字在亮色下黑，深色下白
+      */}
+      <table className="min-w-full text-sm text-zinc-900 dark:text-zinc-100">
         <thead>
-          <tr className="border-b border-gray-700">
+          {/* 2. border-zinc-200 dark:border-zinc-700: 表头分割线适配
+          */}
+          <tr className="border-b border-zinc-200 dark:border-zinc-700">
             <th className="py-2 text-left text-[#AC121F]">类别</th>
             <th className="py-2 text-left">参数详情</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-800">
+        {/* 3. divide-zinc-200 dark:divide-zinc-800: 行与行之间的分割线适配
+        */}
+        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
           <tr>
             <td className="font-bold py-3">视频输入</td>
             <td className="py-3">1x HDMI 1.4 (最高 4K30), 1x 3G-SDI (最高 1080p60)</td>
@@ -230,13 +236,27 @@ import {
 
   <TabItem label="下载与支持" icon="download">
     
+    {/* Callout 组件之前已经适配过了 */}
     :::tip[固件更新提示]
     升级固件时请勿断电。建议在升级前备份当前配置文件。
     :::
 
-    * 📥 **[用户手册 (User Manual PDF)](/downloads/c6-manual.pdf)**
-    * 💾 **[最新固件 (Firmware v2.01)](/downloads/c6-firmware.bin)**
-    * 🔧 **[设备搜索工具 (Search Tool)](/downloads/search-tool.zip)**
+    {/* 4. 给下载列表加一个容器，确保在非 Prose 环境下文字也是黑/白的
+       text-zinc-900 dark:text-zinc-100
+    */}
+    <div className="text-zinc-900 dark:text-zinc-100 mt-4 space-y-2">
+        <ul className="list-disc pl-5 space-y-1">
+            <li>
+                📥 <a href="/downloads/c6-manual.pdf" className="font-bold text-[#AC121F] hover:underline">用户手册 (User Manual PDF)</a>
+            </li>
+            <li>
+                💾 <a href="/downloads/c6-firmware.bin" className="font-bold text-[#AC121F] hover:underline">最新固件 (Firmware v2.01)</a>
+            </li>
+            <li>
+                🔧 <a href="/downloads/search-tool.zip" className="font-bold text-[#AC121F] hover:underline">设备搜索工具 (Search Tool)</a>
+            </li>
+        </ul>
+    </div>
 
   </TabItem>
 </Tabs>

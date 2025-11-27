@@ -5,11 +5,14 @@ interface Props {
 }
 const { value, label } = Astro.props;
 ---
-<div class="text-center p-6 bg-zinc-900/50 rounded-2xl border border-white/5">
-  <div class="text-3xl md:text-4xl font-black text-white mb-2 bg-gradient-to-br from-white to-zinc-500 bg-clip-text text-transparent">
+
+<div class="bg-surface-muted border-border rounded-2xl border p-6 text-center">
+  <div class="text-text-main mb-2 text-3xl font-black md:text-4xl">
     {value}
   </div>
-  <div class="text-xs md:text-sm text-zinc-500 uppercase tracking-wider font-medium">
+  <div
+    class="text-text-muted text-xs font-medium tracking-wider uppercase md:text-sm"
+  >
     {label}
   </div>
 </div>

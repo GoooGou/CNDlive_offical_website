@@ -8,15 +8,36 @@ interface Props {
 }
 const { title, size, href } = Astro.props;
 ---
-<a href={href} target="_blank" class="not-prose group flex items-center gap-4 p-4 my-6 border border-zinc-800 bg-zinc-900/50 rounded-lg hover:bg-zinc-800 hover:border-zinc-700 transition-all no-underline">
-  <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-blue-500/20 transition-colors">
-    <FileText className="w-6 h-6 text-blue-400" />
+
+<a
+  href={href}
+  target="_blank"
+  class="group my-6 flex items-center gap-4 rounded-lg border border-zinc-200 p-4 no-underline transition-all hover:bg-zinc-50 hover:no-underline dark:border-zinc-800 dark:hover:bg-zinc-900"
+>
+  {/* 图标容器：适配图标颜色 */}
+  <div
+    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 transition-colors group-hover:bg-blue-500/20"
+  >
+    <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
   </div>
+
   <div class="flex-1">
-    <h4 class="text-white font-bold text-base m-0 leading-tight">{title}</h4>
-    <p class="text-zinc-500 text-xs m-0 mt-1">File Size: {size}</p>
+    {/* 标题：适配深浅色，强制去除 prose 的 margin */}
+    <h4
+      class="m-0 text-base leading-tight font-bold text-zinc-900 dark:text-zinc-100"
+    >
+      {title}
+    </h4>
+    {/* 描述：适配深浅色 */}
+    <p class="m-0 mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+      File Size: {size}
+    </p>
   </div>
+
   <div class="pr-2">
-    <Download className="w-5 h-5 text-zinc-500 group-hover:text-white transition-colors" />
+    {/* 下载图标：Hover 时变为深黑或纯白 */}
+    <Download
+      className="h-5 w-5 text-zinc-400 transition-colors group-hover:text-zinc-900 dark:text-zinc-500 dark:group-hover:text-zinc-100"
+    />
   </div>
 </a>

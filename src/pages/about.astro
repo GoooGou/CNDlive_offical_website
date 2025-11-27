@@ -2,6 +2,7 @@
 import { getEntry } from 'astro:content';
 import ContentLayout from '@/layouts/ContentLayout.astro';
 import MDXContent from '@/components/mdx/MDXContent.astro'; // 🔥 复用超级渲染器
+import ArticleBody from '@/components/mdx/ArticleBody.astro';
 
 // 1. 获取 content/pages/about.mdx 的数据
 const post = await getEntry('pages', 'about');
@@ -23,17 +24,12 @@ if (!post) {
       <h1 class="mb-6 text-4xl font-bold tracking-tight md:text-6xl">
         {post.data.title}
       </h1>
-      <p class="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-400">
+      <p class="mx-auto max-w-2xl text-xl leading-relaxed">
         {post.data.description}
       </p>
     </div>
 
     {/* 正文渲染区 */}
-    <div
-      class="prose prose-invert prose-lg prose-headings:text-white prose-headings:font-bold prose-p:text-zinc-300 prose-strong:text-white max-w-none"
-    >
-      {/* 🔥 完美复用！自动注入 Callout, Video, Steps 等所有组件 */}
-      <MDXContent post={post} />
-    </div>
+    <ArticleBody post={post} />
   </article>
 </ContentLayout>

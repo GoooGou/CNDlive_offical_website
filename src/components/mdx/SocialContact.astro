@@ -53,13 +53,13 @@ const socials = [
 {/* not-prose 非常重要：防止 Tailwind Typography 干扰我们的布局样式 */}
 <div class="not-prose bg-surface-muted my-12 rounded-2xl p-1">
   <div
-    class="flex flex-col items-center justify-between gap-6 rounded-[14px] bg-zinc-950 p-6 md:flex-row md:p-8"
+    class="bg-muted flex flex-col items-center justify-between gap-6 rounded-[14px] p-6 md:flex-row md:p-8"
   >
     {/* 左侧：标题 + 社交图标 */}
     <div
       class="flex flex-col items-center gap-4 text-center md:items-start md:text-left"
     >
-      <h4 class="m-0 text-lg font-bold text-white">{title}</h4>
+      <h4 class="text-text-main m-0 text-lg font-bold">{title}</h4>
 
       <div class="flex gap-3">
         {
@@ -68,7 +68,7 @@ const socials = [
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              class={`rounded-full border border-zinc-800 bg-zinc-900 p-2.5 text-zinc-400 transition-all duration-300 hover:scale-110 hover:border-zinc-700 hover:bg-zinc-800 ${item.color}`}
+              class={`border-text-muted bg-surface-muted text-text-muted hover:border-text-main hover:bg-text-main rounded-full border p-2.5 transition-all duration-300 hover:scale-110 ${item.color}`}
               aria-label={item.label}
             >
               <item.icon className="w-5 h-5" />
@@ -81,7 +81,7 @@ const socials = [
     {/* 右侧：联系按钮 (CTA) */}
     <a
       href={contactHref}
-      class="group relative inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 font-bold text-zinc-900 shadow-lg shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:shadow-blue-500/40"
+      class="group bg-surface-muted text-text-main shadow-text-main/20 hover:shadow-text-main/40 relative inline-flex items-center gap-2 rounded-full px-8 py-3 font-bold shadow-lg transition-all hover:-translate-y-0.5"
     >
       <Mail className="h-4 w-4" />
       <span>{contactText}</span>
