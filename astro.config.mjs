@@ -24,13 +24,21 @@ export default defineConfig({
       // 🔥 必填：文档站标题
       title: 'CNDLive Support',
       // 🔥🔥🔥 添加这一行，禁用 Starlight 默认的 404 路由 🔥🔥🔥
+      defaultLocale: 'root', // 默认语言（通常设为英文或根目录）
+      locales: {
+        root: {
+          label: 'English',
+          lang: 'en',
+        },
+        // 添加中文配置后，切换器才会出现
+        'zh-cn': {
+          label: '简体中文',
+          lang: 'zh-CN',
+        },
+      },
+
       disable404Route: true,
 
-      // 自定义 CSS 文件路径
-      customCss: [
-        // 你的自定义 CSS 文件的相对路径
-        './src/styles/starlight-simple.css',
-      ],
       // 侧边栏配置
       sidebar: [
         {
