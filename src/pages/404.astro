@@ -1,7 +1,9 @@
 ---
 // src/pages/404.astro
 import ContentLayout from '@/layouts/ContentLayout.astro';
-import { Home, Mail, BookOpen, WifiOff } from 'lucide-react';
+import { Home, Mail, BookOpen } from 'lucide-react';
+import Lottie from '@/components/ui/Lottie.astro';
+import SocialMediaButton from '@/components/ui/SocialMediaButton.astro';
 
 const title = "404 - Signal Lost";
 ---
@@ -9,31 +11,40 @@ const title = "404 - Signal Lost";
 <ContentLayout title={title}>
   <div class="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 py-16">
     
-    {/* 1. 插画区域 (这里使用 SVG 代码，您也可以换成 <Image />) */}
-    <div class="mb-8 relative group">
-      {/* 背景光效 */}
-      <div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full group-hover:bg-primary/30 transition-all duration-500"></div>
+    {/* 1. 插画区域 + 舞台灯光特效 */}
+    <div class="mb-8 relative group flex items-center justify-center">
       
-      {/* 404 SVG 插画 */}
-      <svg width="300" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" class="relative z-10 w-64 h-64 md:w-80 md:h-80 drop-shadow-2xl">
-         {/* 电视/屏幕外框 */}
-         <rect x="50" y="50" width="300" height="200" rx="16" class="fill-surface-card stroke-surface-border" stroke-width="4"/>
-         {/* 屏幕内部杂讯 */}
-         <rect x="66" y="66" width="268" height="168" rx="8" class="fill-surface-base"/>
-         <path d="M100 150 L300 150" stroke="currentColor" stroke-width="2" stroke-dasharray="10 10" class="text-surface-border animate-pulse"/>
-         <path d="M150 120 L250 180" stroke="currentColor" stroke-width="2" class="text-surface-border"/>
-         <path d="M250 120 L150 180" stroke="currentColor" stroke-width="2" class="text-surface-border"/>
-         
-         {/* 巨大的 404 文字 */}
-         <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="80" class="fill-primary/90">404</text>
-         
-         {/* 底部支架 */}
-         <path d="M170 260 L230 260 L240 280 L160 280 Z" class="fill-surface-card"/>
-      </svg>
+      {/* 🔴 舞台红色光晕 (Spotlight) 
+          - absolute: 绝对定位，叠在动画下面
+          - -z-10: 层级设为负数，确保在动画背后
+          - opacity-0 dark:opacity-100: 浅色模式隐藏，深色模式显示
+          - bg-red-600/40: 红色的光，带透明度
+          - blur-[100px]: 极高的模糊度，模拟散开的光线
+      */}
+      <div 
+        class="
+          absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+          w-[120%] h-[120%] rounded-full
+          bg-red-600/0 dark:bg-red-600/40
+          blur-[60px] md:blur-[100px]
+          -z-10
+          transition-opacity duration-700
+          pointer-events-none
+        "
+      ></div>
+
+      {/* 🐶 Lottie 动画
+          - dark:invert: 关键！深色模式下把黑色小狗变成白色。
+          - mix-blend-overlay: 可选，如果你想让小狗稍微透出一点红色背景的质感，可以加这个，或者不加保持纯白。
+      */}
+      <Lottie 
+        src="/animations/404-2.json" 
+        class="w-72 h-72 md:w-80 md:h-80 drop-shadow-xl  dark:drop-shadow-[0_0_30px_rgba(255,0,0,1)]" 
+      />
     </div>
 
     {/* 2. 文字提示 */}
-    <div class="space-y-4 max-w-lg mx-auto mb-12">
+    <div class="space-y-4 max-w-lg mx-auto mb-12 relative z-10">
       <h1 class="text-4xl md:text-5xl font-bold text-text-main tracking-tight">
         信号丢失
       </h1>
@@ -44,9 +55,9 @@ const title = "404 - Signal Lost";
     </div>
 
     {/* 3. 三个操作按钮 */}
-    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto relative z-10">
       
-      {/* 按钮 A: 返回首页 (主要操作) */}
+      {/* 按钮 A */}
       <a 
         href="/" 
         class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition-transform hover:scale-105 shadow-lg shadow-primary/20"
@@ -55,19 +66,19 @@ const title = "404 - Signal Lost";
         返回主站
       </a>
 
-      {/* 按钮 B: 文档中心 (次要操作) */}
+      {/* 按钮 B */}
       <a 
         href="/support" 
-        class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-surface-card border border-surface-border text-text-main font-medium hover:border-primary hover:text-primary transition-colors"
+        class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-surface-card border border-surface-border text-text-main font-medium hover:border-primary hover:text-primary dark:hover:bg-white/5 transition-colors"
       >
         <BookOpen className="w-5 h-5" />
         文档中心
       </a>
 
-      {/* 按钮 C: 联系我们 (次要操作) */}
+      {/* 按钮 C */}
       <a 
         href="/contact" 
-        class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-surface-card border border-surface-border text-text-main font-medium hover:border-primary hover:text-primary transition-colors"
+        class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-surface-card border border-surface-border text-text-main font-medium hover:border-primary hover:text-primary dark:hover:bg-white/5 transition-colors"
       >
         <Mail className="w-5 h-5" />
         联系支持
@@ -77,7 +88,7 @@ const title = "404 - Signal Lost";
 
     {/* 底部小字 */}
     <div class="mt-16 text-sm text-text-muted opacity-60">
-      Error Code: 404_NOT_FOUND | CNDLive Server
+     <SocialMediaButton
     </div>
 
   </div>

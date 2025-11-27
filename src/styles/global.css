@@ -29,6 +29,7 @@
   /* --- 固定深色 (Fixed Dark) --- */
   /* 用于 Navbar 和 Footer，永远保持深色，不受主题影响 */
   --color-fixed-bg: #050505; /* 永远的深黑背景 */
+  --color-fixed-bg-white: #ffffff; /* 永远的白色背景 */
   --color-fixed-card: #121212; /* 永远的卡片深灰 */
   --color-fixed-text: #ffffff; /* 永远的白色文字 */
   --color-fixed-muted: #a1a1a1; /* 永远的灰色文字 */

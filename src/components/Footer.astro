@@ -2,7 +2,7 @@
 // src/components/Footer.astro
 import { FOOTER_LINKS } from '@/data/footerData';
 import NewsletterForm from '@/components/Newsletter.astro';
-
+import SocialMediaButton from '@/components/ui/SocialMediaButton.astro';
 const currentYear = new Date().getFullYear();
 const { company, products, solutions, support } = FOOTER_LINKS;
 ---
@@ -71,6 +71,7 @@ const { company, products, solutions, support } = FOOTER_LINKS;
             >Contact page</a
           > for more info.
         </p>
+        <SocialMediaButton />
       </div>
     </div>
 

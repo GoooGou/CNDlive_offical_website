@@ -1,0 +1,58 @@
+---
+// src/components/ui/Lottie.astro
+
+interface Props {
+  src: string;          // 动画 JSON 文件的路径 (通常在 public 里的路径)
+  loop?: boolean;       // 是否循环
+  autoplay?: boolean;   // 是否自动播放
+  class?: string;       // 自定义类名 (控制宽高)
+}
+
+const { 
+  src, 
+  loop = true, 
+  autoplay = true, 
+  class: className = "w-full h-full" // 默认宽高占满父容器
+} = Astro.props;
+---
+
+<div 
+  class={`lottie-container ${className}`} 
+  data-src={src} 
+  data-loop={loop.toString()} 
+  data-autoplay={autoplay.toString()}
+>
+</div>
+
+<script>
+  // 仅在客户端导入 lottie-web，避免服务端渲染报错
+  import lottie from 'lottie-web';
+
+  // 找到页面上所有的 lottie 容器
+  const containers = document.querySelectorAll('.lottie-container');
+
+  containers.forEach((container) => {
+    // 检查是否已经初始化过，防止 Astro 页面切换时重复加载（如果用了 View Transitions）
+    if (container.getAttribute('data-loaded') === 'true') return;
+
+    // 获取 props 传下来的数据
+    // 类型断言：告诉 TS 这是一个 HTMLElement
+    const element = container as HTMLElement;
+    const src = element.dataset.src;
+    const loop = element.dataset.loop === 'true';
+    const autoplay = element.dataset.autoplay === 'true';
+
+    if (src) {
+      lottie.loadAnimation({
+        container: element, // 渲染到当前这个 div
+        renderer: 'svg',    // 使用 SVG 渲染 (性能最好且清晰)
+        loop: loop,
+        autoplay: autoplay,
+        path: src           // 动画文件路径
+      });
+
+      // 标记为已加载
+      element.setAttribute('data-loaded', 'true');
+    }
+  });
+</script>
