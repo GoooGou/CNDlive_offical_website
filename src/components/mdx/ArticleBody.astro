@@ -4,28 +4,31 @@ import MDXContent from '@/components/mdx/MDXContent.astro';
 
 interface Props {
   post: any;
-  className?: string; // 允许外部传入额外的 class
+  className?: string;
 }
 
-const { post, className = "" } = Astro.props;
+const { post, className = '' } = Astro.props;
 ---
 
-<div 
+<div
   class:list={[
     // 1. 基础排版类
-    "prose prose-lg max-w-none mx-auto",
-    
-    // 2. 颜色适配 (这里是你原来的硬编码颜色，深色模式专用)
-    "prose-invert", 
-    "prose-headings:text-white",
-    "prose-p:text-zinc-300",
-    
-    // 3. 功能样式
-    "prose-headings:scroll-mt-24", // 锚点偏移
-    "prose-img:rounded-xl prose-img:shadow-lg",
-    
+    'prose prose-lg mx-auto max-w-none',
+
+    // 🔥 2. [核心修改] 删除所有颜色类！
+    // ❌ 删除 'prose-invert' (它会强制反色)
+    // ❌ 删除 'prose-headings:text-white' (它会强制白色，导致亮色模式看不见)
+    // ❌ 删除 'prose-p:text-zinc-300'
+
+    // ✅ 现在，它会自动读取你在 global.css 里定义的 --tw-prose-headings 变量
+    // 从而实现：亮色变黑，深色变白。
+
+    // 3. 功能样式 (保留)
+    'prose-headings:scroll-mt-24', // 锚点偏移
+    'prose-img:rounded-xl prose-img:shadow-lg',
+
     // 4. 外部传入的样式
-    className
+    className,
   ]}
 >
   <MDXContent post={post} />

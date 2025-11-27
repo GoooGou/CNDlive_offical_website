@@ -4,53 +4,54 @@ import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import BackButton from '@/components/ui/BackButton.astro';
 
 interface Props {
-  title: string;           // 页面标题 (传给 SEO)
-  description?: string; 
-  image?: string;       // 社交分享图
-  schema?: object;      // 结构化数据
+  title: string; // 页面标题 (传给 SEO)
+  description?: string;
+  image?: string; // 社交分享图
+  schema?: object; // 结构化数据
   breadcrumbItems?: { label: string; href?: string }[]; // 面包屑数据
-  backHref?: string;       // 返回按钮链接 (如果有才显示)
-  backLabel?: string;      // 返回按钮文字
+  backHref?: string; // 返回按钮链接 (如果有才显示)
+  backLabel?: string; // 返回按钮文字
 }
 
-const { 
-  title, 
-  // 🔥 2. 解构：把它们取出来
+const {
+  title,
   description,
   image,
   schema,
-  breadcrumbItems = [], 
-  backHref, 
-  backLabel = "Back" 
+  breadcrumbItems = [],
+  backHref,
+  backLabel = 'Back',
 } = Astro.props;
 ---
 
 {/* 1. 继承最基础的全局 Layout */}
 <Layout title={title} description={description} image={image} schema={schema}>
-  
-  <main class="py-12 bg-black min-h-screen text-white ">
-    <div class="container mx-auto px-4 max-w-7xl">
-      
+  {
+    /* 🔥 [关键修改]: 
+    1. bg-black -> bg-surface-base (背景自动变色)
+    2. text-white -> text-text-main (文字自动变色)
+    3. 添加 transition-colors (平滑过渡)
+  */
+  }
+  <main
+    class="bg-surface-base text-text-main min-h-screen py-12 transition-colors duration-300"
+  >
+    <div class="container mx-auto max-w-7xl px-4">
       {/* 2. 顶部导航区域 (面包屑 + 返回按钮) */}
-      <div class="flex flex-col gap-6 mb-12 lg:flex-row lg:items-center justify-between align-center">
-        
+      <div
+        class="align-center mb-12 flex flex-col justify-between gap-6 lg:flex-row lg:items-center"
+      >
         {/* 如果传了面包屑数据，就显示 */}
-        {breadcrumbItems.length > 0 && (
-          <Breadcrumb items={breadcrumbItems} />
-        )}
+        {breadcrumbItems.length > 0 && <Breadcrumb items={breadcrumbItems} />}
 
         {/* 如果传了返回链接，就显示返回按钮 */}
-        {backHref && (
-          <BackButton href={backHref} label={backLabel} />
-        )}
-        
+        {backHref && <BackButton href={backHref} label={backLabel} />}
       </div>
 
       {/* 3. 页面的具体内容插槽 */}
       <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">
         <slot />
       </div>
-
     </div>
   </main>
 </Layout>

@@ -2,32 +2,38 @@
 import React from 'react';
 import clsx from 'clsx';
 
-export default function DropdownMenu({ isOpen, items, onMouseEnter, onMouseLeave }) {
+export default function DropdownMenu({
+  isOpen,
+  items,
+  onMouseEnter,
+  onMouseLeave,
+}) {
   return (
-    <div 
+    <div
       className={clsx(
-        // 1. absolute: 绝对定位，不再是 fixed 全屏
-        // 2. top-full: 位于父元素正下方
-        // 3. w-56: 固定宽度 (可以根据需要改为 w-48 或 w-64)
-        // 4. left-0: 左对齐
-        "absolute top-20 left-0 w-56 bg-[#0a0a0a] border border-white/10 shadow-xl rounded-b-lg py-2 transition-all duration-300 origin-top z-40",
-        isOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"
+        // 🔥 核心修改：
+        // 1. bg-[#0a0a0a] -> bg-[#050505] (与 Navbar/MegaMenu 统一使用纯黑)
+        // 2. border-white/10: 保持深色下的微弱边框
+        'absolute top-20 left-0 z-40 w-56 origin-top rounded-b-lg border border-white/10 bg-[#050505] py-2 shadow-xl transition-all duration-300',
+        isOpen
+          ? 'visible translate-y-0 opacity-100'
+          : 'invisible -translate-y-2 opacity-0',
       )}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <div className="flex flex-col">
         {items?.map((item, index) => (
-          <a 
+          <a
             key={index}
             href={item.href}
-            className="block px-6 py-3 text-sm text-white hover:text-primary hover:bg-white/5 transition-colors font-medium"
+            className="hover:text-primary block px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/5"
           >
             {item.label}
             {item.badge && (
-                <span className="ml-2 px-1.5 py-0.5 text-[10px] font-bold text-white bg-[#5BA63D] rounded">
-                  {item.badge}
-                </span>
+              <span className="ml-2 rounded bg-[#5BA63D] px-1.5 py-0.5 text-[10px] font-bold text-white">
+                {item.badge}
+              </span>
             )}
           </a>
         ))}

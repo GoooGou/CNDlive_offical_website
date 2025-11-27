@@ -1,44 +1,136 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
-@theme {
-  /* --- 品牌色 --- */
+/* =========================================
+   1. 定义变量逻辑 (Theme Logic)
+   ========================================= */
+
+/* --- 默认：亮色模式 (Light Mode) --- */
+:root {
+  /* 品牌色 */
   --color-primary: #ac121f;
   --color-primary-dark: #8a0e19;
 
-  /* --- Surface (表面色) 系统 --- */
+  /* 核心文字颜色 (随主题变) */
+  --color-text-main: #18181b; /* 接近纯黑 */
+  --color-text-muted: #71717a; /* 灰色文字 */
 
-  /* Level 0: 页面最底层背景 (接近纯黑，但不是 #000，更有质感) */
-  --color-surface-base: #050505;
+  /* 表面背景色 (随主题变：白 -> 黑) */
+  --color-surface-base: #ffffff; /* 页面背景：纯白 */
+  --color-surface-card: #ffffff; /* 卡片背景：纯白 (通常配合边框) */
+  --color-surface-muted: #f4f4f5; /* 浅灰背景 (用于次要区域) */
+  --color-surface-hover: #f4f4f5; /* 悬停高亮 */
+  --color-surface-border: #e4e4e7; /* 边框：浅灰 */
 
-  /* Level 1: 页脚、次要区域 (稍微提亮，用于 Footer) */
-  --color-surface-muted: #121212;
+  /* --- 固定深色 (Fixed Dark) --- */
+  /* 用于 Navbar 和 Footer，永远保持深色，不受主题影响 */
+  --color-fixed-bg: #050505; /* 永远的深黑背景 */
+  --color-fixed-card: #121212; /* 永远的卡片深灰 */
+  --color-fixed-text: #ffffff; /* 永远的白色文字 */
+  --color-fixed-muted: #a1a1a1; /* 永远的灰色文字 */
+  --color-fixed-border: #27272a; /* 永远的深色边框 */
+}
 
-  /* Level 2: 卡片、内容块 (标准深灰，用于 News 卡片) */
-  --color-surface-card: #121212;
+/* --- 覆盖：深色模式 (Dark Mode) --- */
+/* 当 HTML 标签有 class="dark" 时，覆盖上面的变量 */
+.dark {
+  /* 核心文字颜色 (反转为白) */
+  --color-text-main: #fafafa; /* 接近纯白 */
+  --color-text-muted: #a1a1a1; /* 浅灰文字 */
 
-  /* Level 3: 悬浮层、下拉菜单 (需要比背景明显亮一点，用于 Mega Menu) */
-  --color-surface-overlay: #171717;
+  /* 表面背景色 (变黑) */
+  --color-surface-base: #050505; /* 你的深色背景 #050505 */
+  --color-surface-card: #121212; /* 你的卡片色 #121212 */
+  --color-surface-muted: #18181b; /* 深灰背景 */
+  --color-surface-hover: #262626; /* 悬停高亮 */
+  --color-surface-border: #27272a; /* 深色边框 */
+}
 
-  /* Level 4: 交互高亮、Hover状态 (鼠标放上去的颜色) */
-  --color-surface-hover: #262626;
+/* =========================================
+   2. 注册到 Tailwind (@theme)
+   ========================================= */
+@theme {
+  /* 品牌色 */
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
 
-  /* Border: 专用的边框颜色 (深灰色，用于分割线) */
-  --color-surface-border: #27272a;
+  /* 自适应颜色 (会自动切换) */
+  /* 使用方法: bg-surface-base, text-text-main */
+  --color-surface-base: var(--color-surface-base);
+  --color-surface-card: var(--color-surface-card);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-surface-hover: var(--color-surface-hover);
+  --color-surface-border: var(--color-surface-border);
+  --color-text-main: var(--color-text-main);
+  --color-text-muted: var(--color-text-muted);
 
-  /* 1. 定义动画工具类名: --animate-[名称] */
+  /* 固定颜色 (永远深色) */
+  /* 使用方法: bg-fixed-bg, text-fixed-text */
+  --color-fixed-bg: var(--color-fixed-bg);
+  --color-fixed-card: var(--color-fixed-card);
+  --color-fixed-text: var(--color-fixed-text);
+  --color-fixed-muted: var(--color-fixed-muted);
+  --color-fixed-border: var(--color-fixed-border);
+
+  /* 动画定义 */
   --animate-infinite-scroll: infinite-scroll 25s linear infinite;
-
-  /* 2. 定义关键帧 */
   @keyframes infinite-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-100%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
   }
 }
 
-/* 基础应用 */
-body {
-  font-family: "Montserrat", sans-serif;
-  background-color: #000;
-  color: white;
+/* =========================================
+   3. 基础样式 (@layer base)
+   ========================================= */
+@layer base {
+  /* 全局 Body: 应用自适应变量 */
+  body {
+    background-color: var(--color-surface-base);
+    color: var(--color-text-main);
+    /* 平滑过渡效果 */
+    transition-property:
+      color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+  }
+
+  /* MDX 文章: 自动反色 */
+  /* 🔥 核心修复：强制 Prose 使用我们的主题变量 */
+  .prose {
+    /* 1. 正文颜色 -> 你的次要文字色 (灰/浅灰) */
+    --tw-prose-body: var(--color-text-muted);
+
+    /* 2. 标题颜色 -> 你的主要文字色 (黑/白) */
+    --tw-prose-headings: var(--color-text-main);
+
+    /* 3. 链接颜色 -> 你的品牌红 */
+    --tw-prose-links: var(--color-primary);
+
+    /* 4. 粗体颜色 -> 你的主要文字色 */
+    --tw-prose-bold: var(--color-text-main);
+
+    /* 5. 列表圆点/数字颜色 */
+    --tw-prose-counters: var(--color-text-muted);
+    --tw-prose-bullets: var(--color-text-muted);
+
+    /* 6. 引用线颜色 -> 品牌红 */
+    --tw-prose-quote-borders: var(--color-primary);
+    --tw-prose-quotes: var(--color-text-main);
+
+    /* 7. 分割线颜色 */
+    --tw-prose-hr: var(--color-surface-border);
+
+    /* 8. 代码块颜色 (代码块通常保持深色背景，比较好看) */
+    --tw-prose-code: var(--color-primary);
+    --tw-prose-pre-code: #e4e4e7;
+    --tw-prose-pre-bg: #18181b;
+
+    /* 最大宽度限制取消，填满容器 */
+    max-width: none;
+  }
 }

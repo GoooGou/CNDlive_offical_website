@@ -1,37 +1,45 @@
 ---
 // src/components/ProductTabs.astro
 interface Props {
-  items: { 
-    id: string; 
-    label: string; 
-    href: string; // 🔥 新增：每个 tab 对应的真实链接
+  items: {
+    id: string;
+    label: string;
+    href: string;
   }[];
-  activeId: string; // 🔥 新增：父页面告诉组件当前是哪个页面
+  activeId: string;
 }
 
 const { items = [], activeId } = Astro.props;
 ---
 
-<nav class="sticky top-16 left-0 w-full z-40 bg-[#0a0a0a] border-b border-white/10 shadow-lg mb-8">
-  <div class="max-w-5xl mx-auto px-4">
-    <div class="flex justify-center h-14 items-center space-x-8">
-      {items.map((tab) => (
-        <a
-          href={tab.href}
-          class:list={[
-            "relative px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-white",
-            // 如果 activeId 匹配，显示高亮颜色
-            activeId === tab.id ? "text-white" : "text-zinc-500"
-          ]}
-        >
-          {tab.label}
-          
-          {/* 选中时的下划线 */}
-          {activeId === tab.id && (
-            <span class="absolute bottom-0 left-0 w-full h-[2px] bg-primary rounded-t-full"></span>
-          )}
-        </a>
-      ))}
+<nav
+  class="bg-surface-base border-surface-border sticky top-20 left-0 z-40 mb-8 w-full border-b shadow-lg transition-colors duration-300"
+>
+  <div class="mx-auto max-w-5xl px-4">
+    <div class="flex h-14 items-center justify-center space-x-8">
+      {
+        items.map((tab) => (
+          <a
+            href={tab.href}
+            class:list={[
+              'relative px-3 py-2 text-sm font-medium transition-colors duration-200',
+              // [修改]: 悬停时变为主要文字颜色 (黑/白)
+              'hover:text-text-main',
+              // [修改]:
+              // 激活状态: text-text-main (黑/白)
+              // 默认状态: text-text-muted (灰)
+              activeId === tab.id ? 'text-text-main' : 'text-text-muted',
+            ]}
+          >
+            {tab.label}
+
+            {/* 选中时的下划线 (保持品牌色 bg-primary 不变) */}
+            {activeId === tab.id && (
+              <span class="bg-primary absolute bottom-0 left-0 h-[2px] w-full rounded-t-full" />
+            )}
+          </a>
+        ))
+      }
     </div>
   </div>
 </nav>

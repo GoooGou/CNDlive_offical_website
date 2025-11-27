@@ -1,8 +1,7 @@
 ---
 // src/layouts/ProductLayout.astro
 import ContentLayout from '@/layouts/ContentLayout.astro';
-import ProductTabs from '@/components/products/ProductTabs.astro'; 
-// 🔥 1. 引入 SEO 工具函数 (让代码变干净的关键)
+import ProductTabs from '@/components/products/ProductTabs.astro';
 import { generateProductSchema } from '@/utils/seo';
 
 interface Props {
@@ -17,59 +16,71 @@ const { post, basePath, parentTitle, activeTabId } = Astro.props;
 // 1. 动态生成 URL
 const baseUrl = `${basePath}/${post.id}`;
 
-// 2. Tab 逻辑 (保持你的修复版本，逻辑正确)
+// 2. Tab 逻辑
 const tabItems = [
   { id: 'overview', label: 'Overview', href: baseUrl },
-  { id: 'tech-specs', label: 'Tech Specs', href: `${baseUrl}/specs` }
+  { id: 'tech-specs', label: 'Tech Specs', href: `${baseUrl}/specs` },
 ];
 
-// 只有当有下载资源时，才动态添加 Download Tab
-if (post.data.downloadUrl || post.data.manualPdf || (post.data.downloads && post.data.downloads.length > 0)) {
-  tabItems.push({ id: 'download', label: 'Download', href: `${baseUrl}/downloads` });
+// 动态添加 Download Tab
+if (
+  post.data.downloadUrl ||
+  post.data.manualPdf ||
+  (post.data.downloads && post.data.downloads.length > 0)
+) {
+  tabItems.push({
+    id: 'download',
+    label: 'Download',
+    href: `${baseUrl}/downloads`,
+  });
 }
 
-// --- 🔥 3. 极简生成 SEO Schema ---
-// 以前这里有几十行代码，现在只需要一行
-// 注意：必须传入 Astro.site 以生成绝对路径
-// 如果 Astro.site 是空的，就用后面这个临时的
-const productSchema = generateProductSchema(post, Astro.site || new URL("https://cndlive.com"));---
+// 3. SEO Schema
+const productSchema = generateProductSchema(
+  post,
+  Astro.site || new URL('https://cndlive.com')
+);
 ---
+
 <ContentLayout
   title={post.data.title}
-  
-  {/* 🔥 4. 传递数据给 ContentLayout */}
   description={post.data.description}
   image={post.data.cover}
   schema={productSchema}
-
   breadcrumbItems={[
     { label: parentTitle, href: basePath },
-    { label: post.data.title }
+    { label: post.data.title },
   ]}
   backHref={basePath}
   backLabel={`Back to ${parentTitle}`}
 >
-
-  {/* 2. Tab 导航 */}
+  {/* 2. Tab 导航 (已适配深色/亮色) */}
   <ProductTabs items={tabItems} activeId={activeTabId} />
 
   {/* 页面主体容器 */}
-  <div class="max-w-5xl mx-auto w-full relative min-h-[60vh]">
-    
+  <div class="relative mx-auto min-h-[60vh] w-full max-w-5xl">
     {/* 1. 公共头部 */}
-    <header class="mb-8 text-center pt-8">
-        <h1 class="text-3xl md:text-5xl font-bold mb-4 text-text-main leading-tight">
-            {post.data.title}
-        </h1>
-        {post.data.description && (
-          <p class="text-xl text-text-muted max-w-2xl mx-auto">{post.data.description}</p>
-        )}
+    <header class="mb-8 pt-8 text-center">
+      <h1
+        class="text-text-main mb-4 text-3xl leading-tight font-bold transition-colors duration-300 md:text-5xl"
+      >
+        {post.data.title}
+      </h1>
+      {
+        post.data.description && (
+          <p class="text-text-muted mx-auto max-w-2xl text-xl transition-colors duration-300">
+            {post.data.description}
+          </p>
+        )
+      }
     </header>
 
     {/* 3. 不同的页面内容在这里渲染 (Slot) */}
-    <article class="w-full mt-8 animate-in fade-in duration-500">
+    {
+      /* 这里通常是 MDX 内容，会自动应用全局 prose 样式 (prose dark:prose-invert) */
+    }
+    <article class="animate-in fade-in mt-8 w-full duration-500">
       <slot />
     </article>
-
   </div>
 </ContentLayout>

@@ -6,40 +6,55 @@ interface Props {
 }
 
 const { headings } = Astro.props;
-const toc = headings; 
+const toc = headings;
 ---
 
 <nav class="toc-container">
-  <div class="mb-4 text-sm font-bold text-zinc-400 uppercase tracking-wider">
+  {/* [修改]: text-zinc-400 -> text-text-muted (适配灰色标题) */}
+  <div
+    class="text-text-muted mb-4 text-sm font-bold tracking-wider uppercase transition-colors"
+  >
     On this page
   </div>
-  
+
   <ul class="flex flex-col space-y-2 text-sm">
-    {toc.map((heading) => (
-      <li>
-        <a 
-          href={`#${heading.slug}`} 
-          class="toc-link block transition-all duration-200 border-l-2 py-1 text-zinc-500 border-transparent hover:text-white"
-          data-slug={heading.slug}
-          style={`padding-left: ${(heading.depth - 1) * 0.75}rem`}
-        >
-          {heading.text}
-        </a>
-      </li>
-    ))}
+    {
+      toc.map((heading) => (
+        <li>
+          <a
+            href={`#${heading.slug}`}
+            class="toc-link text-text-muted hover:text-text-main block border-l-2 border-transparent py-1 transition-all duration-200"
+            data-slug={heading.slug}
+            style={`padding-left: ${(heading.depth - 1) * 0.75}rem`}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))
+    }
   </ul>
 </nav>
 
 <script>
-  // 1. 样式配置
-  const ACTIVE_CLASS = ['text-[#AC121F]', 'font-bold', 'border-[#AC121F]', 'bg-[#AC121F]/5']; 
-  const INACTIVE_CLASS = ['text-zinc-500', 'border-transparent']; 
+  // [修改]: 使用 Tailwind 的语义化类名
+  // ACTIVE: 使用 text-primary (你的红色变量)，它在黑白底上都能看清
+  const ACTIVE_CLASS = [
+    'text-primary',
+    'font-bold',
+    'border-primary',
+    'bg-primary/5',
+  ];
+
+  // INACTIVE: 使用 text-text-muted (灰色变量)
+  const INACTIVE_CLASS = ['text-text-muted', 'border-transparent'];
 
   // 2. 核心逻辑封装
   function initTOC() {
     const links = document.querySelectorAll('.toc-link');
-    const sections = document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main h6');
-    
+    const sections = document.querySelectorAll(
+      'main h1, main h2, main h3, main h4, main h5, main h6'
+    );
+
     // 如果没有目录，直接退出
     if (links.length === 0) return;
 
@@ -66,21 +81,21 @@ const toc = headings;
 
       // 场景 A: 如果滚到底部了，强制高亮最后一个
       if (scrollY + windowHeight >= documentHeight - 50) {
-         const lastLink = links[links.length - 1];
-         if (lastLink) {
-            applyStyle(lastLink.getAttribute('data-slug'));
-            return;
-         }
+        const lastLink = links[links.length - 1];
+        if (lastLink) {
+          applyStyle(lastLink.getAttribute('data-slug'));
+          return;
+        }
       }
 
       // 场景 B: 遍历所有标题，找出“视口顶部”附近的那个
       // 我们设定一条“阅读线”，在屏幕顶部下方 100px 处
-      const offset = 100; 
-      
+      const offset = 100;
+
       sections.forEach((section) => {
         // @ts-ignore
-        const sectionTop = section.offsetTop; 
-        
+        const sectionTop = section.offsetTop;
+
         // 如果页面滚动的距离 >= 标题的位置 - 偏移量
         // 说明这个标题已经滚上去了（或者正好在阅读位置）
         if (scrollY >= sectionTop - offset) {
@@ -123,13 +138,12 @@ const toc = headings;
   // 启动 (兼容 Astro View Transitions)
   initTOC();
   document.addEventListener('astro:page-load', initTOC);
-
 </script>
 
 <style>
   .toc-container {
     position: sticky;
-    top: 6rem; 
+    top: 6rem;
     max-height: calc(100vh - 200px);
     overflow-y: auto;
     scrollbar-width: none;

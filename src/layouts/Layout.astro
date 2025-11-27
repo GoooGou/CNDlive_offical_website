@@ -5,11 +5,15 @@ import Footer from '@/components/Footer.astro';
 import '@/styles/global.css';
 import Navbar from '@/components/navbar/Navbar.jsx';
 import FloatingTools from '@/components/ui/FloatingTools.jsx';
+import type { ACTION_ERROR_CODES } from 'astro:actions';
 
 // --- 1. 定义 CNDLive 官方 SEO 信息 (默认值) ---
-const SITE_TITLE = "CNDLive - Professional Video Streaming Solutions | Encoders & Decoders";
-const SITE_DESCRIPTION = "CNDLive provides professional video IP transmission solutions. We offer 4K HDMI/SDI video encoders, decoders, NDI converters, and 4G/5G bonding routers for broadcast and live streaming.";
-const SITE_KEYWORDS = "Video Encoder, Video Decoder, 4K Streaming, NDI Converter, SRT Encoder, RTMP, Bonding Encoder, 4G Bonding, Live Broadcasting, CNDLive";
+const SITE_TITLE =
+  'CNDLive - Professional Video Streaming Solutions | Encoders & Decoders';
+const SITE_DESCRIPTION =
+  'CNDLive provides professional video IP transmission solutions. We offer 4K HDMI/SDI video encoders, decoders, NDI converters, and 4G/5G bonding routers for broadcast and live streaming.';
+const SITE_KEYWORDS =
+  'Video Encoder, Video Decoder, 4K Streaming, NDI Converter, SRT Encoder, RTMP, Bonding Encoder, 4G Bonding, Live Broadcasting, CNDLive';
 
 const isHomepage = Astro.url.pathname === '/';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -21,34 +25,34 @@ interface Props {
   schema?: object;
 }
 
-const { 
+const {
   // 🔥 如果页面没传 title，就用 CNDLive 官方标题
-  title = SITE_TITLE, 
+  title = SITE_TITLE,
   // 🔥 如果页面没传 description，就用官方描述
-  description = SITE_DESCRIPTION, 
-  image = "/images/default-og.png", 
-  schema 
+  description = SITE_DESCRIPTION,
+  image = '/images/default-og.png',
+  schema,
 } = Astro.props;
 
 const socialImageURL = new URL(image, Astro.site);
 
 // 全局 Organization Schema
 const orgSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "CNDLive",
-  "url": "https://cndlive.com",
-  "logo": "https://cndlive.com/logo.svg",
-  "sameAs": [
-    "https://www.facebook.com/cndlive",
-    "https://www.linkedin.com/company/cndlive",
-    "https://www.youtube.com/@cndlive"
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'CNDLive',
+  url: 'https://cndlive.com',
+  logo: 'https://cndlive.com/logo.svg',
+  sameAs: [
+    'https://www.facebook.com/cndlive',
+    'https://www.linkedin.com/company/cndlive',
+    'https://www.youtube.com/@cndlive',
   ],
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+86-0755-26888079",
-    "contactType": "customer support"
-  }
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+86-0755-26888079',
+    contactType: 'customer support',
+  },
 };
 ---
 
@@ -59,13 +63,13 @@ const orgSchema = {
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    
+
     {/* --- 核心 SEO --- */}
     <title>{title}</title>
     <meta name="description" content={description} />
     {/* 🔥 新增：关键词标签 */}
     <meta name="keywords" content={SITE_KEYWORDS} />
-    
+
     {/* --- Fonts --- */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -97,19 +101,37 @@ const orgSchema = {
     <meta name="twitter:image" content={socialImageURL} />
 
     {/* --- 结构化数据 (Schema) --- */}
-    
+
     {/* 1. 动态 Schema (产品页/文章页) */}
-    {schema && (
-      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
-    )}
+    {
+      schema && (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      )
+    }
 
     {/* 2. 固定 Organization Schema (全站通用) */}
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
-    
+    <!-- 防止主体闪烁 -->
+    {/* 🔥 核心脚本：放在这里，页面一加载就会立刻执行，不会闪烁 */}
+    <script is:inline>
+      (function () {
+        // 1. 获取本地存储的主题
+        const storedTheme = localStorage.getItem('theme');
+
+        // 2. 逻辑判断：
+        // 如果用户明确设置过 'light'，那就移除 dark 类
+        if (storedTheme === 'light') {
+          document.documentElement.classList.remove('dark');
+        }
+        // 3. 否则（用户没设置过，或者是 'dark'），都默认添加 dark 类
+        else {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
   </head>
-  
-  <body class="flex min-h-screen flex-col text-gray-900 antialiased bg-surface-base text-text-main">
-    
+
+  <body class="text-text-main flex min-h-screen flex-col antialiased">
     {/* Navbar */}
     <div
       id="main-navbar"
@@ -127,7 +149,6 @@ const orgSchema = {
     {/* 悬浮工具栏 & Footer */}
     <FloatingTools client:load transition:persist />
     <Footer transition:persist />
-    
   </body>
 </html>
 

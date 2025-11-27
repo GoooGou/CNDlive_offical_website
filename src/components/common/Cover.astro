@@ -2,61 +2,89 @@
 import { Image } from 'astro:assets';
 
 interface Props {
-  src?: any;          // 图片源 (支持 Astro 优化图片对象)
-  alt: string;        // 图片描述 (SEO 必须)
-  title?: string;     // 文字种子 (用于生成固定的背景色)
-  className?: string; // 允许外部传入样式
+  src?: any;
+  alt: string;
+  title?: string;
+  className?: string;
 }
 
-const { 
-  src, 
-  alt, 
-  title = "CNDLive", // 默认兜底文字
-  className = "" 
-} = Astro.props;
+const { src, alt, title = 'CNDLive', className = '' } = Astro.props;
 
-// 🎨 通用深色渐变池 (Tech Dark Mode)
-// 包含：深紫、深蓝、蓝绿、深红、黑灰
-const gradients = [
-  "bg-gradient-to-br from-indigo-900 to-slate-950",
-  "bg-gradient-to-br from-blue-900 to-zinc-950",
-  "bg-gradient-to-br from-teal-900 to-emerald-950",
-  "bg-gradient-to-br from-rose-900 to-stone-950",
-  "bg-gradient-to-br from-violet-900 to-fuchsia-950",
-  "bg-gradient-to-br from-zinc-800 to-neutral-950",
-  "bg-gradient-to-br from-cyan-900 to-sky-950",
+// 提取首字母用于展示 (例如 "Nintendo" -> "N")
+const initial = title.charAt(0).toUpperCase();
+
+// 🎨 1. 亮色模式 (更梦幻、柔和的三色渐变)
+const lightGradients = [
+  'from-blue-100 via-indigo-50 to-purple-100',
+  'from-emerald-50 via-teal-100 to-cyan-100',
+  'from-orange-50 via-amber-50 to-yellow-100',
+  'from-rose-50 via-pink-50 to-fuchsia-100',
+  'from-slate-100 via-zinc-100 to-neutral-200',
 ];
 
-// 🎲 确定性算法：只要 title 一样，算出来的颜色永远一样
-// 防止页面刷新或重新构建时颜色乱跳
-const getGradient = (str: string) => {
-  if (!str) return gradients[0];
-  return gradients[str.length % gradients.length];
+// 🎨 2. 深色模式 (更深邃、有光泽感的深色渐变)
+const darkGradients = [
+  'from-blue-900 via-slate-900 to-black',
+  'from-emerald-900 via-teal-950 to-black',
+  'from-orange-900 via-red-950 to-black',
+  'from-purple-900 via-indigo-950 to-black',
+  'from-zinc-800 via-neutral-900 to-black',
+];
+
+// 🎲 确定性算法
+const getGradientClass = (str: string) => {
+  const index = str ? str.length % lightGradients.length : 0;
+  // 组合类名：bg-gradient-to-br [亮色] dark:[深色]
+  return `bg-gradient-to-br ${lightGradients[index]} dark:${darkGradients[index]}`;
 };
 
-const fallbackBg = getGradient(title);
+const gradientClass = getGradientClass(title);
 ---
 
-<div class={`relative w-full h-full overflow-hidden bg-zinc-900 ${!src ? fallbackBg : ''} ${className}`}>
-  
-  {src ? (
-    // ✅ 模式 A: 正常显示图片
-    <Image 
-      src={src} 
-      alt={alt} 
-      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 not-prose"
-    />
-  ) : (
-    // 🎨 模式 B: 无图兜底 (显示渐变色 + 标题水印)
-    <div class="w-full h-full flex items-center justify-center p-6 group-hover:scale-105 transition-transform duration-700">
-      {/* 标题水印：限制行数，超大字号，低透明度 */}
-      <span class="text-white/10 font-black text-3xl md:text-4xl uppercase tracking-widest text-center select-none leading-none line-clamp-3 break-words">
-        {title}
-      </span>
-    </div>
-  )}
+<div
+  class={`
+  relative w-full h-full overflow-hidden 
+  /* 基础背景，防止闪烁 */
+  bg-zinc-100 dark:bg-zinc-900
+  ${className}
+`}
+>
+  {
+    src ? (
+      // ✅ 有图模式
+      <Image
+        src={src}
+        alt={alt}
+        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+    ) : (
+      // 🎨 无图兜底 (高级质感版)
+      <div
+        class={`relative h-full w-full transition-transform duration-700 group-hover:scale-105 ${gradientClass} `}
+      >
+        {/* ✨ 1. 噪点纹理层 (关键：让颜色看起来有材质感) */}
+        <div
+          class="absolute inset-0 opacity-20 mix-blend-soft-light"
+          style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"
+        ></div>
 
-  {/* ✨ 质感增强：给所有封面加一个极细的半透明内边框，提升精致度 */}
-  <div class="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none rounded-[inherit]"></div>
+        {/* ✨ 2. 内部光斑 (增加空间感) */}
+        <div class="pointer-events-none absolute -top-1/2 -right-1/2 h-full w-full rounded-full bg-white/40 blur-3xl dark:bg-white/5" />
+        <div class="pointer-events-none absolute -bottom-1/2 -left-1/2 h-full w-full rounded-full bg-black/5 blur-3xl dark:bg-black/20" />
 
+        {/* ✨ 3. 中心大字母 (Monogram) */}
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="/* 亮色模式：颜色深一点，叠加模式 */ /* 深色模式：颜色亮一点，发光感 */ text-6xl font-black text-black/5 mix-blend-overlay transition-colors duration-300 select-none md:text-7xl dark:text-white/10">
+            {initial}
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  {/* ✨ 4. 统一内边框 (精致感) */}
+  <div
+    class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-black/5 ring-inset dark:ring-white/10"
+  >
+  </div>
 </div>

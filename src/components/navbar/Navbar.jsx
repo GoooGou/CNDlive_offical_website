@@ -1,74 +1,76 @@
 // src/components/navbar/Navbar.jsx
 import React, { useState, useEffect } from 'react';
-import {  Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
-import { MENU_DATA } from '@/components/navbar/menuData';
+import { MENU_DATA } from '@/components/navbar/menuData'; // 确保路径正确
 import AnimatedButton from '@/components/ui/AnimatedButton';
 
 import NavLogo from './NavLogo';
 import MegaMenu from './MegaMenu';
 import MobileMenu from './MobileMenu';
-import DropdownMenu from './DropdownMenu'; 
+import DropdownMenu from './DropdownMenu';
+import ThemeToggle from './ThemeToggle'; // 🔥 新引入的 React 切换按钮
 
 export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeMega, setActiveMega] = useState(null);
 
-  // 控制移动端菜单打开时，body 滚动禁用
   useEffect(() => {
     document.body.style.overflow = isMobileOpen ? 'hidden' : 'unset';
   }, [isMobileOpen]);
-  // 检查是否有子菜单
+
   const hasSubMenu = (type) => type === 'mega' || type === 'dropdown';
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-white/10 text-white 
-    backdrop-blur-md bg-surface-muted">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 h-full">
-        <div className="flex justify-between items-center h-full">
-          {/* 导航栏左侧：logo */}
-          <div className="flex-shrink-0 flex items-center">
+    // 🔥 [修改]: bg-surface-muted -> bg-[#050505] (永远纯黑)
+    // 🔥 [修改]: border-white/10 (保持深色模式边框)
+    <nav className="fixed top-0 right-0 left-0 z-50 h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md">
+      <div className="mx-auto h-full max-w-7xl px-6 lg:px-8">
+        <div className="flex h-full items-center justify-between">
+          {/* --- Logo --- */}
+          <div className="flex flex-shrink-0 items-center">
             <NavLogo />
           </div>
-          {/* 导航栏中间：桌面菜单 */}
-          <div className="hidden lg:flex items-center space-x-8 h-full">
+
+          {/* --- Desktop Menu --- */}
+          <div className="hidden h-full items-center space-x-8 lg:flex">
             {MENU_DATA.map((item, index) => (
-              <div 
+              <div
                 key={index}
-                className="relative h-full flex items-center group"
-                // 鼠标悬停时触发子菜单显示 检查传进来的 type 是否是 mega 或 dropdown 激活当前项
-                // 鼠标离开时清除激活状态
-                onMouseEnter={() => hasSubMenu(item.type) && setActiveMega(index)}
+                className="group relative flex h-full items-center"
+                onMouseEnter={() =>
+                  hasSubMenu(item.type) && setActiveMega(index)
+                }
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <a 
+                <a
                   href={item.href || '#'}
                   className={clsx(
-                    // 🔥 核心样式修改开始 🔥
-                    "relative z-50 flex items-center gap-1 h-full px-1 transition-colors duration-300",
-                    "text-sm font-bold tracking-wide",
-                    // border-t-4: 顶部边框 4px
-                    "border-t-4", 
-                    activeMega === index 
-                      ? "border-primary text-white " // 激活状态：红线 + 白字
-                      : "border-transparent text-white/80 hover:border-primary hover:text-white" // 默认：透明线 + 灰字 -> 悬停：红线 + 白字
-                    // 🔥 核心样式修改结束 🔥
+                    'relative z-50 flex h-full items-center gap-1 px-1 transition-colors duration-300',
+                    'text-sm font-bold tracking-wide',
+                    'border-t-4',
+                    activeMega === index
+                      ? 'border-primary text-white'
+                      : // 保持 hover 白色，非激活状态稍微透明一点
+                        'hover:border-primary border-transparent text-white/80 hover:text-white',
                   )}
                 >
                   {item.label}
                   {hasSubMenu(item.type) && (
-                    <ChevronDown 
-                        className={clsx(
-                            "w-3 h-3 mt-0.5 transition-transform duration-300", 
-                            activeMega === index ? "rotate-180 opacity-100" : "opacity-50"
-                        )} 
+                    <ChevronDown
+                      className={clsx(
+                        'mt-0.5 h-3 w-3 transition-transform duration-300',
+                        activeMega === index
+                          ? 'rotate-180 opacity-100'
+                          : 'opacity-50',
+                      )}
                     />
                   )}
                 </a>
 
-                {/* 下拉菜单区域保持不变 */}
+                {/* Sub Menus */}
                 {item.type === 'mega' && (
-                  <MegaMenu 
+                  <MegaMenu
                     isOpen={activeMega === index}
                     groups={item.groups}
                     onMouseEnter={() => setActiveMega(index)}
@@ -77,40 +79,52 @@ export default function Navbar() {
                 )}
 
                 {item.type === 'dropdown' && (
-                  <DropdownMenu 
+                  <DropdownMenu
                     isOpen={activeMega === index}
                     items={item.items}
                     onMouseEnter={() => setActiveMega(index)}
                     onMouseLeave={() => setActiveMega(null)}
                   />
                 )}
-
               </div>
             ))}
           </div>
 
+          {/* --- Right Actions --- */}
           <div className="flex items-center space-x-6">
-            
-             
+            {/* 🔥 插入切换按钮 */}
             <div className="hidden lg:block">
-                <AnimatedButton href="/contact">
-                Contact US
-                </AnimatedButton>
+              <ThemeToggle />
+            </div>
+
+            <div className="hidden lg:block">
+              <AnimatedButton href="/contact">Contact US</AnimatedButton>
             </div>
           </div>
-            {/* 导航栏右侧：移动端菜单按钮 */}
-          <div className="lg:hidden flex items-center gap-4">
-            <button 
+
+          {/* --- Mobile Toggle --- */}
+          <div className="flex items-center gap-4 lg:hidden">
+            {/* 移动端也显示一个切换按钮 */}
+            <ThemeToggle />
+
+            <button
               onClick={() => setIsMobileOpen(!isMobileOpen)}
               className="text-gray-300 hover:text-white"
             >
-              {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      <MobileMenu isOpen={isMobileOpen} onClose={() => setIsMobileOpen(false)} />
+      <MobileMenu
+        isOpen={isMobileOpen}
+        onClose={() => setIsMobileOpen(false)}
+      />
     </nav>
   );
 }

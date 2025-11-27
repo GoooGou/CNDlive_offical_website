@@ -2,46 +2,54 @@
 import { ArrowRight } from 'lucide-react';
 
 interface Props {
-  title: string;           // 必传：标题
-  href?: string;           // 选传：跳转链接 (如果不传，就不显示按钮)
-  linkText?: string;       // 选传：按钮文字 (默认 View All)
-  subtitle?: string;       // 选传：副标题 (用于补充说明)
-  className?: string;      // 选传：额外的样式
+  title: string; // 必传：标题
+  href?: string; // 选传：跳转链接 (如果不传，就不显示按钮)
+  linkText?: string; // 选传：按钮文字 (默认 View All)
+  subtitle?: string; // 选传：副标题 (用于补充说明)
+  className?: string; // 选传：额外的样式
 }
 
-const { 
-  title, 
-  href, 
-  linkText = "View All", 
+const {
+  title,
+  href,
+  linkText = 'View All',
   subtitle,
-  className = "" 
+  className = '',
 } = Astro.props;
 ---
 
-<div class={`flex flex-row justify-between items-start md:items-end gap-4 mb-10 border-b border-white/10 pb-6 ${className}`}>
-  
+<div
+  class={`flex flex-row justify-between items-start md:items-end gap-4 mb-10 border-b border-surface-border pb-6 transition-colors duration-300 ${className}`}
+>
   {/* 左侧：标题与副标题 */}
   <div>
-    <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
+    <h2
+      class="text-text-main text-2xl leading-tight font-bold tracking-tight transition-colors md:text-3xl"
+    >
       {title}
     </h2>
-    {subtitle && (
-      <p class="text-zinc-400 text-sm mt-2 max-w-lg">
-        {subtitle}
-      </p>
-    )}
+
+    {
+      subtitle && (
+        /* [修改]: text-zinc-400 -> text-text-muted (自动适配辅助文字颜色) */
+        <p class="text-text-muted mt-2 max-w-lg text-sm transition-colors">
+          {subtitle}
+        </p>
+      )
+    }
   </div>
 
-  {/* 右侧：按钮 (只有传入 href 才显示) */}
-  {href && (
-    <a 
-      href={href} 
-      class="group flex items-center gap-2 px-5 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white hover:text-black hover:border-white transition-all duration-300 shrink-0"
-    >
-      <span class="text-sm font-medium">{linkText}</span>
-      {/* group-hover:translate-x-1 让箭头产生位移感 */}
-      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-    </a>
-  )}
-
+  {/* 右侧：按钮 */}
+  {
+    href && (
+      <a
+        href={href}
+        class="group /* [修改]: 按钮默认状态 (适配主题) */ border-surface-border text-text-main /* [修改]: 按钮悬停状态 (颜色反转：背景变主文字色，文字变背景色) */ /* 亮色下：黑底白字 | 深色下：白底黑字 */ hover:bg-text-main hover:text-surface-base hover:border-text-main flex shrink-0 items-center gap-2 rounded-full border bg-transparent px-5 py-2 transition-all duration-300"
+      >
+        <span class="text-sm font-medium">{linkText}</span>
+        {/* group-hover:translate-x-1 让箭头产生位移感 */}
+        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      </a>
+    )
+  }
 </div>

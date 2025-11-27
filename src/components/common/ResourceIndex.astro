@@ -1,52 +1,58 @@
 ---
 import ContentLayout from '@/layouts/ContentLayout.astro';
-import PostGrid from '@/components/common/PostGrid.astro'; // 🔥 引入你的超级网格组件
-// 🔥 1. 修改引入：引入列表生成器，而不是产品生成器
+import PostGrid from '@/components/common/PostGrid.astro';
 import { generateItemListSchema } from '@/utils/seo';
 
 interface Props {
-  title: string;        // 页面标题 "Newsroom"
-  subtitle?: string;    // 副标题
-  posts: any[];         // 文章数据
-  basePath: string;     // 基础路径 "/news"
+  title: string; // 页面标题 "Newsroom"
+  subtitle?: string; // 副标题
+  posts: any[]; // 文章数据
+  basePath: string; // 基础路径 "/news"
 }
 
 const { title, subtitle, posts, basePath } = Astro.props;
-// 🔥 2. 生成列表结构化数据
-// 告诉 Google：这是一个清单，里面有这些文章，顺序是这样的
-// 🔥 2. 修改调用：改为 generateItemListSchema
+
+// 生成列表结构化数据
 const listSchema = generateItemListSchema(
-  title, 
-  posts, 
-  basePath, 
-  Astro.site || new URL("https://cndlive.com")
+  title,
+  posts,
+  basePath,
+  Astro.site || new URL('https://cndlive.com')
 );
-//
 ---
 
-{/* 1. 外层：使用 ContentLayout 处理面包屑、返回按钮、SEO */}
-<ContentLayout 
+<ContentLayout
   title={title}
-  breadcrumbItems={[{ label: title }]} 
+  breadcrumbItems={[{ label: title }]}
   backHref="/"
   schema={listSchema}
   backLabel="Back to Home"
 >
-
-  {/* 2. 头部：标题区域 */}
-  <div class="mb-16 border-b border-zinc-800 pb-8">
-    <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">
+  {
+    /* 2. 头部：标题区域 
+      [修改]: border-zinc-800 -> border-surface-border (适配边框颜色)
+      [添加]: transition-colors (平滑过渡)
+  */
+  }
+  <div
+    class="border-surface-border mb-16 border-b pb-8 transition-colors duration-300"
+  >
+    {
+      /* [修改]: 移除了原先的 bg-gradient (它在亮色模式下看不见)
+      改为 text-text-main (亮色黑字，深色白字)
+    */
+    }
+    <h1 class="text-text-main mb-4 text-5xl font-bold tracking-tight">
       {title}
     </h1>
-    {subtitle && <p class="text-zinc-400 text-lg max-w-2xl">{subtitle}</p>}
+
+    {
+      /* [修改]: text-zinc-400 -> text-text-muted (适配副标题颜色)
+       */
+    }
+    {subtitle && <p class="text-text-muted max-w-2xl text-lg">{subtitle}</p>}
   </div>
 
   {/* 3. 内容：使用 PostGrid 展示列表 */}
-  {/* 🔥 这里强制使用 layout="grid"，因为列表页通常都是网格布局 */}
-  <PostGrid 
-    posts={posts} 
-    basePath={basePath} 
-    layout="grid" 
-  />
-
+  <PostGrid posts={posts} basePath={basePath} layout="grid" />
 </ContentLayout>

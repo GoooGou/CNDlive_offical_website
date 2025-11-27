@@ -1,6 +1,10 @@
 ---
-const props = Astro.props;
+// src/components/mdx/Blockquote.astro
+// 不需要 const props = Astro.props; 除非你有特殊传参
 ---
-<blockquote class="border-l-4 border-primary bg-primary/5 px-6 py-4 my-6 rounded-r-lg not-italic text-zinc-300">
+
+<blockquote
+  class="border-primary bg-primary/5 text-text-muted my-6 rounded-r-lg border-l-4 px-6 py-4 not-italic transition-colors duration-300"
+>
   <slot />
 </blockquote>

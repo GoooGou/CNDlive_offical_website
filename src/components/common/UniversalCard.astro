@@ -4,40 +4,52 @@ import { ArrowUpRight } from 'lucide-react';
 
 interface Props {
   post: any;
-  basePath: string; // 🔥 关键：传入基础路径，例如 '/news', '/solutions'
+  basePath: string;
 }
 
 const { post, basePath } = Astro.props;
 
 // 构建跳转链接
-const href = `${basePath}/${post.id}`;
-
-// ... 之前的 formatDate, getPlaceholder, getTagColor 逻辑保持不变 ...
-// (为了节省篇幅，这里省略辅助函数代码，直接用之前的即可)
+// ⚠️ 注意：如果你的文章文件是 .md 或 .mdx，通常使用 post.slug 而不是 post.id
+// 如果链接不正确，请检查这里。
+const href = `${basePath}/${post.slug || post.id}`;
 ---
 
-<a href={href} class="group block h-full flex flex-col gap-4">
+<a href={href} class="group flex h-full flex-col gap-4">
   {/* 图片区域 */}
-  <div class="relative overflow-hidden rounded-xl aspect-video border border-white/10 shrink-0">
-    {post.data.cover ? (
-      <Image 
-        src={post.data.cover} 
-        alt={post.data.title} 
-        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-      />
-    ) : (
-      <div class="w-full h-full flex items-center justify-center bg-zinc-900">
-         <span class="text-white/20 font-black">IMG</span>
-      </div>
-    )}
+  <div
+    class="border-surface-border relative aspect-video shrink-0 overflow-hidden rounded-xl border transition-colors duration-300"
+  >
+    {
+      post.data.cover ? (
+        <Image
+          src={post.data.cover}
+          alt={post.data.title}
+          class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      ) : (
+        // 无图兜底显示
+        <div class="bg-surface-muted flex h-full w-full items-center justify-center transition-colors duration-300">
+          {/* [修改]: text-white/20 -> text-text-main/20 (适配兜底文字，使用主色调的低透明度) */}
+          <span class="text-text-main/20 font-black select-none">IMG</span>
+        </div>
+      )
+    }
   </div>
 
   {/* 文字区域 */}
-  <div class="flex flex-col flex-1 space-y-2">
-    <h3 class="text-xl font-bold group-hover:text-primary transition-colors line-clamp-2">
+  <div class="flex flex-1 flex-col space-y-2">
+    {/* 标题 */}
+    <h3
+      class="text-text-main group-hover:text-primary line-clamp-2 text-xl font-bold transition-colors"
+    >
       {post.data.title}
     </h3>
-    <p class="text-zinc-400 line-clamp-2 text-sm">
+
+    {/* 描述 */}
+    <p
+      class="text-text-muted line-clamp-2 text-sm transition-colors duration-300"
+    >
       {post.data.description}
     </p>
   </div>

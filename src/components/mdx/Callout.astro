@@ -1,27 +1,91 @@
 ---
-import { Info, AlertTriangle, CheckCircle } from 'lucide-react';
+// src/components/mdx/Callout.astro
+import {
+  Info,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Lightbulb,
+} from 'lucide-react';
 
 interface Props {
-  type?: 'info' | 'warning' | 'success';
+  type?: 'info' | 'warning' | 'success' | 'error' | 'tip';
   title?: string;
 }
 
 const { type = 'info', title } = Astro.props;
 
 const styles = {
-  info: { border: 'border-blue-500/50', bg: 'bg-blue-500/10', text: 'text-blue-200', icon: Info },
-  warning: { border: 'border-yellow-500/50', bg: 'bg-yellow-500/10', text: 'text-yellow-200', icon: AlertTriangle },
-  success: { border: 'border-green-500/50', bg: 'bg-green-500/10', text: 'text-green-200', icon: CheckCircle },
+  info: {
+    container:
+      'bg-blue-50 border-blue-300 dark:bg-blue-500/10 dark:border-blue-500/20',
+    icon: 'text-blue-600 dark:text-blue-300',
+    iconType: Info,
+  },
+  warning: {
+    container:
+      'bg-yellow-50 border-yellow-300 dark:bg-yellow-500/10 dark:border-yellow-500/20',
+    icon: 'text-yellow-600 dark:text-yellow-300',
+    iconType: AlertTriangle,
+  },
+  success: {
+    container:
+      'bg-green-50 border-green-300 dark:bg-green-500/10 dark:border-green-500/20',
+    icon: 'text-green-600 dark:text-green-300',
+    iconType: CheckCircle,
+  },
+  error: {
+    container:
+      'bg-red-50 border-red-300 dark:bg-red-500/10 dark:border-red-500/20',
+    icon: 'text-red-600 dark:text-red-300',
+    iconType: XCircle,
+  },
+  tip: {
+    container:
+      'bg-purple-50 border-purple-300 dark:bg-purple-500/10 dark:border-purple-500/20',
+    icon: 'text-purple-600 dark:text-purple-300',
+    iconType: Lightbulb,
+  },
 };
 
 const currentStyle = styles[type];
-const Icon = currentStyle.icon;
+const Icon = currentStyle.iconType;
 ---
-<div class={`my-6 p-4 rounded-lg border ${currentStyle.border} ${currentStyle.bg} flex gap-4 items-start`}>
-  <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${currentStyle.text}`} />
-  <div class="space-y-1">
-    {title && <p class={`font-bold text-sm ${currentStyle.text}`}>{title}</p>}
-    <div class="text-zinc-300 text-sm leading-relaxed">
+
+{
+  /* 🔥 核心修改：添加 `not-prose` 类 
+  这会告诉 Tailwind Typography 插件："不要碰这个 div 里的任何样式"
+*/
+}
+<div
+  class={`
+  not-prose
+  my-6 p-4 rounded-lg border-l-4 flex gap-4 items-start transition-colors duration-300
+  ${currentStyle.container}
+`}
+>
+  <Icon className={`mt-0.5 h-6 w-6 shrink-0 ${currentStyle.icon}`} />
+
+  <div class="w-full min-w-0 space-y-1">
+    {
+      title && (
+        <p class="text-base font-bold text-black dark:text-white">{title}</p>
+      )
+    }
+
+    {
+      /* 🔥 样式重写：
+      因为用了 not-prose，这里的 p, a, strong 都没有默认样式了。
+      我们使用 [&_标签] 的方式重新定义它们，确保绝对受控。
+      
+      [&_p]: 所有段落
+      [&_a]: 所有链接
+      [&_strong]: 所有加粗
+    */
+    }
+    <div
+      class="/* 给段落一点微小的间距 */ text-sm leading-relaxed text-black dark:text-zinc-100 [&_a]:font-bold [&_a]:text-black [&_a]:underline hover:[&_a]:opacity-80 dark:[&_a]:text-white [&_p]:my-1 [&_p]:text-black dark:[&_p]:text-zinc-100 [&_strong]:font-extrabold [&_strong]:text-black dark:[&_strong]:text-white"
+    >
       <slot />
     </div>
   </div>

@@ -1,118 +1,90 @@
 ---
 // src/components/Footer.astro
-
-// 1. 引入 React 交互组件
-// ⚠️ 注意：NewsletterForm 包含 useState 逻辑，必须保留为 React
-
-// 2. 引入数据
 import { FOOTER_LINKS } from '@/data/footerData';
-import  NewsletterForm  from '@/components/Newsletter.astro';
+import NewsletterForm from '@/components/Newsletter.astro';
 
 const currentYear = new Date().getFullYear();
-
-// 3. 定义一个简单的 Astro 内部组件来渲染列 (替代原来的 FooterColumn)
-// 这样做的好处是：链接部分是纯 HTML，不需要浏览器下载 React 代码来渲染它
 const { company, products, solutions, support } = FOOTER_LINKS;
 ---
 
-<footer class="bg-surface-muted text-white pt-20 pb-8 relative overflow-hidden">
-  
-  {/* --- 背景装饰 (红色弧线) --- */}
-  {/* 左上角弧线 */}
-  <div class="absolute top-0 -left-20 w-64 h-64 border border-primary/20 rounded-full opacity-50 pointer-events-none"></div>
-  {/* 右侧弧线 */}
-  <div class="absolute top-40 -right-20 w-96 h-96 border-t border-primary/30 rounded-full opacity-50 pointer-events-none rotate-45"></div>
+<footer class="relative overflow-hidden bg-[#050505] pt-20 pb-8 text-white">
+  {/* --- 背景装饰 (红色弧线 - 保持不变) --- */}
+  <div
+    class="border-primary/20 pointer-events-none absolute top-0 -left-20 h-64 w-64 rounded-full border opacity-50"
+  >
+  </div>
+  <div
+    class="border-primary/30 pointer-events-none absolute top-40 -right-20 h-96 w-96 rotate-45 rounded-full border-t opacity-50"
+  >
+  </div>
 
-  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-    
-    {/* 🔥 关键点：订阅区域 
-        使用 client:visible 或 client:load 让 React 组件在浏览器端“活”过来 
-    */}
-      <NewsletterForm />
-    {/* 2. 链接网格区域 */}
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12 border-t border-surface-border pt-16 my-12">
-      
-      {/* 使用 Astro 原生语法渲染列 (比 React 更快) */}
-      
-      {/* Column 1: Company */}
-      <div class="flex flex-col">
-        <h4 class="text-white font-bold mb-4 text-base tracking-wide">{company.title}</h4>
-        <ul class="space-y-1">
-          {company.items.map((item) => (
-            <li>
-              <a href={item.href} class="text-sm text-text-muted hover:text-white transition-colors duration-200 block py-1">
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+  <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+    <NewsletterForm />
 
-      {/* Column 2: Products */}
-      <div class="flex flex-col">
-        <h4 class="text-white font-bold mb-4 text-base tracking-wide">{products.title}</h4>
-        <ul class="space-y-1">
-          {products.items.map((item) => (
-            <li>
-              <a href={item.href} class="text-sm text-text-muted hover:text-white transition-colors duration-200 block py-1">
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+    {
+      /* [关键修改]: 
+      border-zinc-800: 强制使用深灰色边框 (不用 border-surface-border)
+    */
+    }
+    <div
+      class="my-12 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-zinc-800 pt-16 md:grid-cols-3 lg:grid-cols-5"
+    >
+      {/* 辅助函数：渲染链接列 */}
+      {/* 我们直接在这里写逻辑，避免重复代码 */}
+      {
+        [
+          { title: company.title, items: company.items },
+          { title: products.title, items: products.items },
+          { title: solutions.title, items: solutions.items },
+          { title: support.title, items: support.items },
+        ].map((column) => (
+          <div class="flex flex-col">
+            <h4 class="mb-4 text-base font-bold tracking-wide text-white">
+              {column.title}
+            </h4>
+            <ul class="space-y-1">
+              {column.items.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="/* [关键修改]: (浅灰) -> (白) */ /* 不要用 text-text-muted，因为它在白色模式下是深灰，但在纯黑底上看不清 */ block py-1 text-sm text-zinc-400 transition-colors duration-200 hover:text-white"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
 
-      {/* Column 3: Solutions */}
-      <div class="flex flex-col">
-        <h4 class="text-white font-bold mb-4 text-base tracking-wide">{solutions.title}</h4>
-        <ul class="space-y-1">
-          {solutions.items.map((item) => (
-            <li>
-              <a href={item.href} class="text-sm text-text-muted hover:text-white transition-colors duration-200 block py-1">
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Column 4: Support */}
-      <div class="flex flex-col">
-        <h4 class="text-white font-bold mb-4 text-base tracking-wide">{support.title}</h4>
-        <ul class="space-y-1">
-          {support.items.map((item) => (
-            <li>
-              <a href={item.href} class="text-sm text-text-muted hover:text-white transition-colors duration-200 block py-1">
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Column 5: 关于 Email List 的文字说明 + 社交图标 */}
+      {/* Column 5: Stay Connected */}
       <div class="col-span-2 md:col-span-1 lg:col-span-1">
-        <h4 class="text-white font-bold mb-4 text-base tracking-wide">Stay Connected</h4>
-        <p class="text-sm text-text-muted leading-relaxed mb-4">
-          Want to learn more from CNDLive about new product announcements and updates?
+        <h4 class="mb-4 text-base font-bold tracking-wide text-white">
+          Stay Connected
+        </h4>
+        <p class="mb-4 text-sm leading-relaxed text-zinc-400">
+          Want to learn more from CNDLive about new product announcements and
+          updates?
           <br />
-          Visit our <a href="/contact" class="text-primary hover:underline">Contact page</a> for more info.
+          Visit our <a href="/contact" class="text-primary hover:underline"
+            >Contact page</a
+          > for more info.
         </p>
-        
-        {/* 这里复用 React 组件来显示图标 (因为 Lucide 图标在 React 里很好用) */}
-        {/* 不需要 client:load，因为它是纯展示的 */}
       </div>
-
     </div>
 
     {/* 3. 底部版权 */}
-    <div class="border-t border-surface-border pt-8 flex flex-col md:flex-row justify-center items-center gap-4 text-xs text-text-muted">
+    <div
+      class="flex flex-col items-center justify-center gap-4 border-t border-zinc-800 pt-8 text-xs text-zinc-500 md:flex-row"
+    >
       <p>Copyright © {currentYear} CNDLive All Rights Reserved.</p>
-      <a href="/privacy" class="hover:text-white transition underline underline-offset-2">Privacy Policy</a>
+      <a
+        href="/privacy"
+        class="underline underline-offset-2 transition hover:text-white"
+      >
+        Privacy Policy
+      </a>
     </div>
-
   </div>
-  
-  
-
 </footer>

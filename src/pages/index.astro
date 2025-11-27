@@ -1,21 +1,20 @@
 ---
-import Hero from "@/components/Hero.astro";
-import Layout from "@/layouts/Layout.astro";
-import { HeroCarousel } from "@/components/hero/HeroCarousel.tsx";
+import Hero from '@/components/Hero.astro';
+import Layout from '@/layouts/Layout.astro';
+import { HeroCarousel } from '@/components/hero/HeroCarousel.tsx';
 // 1. 引入类型
-import type { HeroData } from "@/components/hero/themePresets.ts";
-import { slidesData } from "@/components/hero/slidesData"; // 👈 引入刚才抽离的数据
-import Main from "@/components/Main.astro";
-import Features from "@/components/features/Features.astro";
-import LogoMarquee from "@/components/ui/LogoMarquee.astro";
-import Intro from "@/components/sections/Intro.astro";
-import { Reveal } from "@/components/ui/Reveal";
-import NewsSection from "@/components/sections/NewSection.astro";
-import CaseSection from "@/components/sections/CaseSection.astro";
-
+import type { HeroData } from '@/components/hero/themePresets.ts';
+import { slidesData } from '@/components/hero/slidesData'; // 👈 引入刚才抽离的数据
+import Main from '@/components/Main.astro';
+import Features from '@/components/features/Features.astro';
+import LogoMarquee from '@/components/ui/LogoMarquee.astro';
+import Intro from '@/components/sections/Intro.astro';
+import { Reveal } from '@/components/ui/Reveal';
+import NewsSection from '@/components/sections/NewSection.astro';
+import CaseSection from '@/components/sections/CaseSection.astro';
 ---
 
-<Layout title="Home ">
+<Layout title="CNDLive ">
   <Main>
     {/* 1. Hero 轮播图 (通常不需要滚动动画，因为在首屏，或者给个极短的延迟) */}
     {/* 如果首屏就显示，建议不要加 Reveal，或者 delay 设短一点，防止白屏 */}
@@ -41,7 +40,7 @@ import CaseSection from "@/components/sections/CaseSection.astro";
     <Reveal client:load layout="full">
       <Features />
     </Reveal>
-     {/* 5. 新闻列表 */}
+    {/* 5. 新闻列表 */}
     <Reveal client:load layout="narrow">
       <CaseSection />
     </Reveal>
