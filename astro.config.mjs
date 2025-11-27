@@ -36,7 +36,6 @@ export default defineConfig({
           lang: 'zh-CN',
         },
       },
-
       disable404Route: true,
 
       // 侧边栏配置

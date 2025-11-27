@@ -1,36 +1,76 @@
 ---
-// 这个组件只是一个容器，样式利用 CSS 计数器实现
+// Steps.astro
 ---
-<div class="not-prose steps-container space-y-4 my-8 border-l border-zinc-800 ml-4 pl-8">
+
+<div class="steps-container my-8 ml-4 space-y-4 pl-8">
   <slot />
 </div>
 
-<style is:global>
-  /* 自动给内部的 h3 添加序号 */
+<style>
+  /* 注意：这里没有 is:global 
+     这更安全，不会影响别的组件 
+  */
+
+  /* =========================================
+     1. 容器样式 (局部作用域)
+     ========================================= */
   .steps-container {
     counter-reset: step;
+    /* 竖线样式 */
+    border-left: 1px solid var(--step-line-color);
+
+    /* 定义颜色变量 (默认浅色) */
+    --step-text-color: #18181b;
+    --step-circle-bg: #f4f4f5;
+    --step-circle-border: #d4d4d8;
+    --step-circle-text: #52525b;
+    --step-line-color: #e4e4e7;
   }
-  .steps-container h3 {
+
+  /* 深色模式变量覆盖 */
+  :global(:root[data-theme='dark']) .steps-container,
+  :global(.dark) .steps-container {
+    --step-text-color: #ffffff;
+    --step-circle-bg: #27272a;
+    --step-circle-border: #52525b;
+    --step-circle-text: #e4e4e7;
+    --step-line-color: #3f3f46;
+  }
+
+  /* =========================================
+     2. Slot 内容样式 (使用 :global 穿透插槽)
+     ========================================= */
+
+  /* 重点：.steps-container :global(h3)
+     意思：只选中当前 .steps-container 内部的 h3，不管它是从哪传进来的
+  */
+  .steps-container :global(h3) {
     position: relative;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
     margin-bottom: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--step-text-color); /* 引用变量 */
   }
-  .steps-container h3::before {
+
+  /* 伪元素也要包裹在 :global 里面 */
+  .steps-container :global(h3::before) {
     counter-increment: step;
     content: counter(step);
     position: absolute;
-    left: -46px; /* 根据 padding 调整 */
+    left: -46px;
     top: 0;
     width: 28px;
     height: 28px;
-    background-color: #27272a; /* zinc-800 */
-    color: #a1a1aa; /* zinc-400 */
     border-radius: 50%;
     text-align: center;
     line-height: 28px;
     font-size: 14px;
-    border: 1px solid #3f3f46;
+    border-width: 1px;
+    border-style: solid;
+    z-index: 10;
+
+    background-color: var(--step-circle-bg);
+    border-color: var(--step-circle-border);
+    color: var(--step-circle-text);
   }
 </style>
