@@ -10,6 +10,7 @@
 @variant dark (&:where(.dark, .dark *));
 /* --- 默认：亮色模式 (Light Mode) --- */
 :root {
+  font-family: var(--font-sans);
   /* 品牌色 */
   --color-primary: #ac121f;
   --color-primary-dark: #8a0e19;
@@ -53,6 +54,9 @@
    2. 注册到 Tailwind (@theme)
    ========================================= */
 @theme {
+  /* ✅ 将 Montserrat Variable 设为默认 sans 字体 */
+  /* 这样整个网站所有的 text-sans 或默认文本都会用它 */
+  --font-sans: 'Montserrat Variable', ui-sans-serif, system-ui, sans-serif;
   /* 品牌色 */
   --color-primary: var(--color-primary);
   --color-primary-dark: var(--color-primary-dark);

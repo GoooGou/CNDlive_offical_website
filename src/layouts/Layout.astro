@@ -6,6 +6,8 @@ import '@/styles/global.css';
 import Navbar from '@/components/navbar/Navbar.jsx';
 import FloatingTools from '@/components/ui/FloatingTools.jsx';
 import type { ACTION_ERROR_CODES } from 'astro:actions';
+// ✅ 引入字体文件 (它们会自动注入 CSS @font-face)
+import '@fontsource-variable/montserrat';
 
 // --- 1. 定义 CNDLive 官方 SEO 信息 (默认值) ---
 const SITE_TITLE =
@@ -69,14 +71,6 @@ const orgSchema = {
     <meta name="description" content={description} />
     {/* 🔥 新增：关键词标签 */}
     <meta name="keywords" content={SITE_KEYWORDS} />
-
-    {/* --- Fonts --- */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
 
     {/* 启用视图过渡 */}
     <ClientRouter />
