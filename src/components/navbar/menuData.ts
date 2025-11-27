@@ -14,67 +14,68 @@ export interface NavItem {
   label: string;
   href?: string;
   // 新增 'dropdown' 类型
-  type: "link" | "mega" | "dropdown";
+  type: 'link' | 'mega' | 'dropdown';
   groups?: MenuGroup[]; // mega 使用这个结构
   items?: SubLink[]; // dropdown 使用这个更简单的结构
 }
 
 export const MENU_DATA: NavItem[] = [
   {
-    label: "Product",
-    type: "mega",
+    label: 'Product',
+    type: 'mega',
     groups: [
       {
-        title: "Video Encoder",
+        title: 'Video Encoder',
         items: [
-          { label: "C6 4K HDMI/3G-SDI Encoder", href: "/products/encoder-c6" },
-          { label: "X1 4G Bonding Encoder", href: "#" },
+          { label: 'C6 4K HDMI/3G-SDI Encoder', href: '/products/encoder-c6' },
+          { label: 'X1 4G Bonding Encoder', href: '#' },
         ],
       },
       {
-        title: "Video Decoder",
+        title: 'Video Decoder',
         items: [
           {
-            label: "D1 4K HDMI/3G-SDI Decoder",
-            href: "/products/decoder-d1",
-            badge: "New",
+            label: 'D1 4K HDMI/3G-SDI Decoder',
+            href: '/products/decoder-d1',
+            badge: 'New',
             active: true,
           },
         ],
       },
       {
-        title: "NDI Converter",
+        title: 'NDI Converter',
         items: [
-          { label: "A1 Bi-Directional NDIConverter", href: "#" },
-          { label: "NDI Go NDI to HDMI Decoder", href: "#" },
+          { label: 'A1 Bi-Directional NDIConverter', href: '#' },
+          { label: 'NDI Go NDI to HDMI Decoder', href: '#' },
         ],
       },
       {
-        title: "Manage & IP Gateway",
+        title: 'Manage & IP Gateway',
         items: [
-          { label: "CNDLive Manager Software", href: "#" },
-          { label: "CNDLive Manager Max", href: "#" },
+          { label: 'CNDLive Manager Software', href: '#' },
+          { label: 'CNDLive Manager Max', href: '#' },
         ],
       },
     ],
   },
   {
-    label: "Solution",
-    type: "dropdown", // 🔥 新增：普通下拉菜单
+    label: 'Solution',
+    type: 'dropdown', // 🔥 新增：普通下拉菜单
     items: [
-      { label: "TV Broadcast", href: "/solutions/tv-broadcast" },
-      { label: "Live Events", href: "/solutions/live-events" },
-      { label: "House of Worship", href: "/solutions/house-of-worship" },
+      { label: 'TV Broadcast', href: '/solutions/tv-broadcast' },
+      { label: 'Live Events', href: '/solutions/live-events' },
+      { label: 'House of Worship', href: '/solutions/house-of-worship' },
     ],
   },
-  { label: "Support", type: "link", href: "/support" },
+  { label: 'Support', type: 'link', href: '/support' },
   {
-    label: "Resources",
-    type: "dropdown", // 🔥 新增：普通下拉菜单
+    label: 'Resources',
+    type: 'dropdown', // 🔥 新增：普通下拉菜单
     items: [
-      { label: "News", href: "/news" },
-      { label: "Case Studies", href: "/cases" },
+      { label: 'News', href: '/news' },
+      { label: 'Case Studies', href: '/cases' },
+      { label: 'Plog', href: '/plog' },
     ],
   },
-  { label: "About US", type: "link", href: "/about" },
+  { label: 'About US', type: 'link', href: '/about' },
 ];
