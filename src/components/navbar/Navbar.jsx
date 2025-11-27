@@ -9,7 +9,7 @@ import NavLogo from './NavLogo';
 import MegaMenu from './MegaMenu';
 import MobileMenu from './MobileMenu';
 import DropdownMenu from './DropdownMenu';
-import ThemeToggle from './ThemeToggle'; // 🔥 新引入的 React 切换按钮
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -22,13 +22,12 @@ export default function Navbar() {
   const hasSubMenu = (type) => type === 'mega' || type === 'dropdown';
 
   return (
-    // 🔥 [修改]: bg-surface-muted -> bg-[#050505] (永远纯黑)
-    // 🔥 [修改]: border-white/10 (保持深色模式边框)
+    // 保持了你要求的纯黑背景和边框样式
     <nav className="fixed top-0 right-0 left-0 z-50 h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md">
       <div className="mx-auto h-full max-w-7xl px-6 lg:px-8">
         <div className="flex h-full items-center justify-between">
           {/* --- Logo --- */}
-          <div className="flex flex-shrink-0 items-center">
+          <div className="flex shrink-0 items-center">
             <NavLogo />
           </div>
 
@@ -51,8 +50,7 @@ export default function Navbar() {
                     'border-t-4',
                     activeMega === index
                       ? 'border-primary text-white'
-                      : // 保持 hover 白色，非激活状态稍微透明一点
-                        'hover:border-primary border-transparent text-white/80 hover:text-white',
+                      : 'hover:border-primary border-transparent text-white/80 hover:text-white',
                   )}
                 >
                   {item.label}
@@ -92,7 +90,6 @@ export default function Navbar() {
 
           {/* --- Right Actions --- */}
           <div className="flex items-center space-x-6">
-            {/* 🔥 插入切换按钮 */}
             <div className="hidden lg:block">
               <ThemeToggle />
             </div>
@@ -104,7 +101,7 @@ export default function Navbar() {
 
           {/* --- Mobile Toggle --- */}
           <div className="flex items-center gap-4 lg:hidden">
-            {/* 移动端也显示一个切换按钮 */}
+            {/* 移动端切换按钮 */}
             <ThemeToggle />
 
             <button

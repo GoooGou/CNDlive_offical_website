@@ -1,3 +1,5 @@
+// src/consts/navigation.ts (或者是你定义这个文件的地方)
+
 export interface SubLink {
   label: string;
   href: string;
@@ -6,17 +8,16 @@ export interface SubLink {
 }
 
 export interface MenuGroup {
-  title?: string; // 对于普通 dropdown，title 是可选的
+  title?: string;
   items: SubLink[];
 }
 
 export interface NavItem {
   label: string;
   href?: string;
-  // 新增 'dropdown' 类型
   type: 'link' | 'mega' | 'dropdown';
-  groups?: MenuGroup[]; // mega 使用这个结构
-  items?: SubLink[]; // dropdown 使用这个更简单的结构
+  groups?: MenuGroup[];
+  items?: SubLink[];
 }
 
 export const MENU_DATA: NavItem[] = [
