@@ -102,35 +102,58 @@
   /* MDX 文章: 自动反色 */
   /* 🔥 核心修复：强制 Prose 使用我们的主题变量 */
   .prose {
-    /* 1. 正文颜色 -> 映射到你的次要文字色 (亮色灰/深色浅灰) */
-    --tw-prose-body: var(--color-text-muted);
+    /* 1. 默认正文颜色 (自动适配灰/浅灰) */
+    color: var(--color-text-muted) !important;
 
-    /* 2. 标题颜色 -> 映射到你的主要文字色 (亮色黑/深色白) */
-    --tw-prose-headings: var(--color-text-main);
+    /* 2. 所有标题 (h1-h6) 颜色 (自动适配黑/白) */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--color-text-main) !important;
+    }
 
-    /* 3. 链接颜色 -> 映射到你的品牌红 */
-    --tw-prose-links: var(--color-primary);
+    /* 3. 粗体 (strong) 颜色 */
+    strong {
+      color: var(--color-text-main) !important;
+    }
 
-    /* 4. 粗体颜色 -> 映射到你的主要文字色 */
-    --tw-prose-bold: var(--color-text-main);
+    /* 4. 链接 (a) 颜色 (品牌红) */
+    a {
+      color: var(--color-primary) !important;
+      text-decoration: none;
+    }
+    a:hover {
+      color: var(--color-primary-dark) !important;
+      text-decoration: underline;
+    }
 
-    /* 5. 列表圆点/数字颜色 */
-    --tw-prose-counters: var(--color-text-muted);
-    --tw-prose-bullets: var(--color-text-muted);
+    /* 5. 列表项目符号 (li marker) */
+    li::marker {
+      color: var(--color-text-muted) !important;
+    }
 
-    /* 6. 引用线颜色 -> 品牌红 */
-    --tw-prose-quote-borders: var(--color-primary);
-    --tw-prose-quotes: var(--color-text-main);
+    /* 6. 引用块 (blockquote) */
+    blockquote {
+      color: var(--color-text-muted) !important;
+      border-left-color: var(--color-primary) !important;
+    }
 
-    /* 7. 分割线颜色 */
-    --tw-prose-hr: var(--color-surface-border);
+    /* 7. 代码块 (code) - 保持深色背景比较好看 */
+    code {
+      color: #ef4444 !important; /* 红色文字 */
+      background-color: rgba(125, 125, 125, 0.1);
+      padding: 0.2em 0.4em;
+      border-radius: 0.25rem;
+    }
+    pre {
+      background-color: #18181b !important; /* 黑色背景 */
+      color: #e4e4e7 !important; /* 浅色文字 */
+    }
 
-    /* 8. 代码块颜色 (保持深色背景通常比较好看) */
-    --tw-prose-code: var(--color-primary);
-    --tw-prose-pre-code: #e4e4e7; /* 代码文字固定浅色 */
-    --tw-prose-pre-bg: #18181b; /* 代码背景固定深色 */
-
-    /* 可选：取消最大宽度限制，让文章填满容器 */
-    max-width: none;
+    /* 取消最大宽度限制 */
+    max-width: none !important;
   }
 }

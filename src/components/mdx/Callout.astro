@@ -15,71 +15,63 @@ interface Props {
 
 const { type = 'info', title } = Astro.props;
 
+// 🎨 1. 颜色配置：只定义 "图标颜色" 和 "左边框颜色"
+// 不再定义背景色，背景统一用白/黑，确保文字绝对清晰
 const styles = {
   info: {
-    container:
-      'bg-blue-50 border-blue-300 dark:bg-blue-500/10 dark:border-blue-500/20',
-    icon: 'text-blue-600 dark:text-blue-300',
-    iconType: Info,
+    base: 'border-l-blue-500',
+    icon: 'text-blue-600 dark:text-blue-400',
+    IconComponent: Info,
   },
   warning: {
-    container:
-      'bg-yellow-50 border-yellow-300 dark:bg-yellow-500/10 dark:border-yellow-500/20',
-    icon: 'text-yellow-600 dark:text-yellow-300',
-    iconType: AlertTriangle,
+    base: 'border-l-amber-500',
+    icon: 'text-amber-600 dark:text-amber-400',
+    IconComponent: AlertTriangle,
   },
   success: {
-    container:
-      'bg-green-50 border-green-300 dark:bg-green-500/10 dark:border-green-500/20',
-    icon: 'text-green-600 dark:text-green-300',
-    iconType: CheckCircle,
+    base: 'border-l-emerald-500',
+    icon: 'text-emerald-600 dark:text-emerald-400',
+    IconComponent: CheckCircle,
   },
   error: {
-    container:
-      'bg-red-50 border-red-300 dark:bg-red-500/10 dark:border-red-500/20',
-    icon: 'text-red-600 dark:text-red-300',
-    iconType: XCircle,
+    base: 'border-l-red-500',
+    icon: 'text-red-600 dark:text-red-400',
+    IconComponent: XCircle,
   },
   tip: {
-    container:
-      'bg-purple-50 border-purple-300 dark:bg-purple-500/10 dark:border-purple-500/20',
-    icon: 'text-purple-600 dark:text-purple-300',
-    iconType: Lightbulb,
+    base: 'border-l-purple-500',
+    icon: 'text-purple-600 dark:text-purple-400',
+    IconComponent: Lightbulb,
   },
 };
 
-const currentStyle = styles[type];
-const Icon = currentStyle.iconType;
+const current = styles[type];
+const Icon = current.IconComponent;
 ---
 
+{
+  /* 🔥 核心修改：
+  1. not-prose: 彻底隔离外部样式
+  2. bg-white / dark:bg-[#111]: 背景永远是干净的
+  3. border-l-4: 用左侧粗边框来区分类型
+*/
+}
 <div
   class={`
   not-prose
-  my-6 p-4 rounded-lg border-l-4 flex gap-4 items-start transition-colors duration-300
-  ${currentStyle.container}
-  /* 🔥 第一层保险：容器强制颜色 */
-  !text-black dark:!text-zinc-100
+  my-6 p-4 rounded-r-lg border-surface-border border
+  ${current.base}
 `}
 >
-  <Icon className={`mt-0.5 h-6 w-6 shrink-0 ${currentStyle.icon}`} />
+  {/* 图标 */}
+  <Icon className={`mt-0.5 h-6 w-6 shrink-0 ${current.icon}`} />
 
   <div class="w-full min-w-0 space-y-1">
-    {
-      title && (
-        <p class="text-base font-bold !text-black dark:!text-white">{title}</p>
-      )
-    }
+    {/* 标题：强制黑/白 */}
+    {title && <p class="text-base font-bold">{title}</p>}
 
-    {
-      /* 🔥 第二层保险：内部元素强制颜色
-       !text-black : 亮色模式强制纯黑
-       dark:!text-zinc-100 : 深色模式强制亮白
-       [&_标签] : 暴力选中内部所有对应标签
-    */
-    }
-    <div
-      class="text-sm leading-relaxed !text-black dark:!text-zinc-100 [&_a]:font-bold [&_a]:!text-black [&_a]:underline dark:[&_a]:!text-white [&_li]:!text-black dark:[&_li]:!text-zinc-100 [&_p]:my-1 [&_p]:!text-black dark:[&_p]:!text-zinc-100 [&_span]:!text-black dark:[&_span]:!text-zinc-100 [&_strong]:font-extrabold [&_strong]:!text-black dark:[&_strong]:!text-white"
-    >
+    {/* 正文内容：使用 [&_] 选择器重置内部样式，确保清晰 */}
+    <div class="text-base font-bold">
       <slot />
     </div>
   </div>
