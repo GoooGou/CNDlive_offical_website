@@ -2,21 +2,21 @@
 title: CNDLive Product Support
 description: 查找 CNDLive 编码器、解码器及 NDI 转换器的使用手册、固件下载与技术支持。
 # 🔥 修改点：改成 template: splash 或者直接删除这一行
-template: splash 
+template: splash
 hero:
   tagline: Streaming The World
   image:
     file: /src/assets/images/support/support.svg
   actions:
+    - text: Back to Home
+      link: /
+      icon: left-arrow # ✅ 使用这个，它是合法的内置图标
     - text: 📥 前往下载中心
       link: /support/download/
       icon: download
       variant: primary
     - text: 🚀 快速推流指南
       link: /support/guide/quick-start/
-      icon: rocket
-    - text: back to home
-      link: /
       icon: rocket
 ---
 
@@ -39,28 +39,28 @@ import { Card, CardGrid, LinkCard, Icon } from '@astrojs/starlight/components';
     * [**NDI Go** NDI to HDMI Decoder](/support/products/ndi-go/)
   </Card>
 
-  {/* 2. Video Encoder 系列 */}
-  <Card title="Video Encoders" icon="laptop">
-    专业级 4K 视频编码与 4G 聚合推流。
-    
-    * [**C6** 4K HDMI/3G-SDI Encoder](/support/products/c6/)
-    * [**X1** 4G Bonding Encoder](/support/products/x1/)
-  </Card>
+{/* 2. Video Encoder 系列 */}
 
-  {/* 3. Video Decoder 系列 */}
-  <Card title="Video Decoders" icon="youtube">
-    高清网络视频解码输出。
-    
-    * [**D1** 4K HDMI/3G-SDI Decoder](/support/products/d1/)
-  </Card>
+<Card title="Video Encoders" icon="laptop">
+  专业级 4K 视频编码与 4G 聚合推流。 * [**C6** 4K HDMI/3G-SDI
+  Encoder](/support/products/c6/) * [**X1** 4G Bonding
+  Encoder](/support/products/x1/)
+</Card>
 
-  {/* 4. Manage & Gateway 系列 */}
-  <Card title="Manage & IP Gateway" icon="setting">
-    集中管理软件与 IP 网关控制。
-    
-    * [CNDLive **Manager Software**](/support/software/manager/)
-    * [CNDLive **Manager Max**](/support/software/manager-max/)
-  </Card>
+{/* 3. Video Decoder 系列 */}
+
+<Card title="Video Decoders" icon="youtube">
+  高清网络视频解码输出。 * [**D1** 4K HDMI/3G-SDI
+  Decoder](/support/products/d1/)
+</Card>
+
+{/* 4. Manage & Gateway 系列 */}
+
+<Card title="Manage & IP Gateway" icon="setting">
+  集中管理软件与 IP 网关控制。 * [CNDLive **Manager
+  Software**](/support/software/manager/) * [CNDLive **Manager
+  Max**](/support/software/manager-max/)
+</Card>
 
 </CardGrid>
 
@@ -102,7 +102,13 @@ import { Card, CardGrid, LinkCard, Icon } from '@astrojs/starlight/components';
   <div>
     <h3 style="margin: 0; font-size: 1.1rem;">没有找到您需要的内容？</h3>
     <p style="margin: 0.2rem 0 0; color: var(--sl-color-gray-3);">
-      我们的工程师团队随时为您提供帮助。发送邮件至 <a href="mailto:support@cndlive.com" style="color: var(--sl-color-accent);">support@cndlive.com</a>
+      我们的工程师团队随时为您提供帮助。发送邮件至{' '}
+      <a
+        href="mailto:support@cndlive.com"
+        style="color: var(--sl-color-accent);"
+      >
+        support@cndlive.com
+      </a>
     </p>
   </div>
 </div>
