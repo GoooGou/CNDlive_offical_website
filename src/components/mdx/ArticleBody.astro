@@ -11,6 +11,6 @@ interface Props {
 const { post, className = '' } = Astro.props;
 ---
 
-<Prose className={className}>
+<article class:list={`md-base ${className}`}>
   <MDXContent post={post} />
-</Prose>
+</article>

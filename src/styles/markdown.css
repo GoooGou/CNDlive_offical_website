@@ -1,0 +1,64 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* 根作用域：版心 + 通用排版 */
+  .md-base {
+    @apply max-w-full mx-auto px-4 text-text-main ;
+    @apply leading-relaxed;
+  }
+
+  /* 标题 */
+  .md-base h1 { @apply text-4xl font-bold mt-8 mb-4; }
+  .md-base h2 { @apply text-3xl font-bold mt-7 mb-3; }
+  .md-base h3 { @apply text-xl font-semibold mt-6 mb-2; }
+
+  /* 段落 */
+  .md-base p { @apply my-4; }
+
+  /* 列表 */
+  .md-base ul { @apply list-disc pl-6 space-y-1 my-4; }
+  .md-base ol { @apply list-decimal pl-6 space-y-1 my-4; }
+
+  /* 链接 */
+  .md-base a {
+    @apply text-primary dark:text-primary border-b border-primary/20 hover:border-primary/80 transition font-semibold;
+  }
+
+  /* 引用 */
+  .md-base blockquote {
+    @apply border-l-4 border-blue-300 dark:border-blue-600 pl-4 my-4 italic text-text-muted dark:text-text-muted;
+  }
+
+  /* 分隔线 */
+  .md-base hr { @apply border-slate-200 dark:border-slate-700 my-8; }
+
+  /* 表格 */
+  .md-base table {
+    @apply w-full text-left border-collapse my-6;
+  }
+  .md-base th,
+  .md-base td {
+    @apply px-3 py-2 border border-slate-200 dark:border-slate-700;
+  }
+  .md-base th {
+    @apply bg-slate-100 dark:bg-slate-800 font-semibold;
+  }
+
+ /* 行内代码 */
+.md-base :not(pre) > code {
+  @apply px-1.5 py-0.5 rounded text-sm
+         bg-sky-100 dark:bg-sky-900/30
+         text-sky-700 dark:text-sky-300;
+}
+
+  /* 代码块容器 */
+  .md-base pre {
+    @apply relative bg-slate-800 dark:bg-slate-900 text-slate-50 rounded-lg p-4 my-6 overflow-x-auto;
+  }
+  /* 代码块 Copy 按钮 */
+  .md-base pre .copy {
+    @apply absolute top-2 right-2 px-2 py-1 text-xs rounded
+           bg-slate-700 hover:bg-slate-600 transition;
+  }
+}

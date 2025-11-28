@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+@import './markdown.css';   /* 刚刚写的 */
+
+
 
 /* =========================================
    1. 定义变量逻辑 (Theme Logic)

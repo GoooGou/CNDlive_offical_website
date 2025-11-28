@@ -4,14 +4,22 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 // import mdx from '@astrojs/mdx'; // ⚠️ Starlight 自带了 MDX 支持，通常不需要单独引入,否则可能冲突
 import starlight from '@astrojs/starlight';
-
 import sitemap from '@astrojs/sitemap';
-
 import partytown from '@astrojs/partytown';
+import rehypePrettyCode from "rehype-pretty-code";
+import { transformerCopyButton } from '@rehype-pretty/transformers'
 
-// 1. 检测当前是否是开发环境
+/** @type {import('rehype-pretty-code').Options} */
+const prettyCodeOptions = {
+  theme: 'one-dark-pro',
+  transformers: [
+    transformerCopyButton({       // 复制按钮
+      visibility: 'always',
+      feedbackDuration: 3000
+    })
+  ]
+}
 const isDev = process.env.npm_lifecycle_event === 'dev';
-
 // https://astro.build/config
 export default defineConfig({
   site: 'http://www.cndlive.com/',
@@ -22,7 +30,10 @@ export default defineConfig({
     // 如果是生产构建，使用 undefined (默认 sharp)，保证线上画质
     service: isDev ? { entrypoint: 'astro/assets/services/noop' } : undefined,
   },
-
+  markdown: {
+    syntaxHighlight: false,      // 关闭 Astro 自带 Shiki，防止重复
+    rehypePlugins: [[rehypePrettyCode, prettyCodeOptions]]
+  },
   vite: {
     plugins: [tailwindcss()],
     // 🚀 开发环境性能优化
@@ -135,4 +146,6 @@ export default defineConfig({
         prefetchAll: true,
         defaultStrategy: 'hover',
       },
+
+    
 });

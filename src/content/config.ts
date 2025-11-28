@@ -13,6 +13,7 @@ const news = defineCollection({
       title: z.string(),
       description: z.string(),
       pubDate: z.date(),
+      updatedDate: z.date().optional(),
       author: z.string(),
       tags: z.array(z.string()),
 
@@ -29,6 +30,7 @@ const cases = defineCollection({
       title: z.string(),
       description: z.string(),
       pubDate: z.date(),
+      updatedDate: z.date().optional(),
       author: z.string(),
       tags: z.array(z.string()),
 
@@ -44,6 +46,7 @@ const blogs = defineCollection({
       title: z.string(),
       description: z.string(),
       pubDate: z.date(),
+      updatedDate: z.date().optional(),
       author: z.string(),
       tags: z.array(z.string()),
 
@@ -61,6 +64,7 @@ const learning = defineCollection({
       description: z.string(),
       pubDate: z.date(),
       author: z.string(),
+      updatedDate: z.date().optional(),
       tags: z.array(z.string()),
 
       // 修改处：加上 .optional()
