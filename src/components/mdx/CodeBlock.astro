@@ -1,39 +1,65 @@
-// ... (HTML <body> 保持不变)
+---
+// src/components/mdx/CodeBlock.astro
+// 这个组件覆盖了 MDX 渲染器输出的 <pre> 标签
 
-<style is:global>
-  /* 1. 强制设定 HTML/BODY 的基础背景色和文字颜色 */
-  html {
-    /* 在亮色模式下，确保背景是白色，文字是深色 (Tailwind Gray-800) */
-    background-color: white;
-    color: #1f2937;
+// 从 <pre class="language-js"> 中接收属性
+const { class: languageClass, ...rest } = Astro.props;
+
+// 提取语言标签，例如从 "language-ts" 得到 "TS"
+const lang = languageClass?.replace('language-', '').toUpperCase() || 'CODE';
+---
+
+<div class="code-wrapper relative my-8 rounded-xl shadow-lg">
+  {/* 顶部语言标签 - Tailwind Styling */}
+  <div
+    class="absolute top-0 right-0 rounded-tr-xl rounded-bl-lg bg-[var(--code-border)] px-2 py-1 font-mono text-xs text-zinc-300 select-none dark:bg-[var(--code-border-dark)]"
+  >
+    {lang}
+  </div>
+
+  {/* 渲染代码区域 (Slot 包含 Expressive Code/Shiki 生成的 <code> 结构) */}
+  <pre
+    class={`
+      // --- 布局和字体 ---
+      !m-0 p-5 overflow-x-auto rounded-xl text-sm font-mono 
+      
+      // 这里的颜色会被 style 块里的变量覆盖，但我们仍需保持结构完整
+      ${languageClass} 
+    `}
+    {...rest}><slot /></pre>
+</div>
+
+{/* ---------------------------------------------------- */}
+{
+  /* 🔥 核心修复：通过 CSS 变量，确保亮暗模式的背景和边框切换，并解决 prose 冲突 */
+}
+<style>
+  /* 1. 定义 Light/Dark 模式下的颜色变量 */
+  .code-wrapper {
+    /* Light Mode Default */
+    --code-bg: #ffffff;
+    --code-border: #e4e4e7;
+    --code-text: #1f2937;
   }
 
-  /* 2. MDX 内容区域的基础样式 */
-  /* 如果你的文章正文是普通的 <p>, <h2> 等，请在这里确保它们使用强对比颜色 */
-  body {
-    /* 继承 HTML 的颜色，并确保字体清晰 */
-    font-size: 1rem;
-    line-height: 1.75;
+  html.dark .code-wrapper {
+    /* Dark Mode Override */
+    --code-bg: #1a1a20; /* 统一的深色背景 */
+    --code-border: #3f3f46;
+    --code-text: #f3f4f6;
   }
 
-  /* 3. 暗色模式覆盖（这是你要求的 CSS 切换逻辑） */
-  .dark {
-    /* 暗色模式下，背景深灰，文字浅白 */
-    background-color: #111827; /* Tailwind Gray-900 */
-    color: #e5e7eb; /* Tailwind Gray-200 */
-  }
+  /* 2. 应用变量到 <pre> 标签 (高优先级覆盖) */
+  /* 使用 ::slotted(pre) 确保即使 MDX 更改了 DOM 结构，样式也能穿透应用 */
+  .code-wrapper pre {
+    /* 强制应用背景/文字颜色 */
+    background-color: var(--code-bg) !important;
+    color: var(--code-text) !important;
+    border: 1px solid var(--code-border);
+    border-radius: 0.75rem !important; /* 保持圆角 */
 
-  /* 4. 解决 MDX/H2/H3 标题颜色在亮色模式下太浅的问题 */
-  /* 确保标题在亮色模式下是强对比黑色 */
-  .dark h1,
-  .dark h2,
-  .dark h3 {
-    color: #e5e7eb;
-  }
-  h1,
-  h2,
-  h3 {
-    /* 默认模式 (浅色) 下，标题使用几乎纯黑色 */
-    color: #1f2937;
+    /* 确保代码块内的文字颜色是亮的 */
+    /* 这一步非常关键，因为它会覆盖 Expressive Code 注入的行内颜色 */
+    /* 实际上，Expressive Code/Shiki 应该负责这里的颜色，但为了调试，我们先强制 */
   }
 </style>

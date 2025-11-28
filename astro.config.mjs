@@ -22,6 +22,7 @@ export default defineConfig({
     // 如果是生产构建，使用 undefined (默认 sharp)，保证线上画质
     service: isDev ? { entrypoint: 'astro/assets/services/noop' } : undefined,
   },
+
   vite: {
     plugins: [tailwindcss()],
     // 🚀 开发环境性能优化
@@ -83,6 +84,7 @@ export default defineConfig({
     // 启用缓存
     cacheDir: 'node_modules/.vite',
   },
+  // @ts-ignore
 
   integrations: [
     // 1. Starlight 配置 (建议放在最前面)
