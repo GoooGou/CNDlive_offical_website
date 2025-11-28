@@ -68,7 +68,7 @@ export default defineConfig({
       },
       // 文件系统缓存
       fs: {
-        strict: false,
+        strict: true,
       },
     },
     // 构建优化
@@ -114,19 +114,10 @@ export default defineConfig({
           // 可选：新标签页打开
           attrs: { target: '_blank' },
         },
-        // 方案 A：自动读取 src/content/docs/support 文件夹下的所有内容
         {
           label: 'Support Docs',
           autogenerate: { directory: 'support' },
         },
-
-        // 方案 B：手动指定 (如果你想控制顺序)
-        // {
-        //   label: 'Start Here',
-        //   items: [
-        //     { label: 'Introduction', link: '/support/intro' },
-        //   ],
-        // },
       ],
     }), // 3. 如果你发现你的 News/About 页面无法渲染 MDX 了，再把下面这行注释解开
     // mdx(),

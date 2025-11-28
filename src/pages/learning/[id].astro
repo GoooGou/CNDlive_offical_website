@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import ResourcePost from '@/components/common/ResourcePost.astro';
+
+// 1. 生成静态路径
+export async function getStaticPaths() {
+  const learning = await getCollection('learning');
+  return learning.map((post) => ({
+    // ✅ 正确：post.slug 是 URL 友好的名称 (例如 "case01")
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+// 2. 获取数据
+const { post } = Astro.props;
+
+// ❌ 不需要在这里 import 组件了
+// ❌ 不需要在这里定义 const components = { ... }
+// ❌ 不需要在这里 await render(post)
+---
+
+{/* 3. 直接调用布局组件，传数据进去即可 */}
+<ResourcePost post={post} basePath="/learning" parentTitle="Learning" />

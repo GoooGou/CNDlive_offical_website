@@ -69,6 +69,7 @@ export const MENU_DATA: NavItem[] = [
       { label: 'News', href: '/news' },
       { label: 'Case Studies', href: '/cases' },
       { label: 'Blogs', href: '/blogs' },
+      { label: 'Learning Hub', href: '/learning' },
     ],
   },
   { label: 'About US', type: 'link', href: '/about' },

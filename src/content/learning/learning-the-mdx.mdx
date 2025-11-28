@@ -1,0 +1,163 @@
+---
+title: 'How to Stream Nintendo Switch Without a PC: The Ultimate Guide'
+description: 'Learn how to go live on Nintendo Switch directly using a hardware encoder. No capture card or PC required—perfect for indoor and outdoor streaming.'
+pubDate: 2024-09-02
+updatedDate: 2025-11-28
+author: 'CNDLive Team'
+cover: './covers/ndx-cover.webp'
+
+tags: ['Nintendo Switch', 'Live Streaming', 'Hardware Encoder', 'Tutorial']
+heroImage: './covers/ndx-cover.webp'
+---
+
+{/* 导入图片 */}
+
+这篇文章使用了 Markdown 语法、JSX 组件（例如您项目中的 `<Callout>` 概念），并包含了关键的**操作指南**和**避坑指南**，非常适合内部小伙伴学习。
+
+---
+
+````mdx
+---
+title: MDX 极速入门：让文档"活"起来
+description: 什么是 MDX？如何在文章中插入精美的组件？一份写给 CNDLive 团队的实用指南。
+pubDate: 2025-11-28
+author: CNDLive Academy
+---
+
+## 1. 什么是 MDX？
+
+简单来说，**MDX = Markdown + JSX (组件)**。
+
+如果你写过文档，你一定熟悉 **Markdown**。它简洁、快速，能让你专注于写作，比如用 `#` 写标题，用 `**` 加粗文字。
+
+但 Markdown 最大的缺点是**太死板了**。如果你想在文章里放一个交互式的图表、一个产品下载卡片，或者一个漂亮的警告提示框，普通的 Markdown 就无能为力。
+
+**MDX 的出现就是为了解决这个问题。** 它允许你在 Markdown 文件里，直接使用我们前端开发好的 **组件 (Components)**，从而实现内容和功能的完美结合。
+
+---
+
+## 2. MDX 文件结构：三位一体
+
+一个标准的 `.mdx` 文件由以下三部分组成：
+
+### 2.1 头部信息 (Frontmatter)
+
+位于文件最顶部的两条 `---` 之间。这里定义文章的元数据，是 Astro 读取数据最快的地方。
+
+```yaml
+---
+title: '如何使用 C6 编码器'
+pubDate: 2025-11-28
+cover: './images/c6-setup.jpg' # 封面图路径
+tags: ['Tutorial', 'Hardware']
+---
+```
+````
+
+### 2.2 组件引入 (Imports)
+
+紧接着头部信息，在这里引入你需要用到的“魔法组件”。**注意：这里用的是 JavaScript 语法。**
+
+```javascript
+// 引入我们的自定义图片组件
+import IMG from '@/components/ui/IMG.astro';
+// 引入提示框组件
+import Callout from '@/components/mdx/Callout.astro';
+```
+
+### 2.3 正文内容 (Markdown + JSX)
+
+这里是 Markdown 和组件标签混合使用的地方。
+
+---
+
+## 3\. 实战演练：让内容“动”起来
+
+### 场景一：插入一张高性能图片
+
+不要再用普通的 `![]()` 语法了，请使用我们的 `<IMG />` 组件，它会自动优化图片大小，让网站秒开。
+
+```jsx
+// 确保上方已导入 IMG 组件
+<IMG
+  src="./images/demo-stream.jpg"
+  alt="直播设置图示"
+  title="C6 编码器工作示意图"
+  width={800}
+/>
+```
+
+### 场景二：添加一个醒目的提示框
+
+想告诉用户“注意安全”或“专业技巧”？使用 `<Callout />`，而不是普通的 Markdown 引用 (`>`)。
+
+```jsx
+// 引入 Callout 组件
+<Callout type="warning" title="注意配置冲突">
+  如果您同时使用 SRT 和 RTMP 推流，请确保两者的配置端口不冲突。
+</Callout>
+
+<Callout type="tip" title="Pro Tip">
+  长按 MENU 键 3 秒可以快速重置网络设置。
+</Callout>
+```
+
+### 场景三：分步骤教程 (Starlight/Custom Steps)
+
+写教程时，清晰的步骤很重要。
+
+```jsx
+// 假设你引入了 Steps 组件
+<Steps>
+  1. **连接电源**：插入编码器的 DC 接口。 2. **配置推流**：在后台界面设置 RTMP
+  服务器地址。 3. **点击上线**：按下 Start Streaming 按钮。
+</Steps>
+```
+
+---
+
+## 4\. 🚀 关键避坑指南 (必读\!)
+
+以下是我们从实际开发中总结出来的，保证网站性能和稳定的三条铁律：
+
+### 🚨 避坑 1：文件名不要有空格
+
+这是导致我们之前出现 `ImageNotFound` 和 `Invalid URL` 的主要原因之一。
+
+❌ **错误**：`My awesome article.mdx` (请避免使用)
+✅ **正确**：`my-awesome-article.mdx` (使用短横线连接，全小写)
+
+### 🚨 避坑 2：组件周围要留空行
+
+MDX 解析器在区分 Markdown 语法和组件标签时非常严格。
+
+**❌ 容易报错的写法：**
+
+```text
+这是一段文字
+<Callout>内容</Callout>
+这是另一段文字
+```
+
+**✅ 推荐写法 (空行是必须的)：**
+
+```text
+这是一段文字
+
+<Callout>内容</Callout>
+
+这是另一段文字
+```
+
+### 🚨 避坑 3：不要在组件里写 `await render(post)`
+
+这是我们今天解决的性能杀手！
+
+- **列表页 (List)**：绝对不要在卡片组件里调用 `render(post)`。
+- **用途**：`render(post)` 仅用于**文章详情页**，用于将内容编译成 HTML。
+
+**记住这三点，你就能写出高性能、高质量的 MDX 内容了！**
+
+```
+
+```
