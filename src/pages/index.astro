@@ -16,32 +16,33 @@ import CaseSection from '@/components/sections/CaseSection.astro';
 
 <Layout title="CNDLive ">
   <Main>
-    {/* 1. Hero 轮播图 (通常不需要滚动动画，因为在首屏，或者给个极短的延迟) */}
-    {/* 如果首屏就显示，建议不要加 Reveal，或者 delay 设短一点，防止白屏 */}
+    {/* 1. Hero 轮播图 - 首屏关键内容，保持 client:load */}
     <Reveal client:load layout="full">
       <HeroCarousel client:load slides={slidesData} />
     </Reveal>
 
-    {/* 2. Logo 跑马灯 */}
-    <Reveal client:load layout="full">
+    {/* 2. Logo 跑马灯 - 改为 client:idle 延迟加载 */}
+    <Reveal client:idle layout="full">
       <LogoMarquee />
     </Reveal>
 
-    {/* 新闻板块 */}
-    {/* 3. 介绍文字 */}
-    <Reveal client:load layout="full">
+    {/* 3. 介绍文字 - 改为 client:idle */}
+    <Reveal client:idle layout="full">
       <Intro />
     </Reveal>
-    {/* 5. 新闻列表 */}
-    <Reveal client:load layout="narrow">
+    
+    {/* 4. 新闻列表 - 改为 client:idle */}
+    <Reveal client:idle layout="narrow">
       <NewsSection />
     </Reveal>
-    {/* 4. 特性 BentoGrid */}
-    <Reveal client:load layout="full">
+    
+    {/* 5. 特性 BentoGrid - 改为 client:idle */}
+    <Reveal client:idle layout="full">
       <Features />
     </Reveal>
-    {/* 5. 新闻列表 */}
-    <Reveal client:load layout="narrow">
+    
+    {/* 6. 案例列表 - 改为 client:idle */}
+    <Reveal client:idle layout="narrow">
       <CaseSection />
     </Reveal>
   </Main>

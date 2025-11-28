@@ -1,21 +1,24 @@
 ---
 // src/components/ui/SocialMediaButton.astro
-import { Facebook, Instagram, Youtube, Linkedin, Twitter } from 'lucide-astro';
 
-// 1. 在这里配置你的链接
+// 1. 导入我们刚才创建的本地图标组件
+import Facebook from '@/assets/icons/Facebook.astro';
+import Linkedin from '@/assets/icons/Linkedin.astro';
+import Instagram from '@/assets/icons/Instagram.astro';
+import Youtube from '@/assets/icons/Youtube.astro';
+
+// 2. 配置链接和对应的图标组件
 const SOCIAL_LINKS = [
   {
     name: 'Facebook',
     url: 'https://www.facebook.com/cndliveAVoIP',
     bgClass: 'bg-[#316ff6]',
-    icon: Facebook, // 直接使用引入的组件
+    icon: Facebook, // 直接引用组件
   },
   {
-    // 注意：你之前的 URL 是 LinkedIn，所以我这里改成了 LinkedIn 图标
-    // 如果需要 Twitter，请将 icon 改为 Twitter，并修改 name 和 url
     name: 'LinkedIn',
     url: 'https://www.linkedin.com/company/cndlive-avoip/',
-    bgClass: 'bg-[#0077b5]', // LinkedIn 官方蓝色
+    bgClass: 'bg-[#0077b5]',
     icon: Linkedin,
   },
   {
@@ -50,7 +53,7 @@ const SOCIAL_LINKS = [
             item.bgClass,
           ]}
         >
-          {/* 渲染 Lucide 图标组件 */}
+          {/* ✅ 直接渲染组件，并传入 class 控制大小和颜色 */}
           <item.icon class="h-5 w-5 text-white sm:h-6 sm:w-6" />
         </div>
 
@@ -61,7 +64,6 @@ const SOCIAL_LINKS = [
             item.bgClass,
           ]}
         >
-          {/* 渲染 Lucide 图标组件 */}
           <item.icon class="h-5 w-5 text-white sm:h-6 sm:w-6" />
         </div>
       </a>

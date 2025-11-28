@@ -1,4 +1,5 @@
 ---
+// ✅ 1. 必须引入 render，因为这是详情页，我们需要编译内容和提取目录
 import { render } from 'astro:content';
 import ContentLayout from '@/layouts/ContentLayout.astro';
 import Cover from '@/components/common/Cover.astro';
@@ -9,51 +10,62 @@ interface Props {
   post: any;
   basePath: string;
   parentTitle: string;
-  schema?: object; // 1. 类型定义
+  schema?: object;
 }
 
-// 🔥 2. 关键修改：必须在这里把 schema 解构出来，否则下面拿不到！
 const { post, basePath, parentTitle, schema } = Astro.props;
 
+// ✅ 2. 关键修复：在这里调用 render 是正确的！
+// 我们需要它来生成右侧的目录 (headings)
 const { headings } = await render(post);
 ---
 
+{/* 把 schema 传给 Layout 以生成 JSON-LD 结构化数据 */}
 <ContentLayout
   title={post.data.title}
-  
-  {/* 🔥 3. SEO 核心：把数据传给 Layout 渲染到 <head> */}
   description={post.data.description}
   image={post.data.cover}
   schema={schema}
-
   breadcrumbItems={[
     { label: parentTitle, href: basePath },
-    { label: post.data.title }
+    { label: post.data.title },
   ]}
   backHref={basePath}
   backLabel={`Back to ${parentTitle}`}
 >
-
-  <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12 lg:gap-16 items-start relative">
-    
+  <div
+    class="relative grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_280px] lg:gap-16"
+  >
     {/* === 左侧：文章主体 === */}
-    <article class="min-w-0 max-w-none w-full">
-      
+    <article class="w-full max-w-none min-w-0">
       {/* 头部信息 */}
       <header class="mb-10 text-center lg:text-left">
-        {/* 适配主题：text-white -> text-text-main */}
-        <h1 class="text-3xl md:text-5xl font-bold mb-6 text-text-main leading-tight">
+        <h1
+          class="text-text-main mb-6 text-3xl leading-tight font-bold md:text-5xl"
+        >
           {post.data.title}
         </h1>
         <p class="text-text-muted">
-          By {post.data.author || 'CNDLive Team'} • {new Date(post.data.pubDate).toLocaleDateString()}
+          By {post.data.author || 'CNDLive Team'} • {
+            new Date(post.data.pubDate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })
+          }
         </p>
       </header>
 
       {/* 封面图 */}
-      {/* 适配主题：border-zinc-800 -> border-surface-border */}
-      <div class="rounded-2xl overflow-hidden mb-12 aspect-video border border-surface-border shadow-2xl relative">
-        <Cover src={post.data.cover} alt={post.data.title} title={post.data.title} />
+      <div
+        class="border-surface-border relative mb-12 aspect-video overflow-hidden rounded-2xl border shadow-2xl"
+      >
+        <Cover
+          src={post.data.cover}
+          alt={post.data.title}
+          title={post.data.title}
+          loading="eager"
+        />
       </div>
 
       {/* 正文内容 */}
@@ -61,12 +73,9 @@ const { headings } = await render(post);
     </article>
 
     {/* === 右侧：粘性目录 (仅在电脑端显示) === */}
-    <aside class="hidden lg:block sticky top-24 h-fit">
-      {headings.length > 0 && (
-        <TableOfContents headings={headings} />
-      )}
+    <aside class="sticky top-24 hidden h-fit lg:block">
+      {/* ✅ 现在 headings 变量存在了，这里不会报错了 */}
+      {headings.length > 0 && <TableOfContents headings={headings} />}
     </aside>
-
   </div>
-
 </ContentLayout>

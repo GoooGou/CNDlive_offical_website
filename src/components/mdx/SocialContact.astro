@@ -1,18 +1,15 @@
 ---
-import {
-  Mail,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Youtube,
-  Github,
-  Instagram,
-} from 'lucide-react';
+// 1. 导入本地 SVG 组件 (Astro 组件)
+import Linkedin from '@/assets/icons/Linkedin.astro';
+import Facebook from '@/assets/icons/Facebook.astro';
+import Youtube from '@/assets/icons/Youtube.astro';
+import Instagram from '@/assets/icons/Instagram.astro';
+import Mail from '@/assets/icons/Mail.astro';
 
 interface Props {
-  title?: string; // 提示语，默认 "Connect with us"
-  contactHref?: string; // 联系页面的路径，默认 "/contact"
-  contactText?: string; // 按钮文字，默认 "Contact Us"
+  title?: string;
+  contactHref?: string;
+  contactText?: string;
 }
 
 const {
@@ -45,13 +42,12 @@ const socials = [
     icon: Instagram,
     href: 'https://www.instagram.com/cndlivee/',
     label: 'Instagram',
-    color: 'hover:text-white',
+    color: 'hover:text-white', // 注意：如果是深色模式背景，white没问题；如果是浅色背景可能看不见
   },
-  // { icon: Facebook, href: "https://facebook.com", label: "Facebook", color: "hover:text-[#1877F2]" },
 ];
 ---
 
-{/* not-prose 非常重要：防止 Tailwind Typography 干扰我们的布局样式 */}
+{/* not-prose 防止 Tailwind Typography 干扰 */}
 <div class="not-prose bg-surface-muted my-12 rounded-2xl p-1">
   <div
     class="bg-muted flex flex-col items-center justify-between gap-6 rounded-[14px] p-6 md:flex-row md:p-8"
@@ -72,7 +68,8 @@ const socials = [
               class={`border-text-muted bg-surface-muted text-text-muted hover:border-text-main hover:bg-text-main rounded-full border p-2.5 transition-all duration-300 hover:scale-110 ${item.color}`}
               aria-label={item.label}
             >
-              <item.icon className="w-5 h-5" />
+              {/* ✅ 修改：React 使用 className，Astro 使用 class */}
+              <item.icon class="h-5 w-5" />
             </a>
           ))
         }
@@ -84,7 +81,8 @@ const socials = [
       href={contactHref}
       class="group bg-surface-muted text-text-main shadow-text-main/20 hover:shadow-text-main/40 relative inline-flex items-center gap-2 rounded-full px-8 py-3 font-bold shadow-lg transition-all hover:-translate-y-0.5"
     >
-      <Mail className="h-4 w-4" />
+      {/* ✅ 修改：使用本地 Mail 组件，并用 class */}
+      <Mail class="h-4 w-4" />
       <span>{contactText}</span>
 
       {/* 按钮光效 */}

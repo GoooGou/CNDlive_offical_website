@@ -1,88 +1,54 @@
 ---
-import { Image } from 'astro:assets';
+// src/components/ui/Cover.astro
+import IMG from './IMG.astro';
 
 interface Props {
   src?: any;
   alt: string;
   title?: string;
   className?: string;
+  raw?: boolean;
+  loading?: 'eager' | 'lazy';
 }
 
-const { src, alt, title = 'CNDLive', className = '' } = Astro.props;
-
-// 提取首字母用于展示 (例如 "Nintendo" -> "N")
-const initial = title.charAt(0).toUpperCase();
-
-// 🎨 1. 亮色模式 (更梦幻、柔和的三色渐变)
-const lightGradients = [
-  'from-blue-100 via-indigo-50 to-purple-100',
-  'from-emerald-50 via-teal-100 to-cyan-100',
-  'from-orange-50 via-amber-50 to-yellow-100',
-  'from-rose-50 via-pink-50 to-fuchsia-100',
-  'from-slate-100 via-zinc-100 to-neutral-200',
-];
-
-// 🎨 2. 深色模式 (更深邃、有光泽感的深色渐变)
-const darkGradients = [
-  'from-blue-900 via-slate-900 to-black',
-  'from-emerald-900 via-teal-950 to-black',
-  'from-orange-900 via-red-950 to-black',
-  'from-purple-900 via-indigo-950 to-black',
-  'from-zinc-800 via-neutral-900 to-black',
-];
-
-// 🎲 确定性算法
-const getGradientClass = (str: string) => {
-  const index = str ? str.length % lightGradients.length : 0;
-  // 组合类名：bg-gradient-to-br [亮色] dark:[深色]
-  return `bg-gradient-to-br ${lightGradients[index]} dark:${darkGradients[index]}`;
-};
-
-const gradientClass = getGradientClass(title);
+const {
+  src,
+  alt,
+  title = 'CNDLive',
+  className = '',
+  raw = false,
+  loading = 'lazy',
+} = Astro.props;
 ---
 
 <div
   class={`
   relative w-full h-full overflow-hidden 
-  /* 基础背景，防止闪烁 */
   bg-zinc-100 dark:bg-zinc-900
   ${className}
 `}
 >
   {
-    src ? (
-      // ✅ 有图模式
-      <Image
-        src={src}
-        alt={alt}
-        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-      />
-    ) : (
-      // 🎨 无图兜底 (高级质感版)
-      <div
-        class={`relative h-full w-full transition-transform duration-700 group-hover:scale-105 ${gradientClass} `}
-      >
-        {/* ✨ 1. 噪点纹理层 (关键：让颜色看起来有材质感) */}
-        <div
-          class="absolute inset-0 opacity-20 mix-blend-soft-light"
-          style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"
-        ></div>
-
-        {/* ✨ 2. 内部光斑 (增加空间感) */}
-        <div class="pointer-events-none absolute -top-1/2 -right-1/2 h-full w-full rounded-full bg-white/40 blur-3xl dark:bg-white/5" />
-        <div class="pointer-events-none absolute -bottom-1/2 -left-1/2 h-full w-full rounded-full bg-black/5 blur-3xl dark:bg-black/20" />
-
-        {/* ✨ 3. 中心大字母 (Monogram) */}
-        <div class="absolute inset-0 flex items-center justify-center">
-          <span class="/* 亮色模式：颜色深一点，叠加模式 */ /* 深色模式：颜色亮一点，发光感 */ text-6xl font-black text-black/5 mix-blend-overlay transition-colors duration-300 select-none md:text-7xl dark:text-white/10">
-            {initial}
-          </span>
-        </div>
-      </div>
-    )
+    /* 核心修改：
+    直接使用 IMG 组件。
+    1. 所有的图片处理逻辑（原生vs压缩）都由 IMG 接管。
+    2. 所有的无图兜底逻辑（渐变、噪点、首字母）都由 IMG 接管。
+    3. Cover 组件只需要关注“样式表现” (CSS)。
+  */
   }
+  <IMG
+    src={src}
+    alt={alt}
+    title={title}
+    raw={raw}
+    loading={loading}
+    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+  />
 
-  {/* ✨ 4. 统一内边框 (精致感) */}
+  {/* ✨ 统一内边框 (Overlay Ring) */}
+  {
+    /* 保留这个覆盖层，因为它是 Cover 组件特有的装饰，覆盖在图片或兜底背景之上 */
+  }
   <div
     class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-black/5 ring-inset dark:ring-white/10"
   >

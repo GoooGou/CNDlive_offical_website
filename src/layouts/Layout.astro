@@ -5,20 +5,15 @@ import Footer from '@/components/Footer.astro';
 import '@/styles/global.css';
 import Navbar from '@/components/navbar/Navbar.jsx';
 import FloatingTools from '@/components/ui/FloatingTools.jsx';
-import type { ACTION_ERROR_CODES } from 'astro:actions';
-// ✅ 引入字体文件 (它们会自动注入 CSS @font-face)
 import '@fontsource-variable/montserrat';
 
-// --- 1. 定义 CNDLive 官方 SEO 信息 (默认值) ---
 const SITE_TITLE =
   'CNDLive - Professional Video Streaming Solutions | Encoders & Decoders';
 const SITE_DESCRIPTION =
-  'CNDLive provides professional video IP transmission solutions. We offer 4K HDMI/SDI video encoders, decoders, NDI converters, and 4G/5G bonding routers for broadcast and live streaming.';
-const SITE_KEYWORDS =
-  'Video Encoder, Video Decoder, 4K Streaming, NDI Converter, SRT Encoder, RTMP, Bonding Encoder, 4G Bonding, Live Broadcasting, CNDLive';
+  'CNDLive provides professional video IP transmission solutions...';
 
-const isHomepage = Astro.url.pathname === '/';
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// 🗑️ Keywords 其实可以删了，现代 SEO 不看它，不过留着也无害
+const SITE_KEYWORDS = 'Video Encoder, Video Decoder, 4K Streaming...';
 
 interface Props {
   title?: string;
@@ -28,17 +23,18 @@ interface Props {
 }
 
 const {
-  // 🔥 如果页面没传 title，就用 CNDLive 官方标题
   title = SITE_TITLE,
-  // 🔥 如果页面没传 description，就用官方描述
   description = SITE_DESCRIPTION,
-  image = '/images/default-og.png',
+  image = '/images/default-og.png', // ⚠️ 再次提醒：检查 public/images/ 下有没有这张图，否则 build 会报 404
   schema,
 } = Astro.props;
 
-const socialImageURL = new URL(image, Astro.site);
+// 🛡️ 你的这个兜底写得非常好，彻底防止了 astro.config.mjs 配置错误导致的崩溃
+const siteBase = Astro.site || new URL('https://cndlive.com');
 
-// 全局 Organization Schema
+const canonicalURL = new URL(Astro.url.pathname, siteBase);
+const socialImageURL = new URL(image, siteBase);
+
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -66,19 +62,14 @@ const orgSchema = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    {/* --- 核心 SEO --- */}
     <title>{title}</title>
     <meta name="description" content={description} />
-    {/* 🔥 新增：关键词标签 */}
     <meta name="keywords" content={SITE_KEYWORDS} />
 
-    {/* 启用视图过渡 */}
     <ClientRouter />
 
-    {/* --- SEO Canonical --- */}
     <link rel="canonical" href={canonicalURL} />
 
-    {/* --- Open Graph (Facebook, LinkedIn) --- */}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={title} />
@@ -86,76 +77,56 @@ const orgSchema = {
     <meta property="og:image" content={socialImageURL} />
     <meta property="og:site_name" content="CNDLive" />
 
-    {/* --- Twitter (X) --- */}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:domain" content={Astro.site?.host} />
+    <meta name="twitter:domain" content={siteBase.host} />
     <meta name="twitter:url" content={Astro.url} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageURL} />
 
-    {/* --- 结构化数据 (Schema) --- */}
-
-    {/* 1. 动态 Schema (产品页/文章页) */}
     {
       schema && (
         <script type="application/ld+json" set:html={JSON.stringify(schema)} />
       )
     }
-
-    {/* 2. 固定 Organization Schema (全站通用) */}
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
-    {/* 🔥 1. 启用 ViewTransitions (可选，但推荐，能让切换更丝滑) */}
 
-    {/* 🔥 2. 核心：主题防抖动脚本 (必须放在 head 最上面) */}
     <script is:inline>
-      // 定义一个函数来设置主题，方便复用
       function applyTheme() {
-        // 1. 获取用户设置
         const storedTheme =
           typeof localStorage !== 'undefined' && localStorage.getItem('theme');
-
-        // 2. 逻辑判断：
-        // 如果用户明确设为 'light'，才显示亮色
-        // 否则（没设置过的首次访问、或设为 dark），一律强制深色
         if (storedTheme === 'light') {
           document.documentElement.classList.remove('dark');
         } else {
           document.documentElement.classList.add('dark');
-          // 如果是第一次来，顺手存一下 dark，保持状态一致
           if (!storedTheme) {
             localStorage.setItem('theme', 'dark');
           }
         }
       }
-
-      // A. 页面初次加载时，立即执行
       applyTheme();
-
-      // B. 适配 Astro View Transitions (如果你用了 client router)
-      // 每次页面切换完成后，重新执行一遍，防止样式丢失
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
 
   <body class="text-text-main flex min-h-screen flex-col antialiased">
-    {/* Navbar */}
     <div
       id="main-navbar"
       transition:persist
       class="sticky top-0 z-50 h-20 w-full"
     >
+      {/* ✅ 建议改为 client:load，保证移动端菜单点击即响应 */}
       <Navbar client:load />
     </div>
 
-    {/* 主体内容 */}
     <main class="relative z-0 grow" transition:animate="fade">
       <slot />
     </main>
 
-    {/* 悬浮工具栏 & Footer */}
-    <FloatingTools client:load transition:persist />
-    <Footer transition:persist />
+    {/* ✅ 建议改为 client:idle，让主内容先加载，工具栏稍后加载，提升性能 */}
+    <FloatingTools client:idle transition:persist />
+
+    <Footer />
   </body>
 </html>
 

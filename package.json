@@ -1,11 +1,11 @@
 {
-  "name": "",
+  "name": "cndlive-website",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "astro preview --host --port 8080",
     "astro": "astro"
   },
   "dependencies": {

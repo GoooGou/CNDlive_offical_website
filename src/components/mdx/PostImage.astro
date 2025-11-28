@@ -1,26 +1,42 @@
 ---
-import { Image } from 'astro:assets';
+// src/components/mdx/PostImage.astro
+import IMG from '@/components/common/IMG.astro';
 
-const { src, alt, title } = Astro.props;
+interface Props {
+  src: any; // 类型由 IMG 内部处理
+  alt: string;
+  title?: string; // 既用于 Caption，也传给 IMG 生成兜底背景种子
+  raw?: boolean; // 1. 透传控制属性：true = 强制使用原生 img
+}
+
+const { src, alt, title, raw = false } = Astro.props;
 ---
 
 <figure class="my-8">
   <div
     class="border-surface-border relative overflow-hidden rounded-xl border shadow-2xl"
   >
-    {/* 如果 src 是字符串(外部链接)直接用 img，如果是本地图片对象用 Image */}
     {
-      typeof src === 'string' ? (
-        <img src={src} alt={alt} class="h-auto w-full object-cover" />
-      ) : (
-        <Image src={src} alt={alt} class="h-auto w-full object-cover" />
-      )
+      /* ✨ 核心修改：
+      直接调用 IMG 组件。
+      - 自动处理 src 是字符串还是对象
+      - 自动处理 raw 参数决定是用 <img> 还是 <Image />
+      - 自动处理无图时的渐变兜底
+    */
     }
+    <IMG
+      src={src}
+      alt={alt}
+      title={title}
+      raw={raw}
+      class="h-auto w-full object-cover"
+    />
   </div>
-  {/* 如果有 title 或 alt，显示在图片下方 */}
+
+  {/* Caption 部分保持不变，依旧负责显示图片下方的文字 */}
   {
     (title || alt) && (
-      <figcaption class="text-center font-mono text-xs text-zinc-500">
+      <figcaption class="mt-2 text-center font-mono text-xs text-zinc-500">
         {title || alt}
       </figcaption>
     )

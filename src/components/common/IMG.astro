@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+
+type Props = {
+  src?: any; // 支持 ImageMetadata | string | null | undefined
+  alt: string; // 必填，为了 SEO 和无障碍
+  title?: string; // 用于生成兜底背景的种子文字
+  raw?: boolean; // true = 强制使用原生 img (不压缩)
+  class?: string; // 接收传入的样式类
+  [key: string]: any; // 接收所有其他属性 (loading, decoding, style 等)
+};
+
+// 1. 解构属性，把 class 重命名为 className 以便后续处理
+// ...rest 包含了所有剩余属性
+const {
+  src,
+  alt,
+  title = 'CNDLive',
+  raw = false,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+// --- 逻辑 A: 图片处理 ---
+// 判断是否使用原生 img：用户强制 raw 或 src 是外部链接字符串
+const useNative = raw || typeof src === 'string';
+// 获取原生 img 所需的路径字符串
+const imageSrc =
+  typeof src === 'object' && src !== null && 'src' in src ? src.src : src;
+
+// --- 逻辑 B: 兜底背景处理 (当 src 为空时) ---
+const initial = title.charAt(0).toUpperCase();
+
+// 亮色/深色渐变池
+const lightGradients = [
+  'from-blue-100 via-indigo-50 to-purple-100',
+  'from-emerald-50 via-teal-100 to-cyan-100',
+  'from-orange-50 via-amber-50 to-yellow-100',
+  'from-rose-50 via-pink-50 to-fuchsia-100',
+  'from-slate-100 via-zinc-100 to-neutral-200',
+];
+const darkGradients = [
+  'from-blue-900 via-slate-900 to-black',
+  'from-emerald-900 via-teal-950 to-black',
+  'from-orange-900 via-red-950 to-black',
+  'from-purple-900 via-indigo-950 to-black',
+  'from-zinc-800 via-neutral-900 to-black',
+];
+
+const getGradient = (str: string) => {
+  const index = str ? str.length % lightGradients.length : 0;
+  return `bg-gradient-to-br ${lightGradients[index]} dark:${darkGradients[index]}`;
+};
+---
+
+{
+  /* 渲染逻辑：
+    1. 有 src -> 渲染图片 (原生 img 或 Astro Image)
+    2. 无 src -> 渲染渐变兜底 div
+    
+    注意：className 和 ...rest 会被应用到最终渲染的那个元素上
+  */
+}
+
+{
+  src ? (
+    useNative ? (
+      <img src={imageSrc} alt={alt} class={className} {...rest} />
+    ) : (
+      <Image src={src} alt={alt} class={className} {...rest} />
+    )
+  ) : (
+    // --- 无图兜底模式 ---
+    <div
+      class={`relative flex items-center justify-center overflow-hidden ${getGradient(title)} ${className}`}
+      {...rest}
+    >
+      {/* 噪点纹理 */}
+      <div
+        class="absolute inset-0 opacity-20 mix-blend-soft-light"
+        style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"
+      />
+
+      {/* 字母 */}
+      <span class="relative z-10 text-4xl font-black text-black/5 mix-blend-overlay select-none md:text-6xl dark:text-white/10">
+        {initial}
+      </span>
+
+      {/* 内边框 */}
+      <div class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-black/5 ring-inset dark:ring-white/10" />
+    </div>
+  )
+}

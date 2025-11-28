@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { ArrowUpRight } from 'lucide-react';
+import IMG from './IMG.astro';
 
 interface Props {
   post: any;
@@ -22,10 +23,11 @@ const href = `${basePath}/${post.slug || post.id}`;
   >
     {
       post.data.cover ? (
-        <Image
+        <IMG
           src={post.data.cover}
           alt={post.data.title}
           class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          width={400}
         />
       ) : (
         // 无图兜底显示
