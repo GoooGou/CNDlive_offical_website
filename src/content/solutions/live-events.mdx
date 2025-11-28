@@ -1,101 +1,46 @@
 ---
-title: "Live Events & Sports Production"
-description: "Deliver broadcast-quality live streams from anywhere with Cellular Bonding and REMI workflows. No satellite truck required."
+title: 'Live Event Streaming Solution'
+description: 'Broadcast-grade live streaming for concerts, conferences, and product launches with multi-camera, low-latency, and global delivery.'
 pubDate: 2024-11-29
-author: "CNDLive Team"
-cover: "./covers/live-events.webp"
-tags: ["Live Events", "Sports", "5G Bonding", "REMI", "SRT"]
+author: 'CNDLive Team'
+cover: './covers/live-events.webp'
+tags:
+  [
+    'Event Live Streaming',
+    'Multi-Camera',
+    'Low Latency',
+    'Global Delivery',
+    'NDI',
+    'SRT',
+  ]
 ---
 
-## The Challenge: Going Live from Anywhere
+# Professional Live Event Streaming Equipment Setup Guide
 
-In live sports, concerts, and outdoor events, there are no second chances. The biggest challenge isn't the camera gear—it's the **connectivity**. Traditional venues often have congested WiFi or non-existent Ethernet, and satellite trucks are prohibitively expensive.
+With the widespread adoption of the internet, live streaming has become the mainstream way of socializing and entertainment. Compared to smartphones and capture cards, **professional streaming equipment** offers significant upgrades in image stability, audio clarity, and overall viewing experience.
 
-<Callout type="warning" title="The Network Bottleneck">
-  Relying on a single network connection at a crowded stadium is a recipe for disaster. Packet loss and jitter can ruin the viewer experience instantly.
+Below, we use Facebook Live as an example to walk you through quickly configuring a professional streaming encoder.
+
+![Professional Streaming Equipment Setup](./images/StreamingEquipment.webp)
+
+---
+
+## Step 1: Obtain Facebook Stream Key
+
+To achieve ultra-low-latency HD streaming, first generate your stream key on Facebook.
+
+1.  **Log in** to your Facebook account.
+2.  Navigate to **"Live Video"** to create a new live event.
+
+    ![Facebook Live Video Button](./images/FacebookLiveVideoButton.webp)
+
+3.  Select **"Streaming Software"** as the video source.
+4.  Copy the **Server URL** and **Stream Key**, then paste them—either combined or separately—into your encoder.
+
+        > **Tip:** The full RTMP address is usually `Server URL` + `/` + `Stream Key`.
+
+<Callout type="info" title="RTMP Address Example">
+
+rtmps://[live-api-s.facebook.com:443/rtmp/FB-205055105973088-0-Abx4nUtWiljiWEc](https://live-api-s.facebook.com:443/rtmp/FB-205055105973088-0-Abx4nUtWiljiWEc)
+
 </Callout>
-
----
-
-## The Solution: 5G Bonding & SRT
-
-We replace heavy OB Vans with a backpack. By aggregating multiple network connections (4G/5G, WiFi, Ethernet), CNDLive encoders create a single, robust pipeline for your video.
-
-### How Portable Bonding Works
-
-<Steps>
-
-### 1. Signal Acquisition
-Connect your camera directly to our portable encoder (like the **P-Series**) via SDI or HDMI.
-
-### 2. Network Aggregation (Bonding)
-The encoder splits the video data across multiple SIM cards and local networks simultaneously. If one carrier drops, the others pick up the slack instantly.
-
-### 3. Reliable Transport
-We use **SRT (Secure Reliable Transport)** protocol to recover lost packets over the public internet, ensuring a glitch-free feed even on jittery connections.
-
-### 4. Cloud / Studio Production
-The bonded signal lands in your studio or cloud production mixer (vMix, TriCaster) for graphics, replays, and distribution.
-
-</Steps>
-
----
-
-## Why Switch to IP Bonding?
-
-Compare the modern IP workflow against traditional satellite transmission.
-
-<ProsCons>
-  <div slot="pros">
-    - **Cost Efficiency**: Fraction of the cost of satellite time.
-    - **Mobility**: Cameramen can roam freely without long cables.
-    - **Low Latency**: Glass-to-glass latency as low as 500ms.
-  </div>
-  <div slot="cons">
-    - **Legacy Systems**: Traditional Satellite Uplink is heavy and expensive.
-    - **Setup Time**: Satellite dishes require hours to align; Bonding takes seconds.
-  </div>
-</ProsCons>
-
----
-
-## Proven Reliability
-
-Our gear has been battle-tested in marathons, esports arenas, and music festivals globally.
-
-<StatsGrid>
-  <StatItem value="99.9%" label="Transmission Uptime" />
-  <StatItem value="500ms" label="Ultra Low Latency" />
-  <StatItem value="4+2" label="Network Bonding" />
-  <StatItem value="4K" label="HEVC Quality" />
-</StatsGrid>
-
----
-
-## See It In Action
-
-Watch how a production team uses CNDLive encoders to stream a marathon event using only cellular networks.
-
-<Video id="dQw4w9WgXcQ" title="Live Sports Production Case Study" />
-
----
-
-## Technical Resources
-
-Planning your next event? Download our network configuration guide for crowded venues.
-
-<DownloadCard 
-  title="Event_Network_Best_Practices.pdf" 
-  size="2.4 MB" 
-  href="#" 
-/>
-
-## Ready to Go Live?
-
-Don't let bad internet ruin your event. Switch to a bonded cellular workflow today.
-
-<SocialContact 
-  title="Request a Demo Unit" 
-  contactText="Contact Sales" 
-  contactHref="/contact" 
-/>

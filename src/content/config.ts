@@ -37,7 +37,21 @@ const cases = defineCollection({
       cover: image().optional(),
     }),
 });
+const blogs = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blogs' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      pubDate: z.date(),
+      author: z.string(),
+      tags: z.array(z.string()),
 
+      // 修改处：加上 .optional()
+      // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
+      cover: image().optional(),
+    }),
+});
 // 🔥 新增：pages 集合 (用于 About, Contact, Privacy Policy 等单页)
 // 🔥 必须有 pages 的定义
 const pages = defineCollection({
@@ -127,4 +141,12 @@ const docs = defineCollection({
   loader: docsLoader(), // 这里的 loader 会自动去 src/content/docs 里找文件
   schema: docsSchema(),
 });
-export const collections = { news, pages, solutions, docs, products, cases }; // 记得导出
+export const collections = {
+  news,
+  pages,
+  solutions,
+  docs,
+  products,
+  cases,
+  blogs,
+}; // 记得导出

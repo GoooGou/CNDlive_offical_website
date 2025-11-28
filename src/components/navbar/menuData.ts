@@ -59,15 +59,8 @@ export const MENU_DATA: NavItem[] = [
       },
     ],
   },
-  {
-    label: 'Solution',
-    type: 'dropdown', // 🔥 新增：普通下拉菜单
-    items: [
-      { label: 'TV Broadcast', href: '/solutions/tv-broadcast' },
-      { label: 'Live Events', href: '/solutions/live-events' },
-      { label: 'House of Worship', href: '/solutions/house-of-worship' },
-    ],
-  },
+
+  { label: 'Solutions', type: 'link', href: '/solutions' },
   { label: 'Support', type: 'link', href: '/support' },
   {
     label: 'Resources',
@@ -75,7 +68,7 @@ export const MENU_DATA: NavItem[] = [
     items: [
       { label: 'News', href: '/news' },
       { label: 'Case Studies', href: '/cases' },
-      { label: 'Plog', href: '/plog' },
+      { label: 'Blogs', href: '/blogs' },
     ],
   },
   { label: 'About US', type: 'link', href: '/about' },
