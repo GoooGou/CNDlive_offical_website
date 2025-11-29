@@ -12,7 +12,7 @@ const { title, size, href } = Astro.props;
 <a
   href={href}
   target="_blank"
-  class="group my-6 flex items-center gap-4 rounded-lg border border-zinc-200 p-4 no-underline transition-all hover:bg-zinc-50 hover:no-underline dark:border-zinc-800 dark:hover:bg-zinc-900"
+  class="w-full max-w-full block group my-6 flex items-center gap-4 rounded-lg border border-zinc-200 p-4 no-underline transition-all hover:bg-zinc-50 hover:no-underline dark:border-zinc-800 dark:hover:bg-zinc-900"
 >
   {/* 图标容器：适配图标颜色 */}
   <div
@@ -24,7 +24,7 @@ const { title, size, href } = Astro.props;
   <div class="flex-1">
     {/* 标题：适配深浅色，强制去除 prose 的 margin */}
     <h4
-      class="m-0 text-base leading-tight font-bold text-zinc-900 dark:text-zinc-100"
+      class="m-0 text-base leading-tight font-bold text-zinc-900 dark:text-zinc-100 break-all"
     >
       {title}
     </h4>

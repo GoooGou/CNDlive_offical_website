@@ -130,4 +130,14 @@ const orgSchema = {
   </body>
 </html>
 
-<style is:global></style>
+<style is:global>
+
+  html,
+body {
+  /* 强制禁止水平滚动条，多出的内容会被直接切掉 */
+  overflow-x: hidden;
+  
+  /* 确保宽度不会莫名其妙超出 */
+  max-width: 100vw;
+}
+</style>
