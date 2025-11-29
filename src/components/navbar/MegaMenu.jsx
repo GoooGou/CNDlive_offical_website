@@ -28,7 +28,7 @@ export default function MegaMenu({
       onMouseLeave={onMouseLeave}
     >
       {/* 内容容器 */}
-      <div className="mx-auto   px-6 py-10 lg:px-8">
+      <div className=" py-10 container mx-auto max-w-7xl ">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           {groups?.map((group, index) => (
             <div key={index} className="flex flex-col">

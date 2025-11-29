@@ -83,11 +83,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       
       {/* 4. 渲染区域：使用 Grid 堆叠技巧 */}
       {/* grid-cols-1 让所有子元素重叠在同一个格子里，实现淡入淡出 */}
-      <div className="grid grid-cols-1 grid-rows-1">
+      <div className="grid grid-cols-1 grid-rows-1 ">
         {slides.map((slide, index) => (
           <div 
             key={slide.id}
-            className={`col-start-1 row-start-1 transition-opacity duration-700 ease-in-out ${
+            className={` col-start-1 row-start-1 transition-opacity duration-700 ease-in-out ${
               index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
             aria-hidden={index !== currentIndex}

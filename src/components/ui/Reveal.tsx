@@ -22,9 +22,7 @@ export const Reveal: React.FC<RevealProps> = ({
   // 1. 根据 layout 属性决定 Tailwind 类名
   // - narrow: 限制最大宽度 + 居中 + 两侧留白 (替代了原本 Main 里的 container)
   // - full: 撑满屏幕宽度
-  const layoutClasses = layout === "narrow" 
-    ? "w-full   mx-auto px-4 sm:px-6" 
-    : "w-full";
+ 
 
   const variants = {
     hidden: { opacity: 0, y: 30 }, // 加一点 y 轴位移，动效更有高级感
@@ -40,7 +38,7 @@ export const Reveal: React.FC<RevealProps> = ({
       transition={{ duration: 0.8, delay: delay, ease: "easeOut" }}
       style={{ width }}
       // 🔥 2. 将计算出的 layoutClasses 和传入的 className 拼接
-      className={`${layoutClasses} ${className}`}
+      className={`${className}`}
     >
       {children}
     </motion.div>

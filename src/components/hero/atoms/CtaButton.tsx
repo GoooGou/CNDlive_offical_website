@@ -10,7 +10,7 @@ export const CtaButton: React.FC<CtaButtonProps> = ({ text, onClick }) => {
   return (
     <button 
       onClick={onClick}
-      className="group flex items-center gap-3 bg-red-700 hover:bg-red-600 text-white px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-red-900/50"
+      className="group flex items-center gap-3 bg-red-700 hover:bg-red-600 text-white px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-red-900/50 "
     >
       <span className="font-bold tracking-wide">{text}</span>
       {/* 圆形白色背景箭头 */}
