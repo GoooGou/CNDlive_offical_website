@@ -17,6 +17,8 @@ import StatItem from './StatItem.astro';
 // 这里的 Cover 如果是在 common 目录下，请注意路径，如果在 mdx 目录下则用 './Cover.astro'
 import Cover from '../common/Cover.astro';
 import CodeBlock from './CodeBlock.astro';
+import AnimatedEmojiContainer from './AnimatedEmojiContainer.astro';
+import FooterNavigationLinks from './FooterNavigationLinks.astro';
 
 interface Props {
   post: any; // 接收文章数据对象
@@ -44,6 +46,8 @@ const mdxComponents = {
   StatItem,
   Cover,
   CodeBlock,
+  AnimatedEmojiContainer,
+  FooterNavigationLinks,
 };
 ---
 

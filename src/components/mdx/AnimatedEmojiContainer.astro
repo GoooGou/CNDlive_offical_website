@@ -1,0 +1,58 @@
+---
+// src/components/mdx/AnimatedEmojiContainer.astro
+import clsx from 'clsx';
+
+// 预设的动画 Emoji 列表
+const RANDOM_EMOJIS = ['✨', '🚀', '💡', '🎉', '🌟', '🔥', '💖', '💡'];
+
+/**
+ * 随机获取一个 Emoji
+ * @returns {string} 随机 Emoji 字符串
+ */
+const getRandomEmoji = () => {
+  const randomIndex = Math.floor(Math.random() * RANDOM_EMOJIS.length);
+  return RANDOM_EMOJIS[randomIndex];
+};
+
+const { emoji, size = 'text-4xl', className } = Astro.props;
+
+// 1. 如果没有传入 emoji，则随机选择
+const selectedEmoji = emoji || getRandomEmoji();
+
+// 2. 只有在客户端运行时，才会执行随机选择逻辑。
+//    但由于 getRandomEmoji 是在服务器上执行的，因此随机性在构建时确定。
+//    如果需要每次加载都随机，则需要使用 client:load 指令并添加 JS 逻辑，
+//    但通常对于 MDX 装饰元素，构建时确定即可。
+---
+
+<div class={clsx("inline-flex items-center justify-center", className)}>
+  <span 
+    class={clsx(size, 'emoji-float')} 
+    role="img"
+    aria-label="Animated emoji decoration"
+  >
+    {selectedEmoji}
+  </span>
+</div>
+
+<style>
+/* 样式只作用于此组件 (Scoped CSS) */
+/* 定义浮动动画 */
+@keyframes emojiFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(2deg); /* 向上浮动并轻微旋转 */
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+/* 应用动画 */
+.emoji-float {
+  display: inline-block;
+  animation: emojiFloat 2s ease-in-out infinite; /* 2秒一个周期，无限循环 */
+}
+</style>
