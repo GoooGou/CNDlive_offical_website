@@ -4,7 +4,7 @@
 @layer components {
   /* 根作用域：版心 + 通用排版 */
   .md-base {
-    @apply max-w-full mx-auto px-4 text-text-main ;
+    @apply max-w-full mx-auto  text-text-main ;
     @apply leading-relaxed;
   }
 
