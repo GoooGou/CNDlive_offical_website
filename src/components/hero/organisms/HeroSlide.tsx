@@ -21,7 +21,7 @@ export const HeroSlide: React.FC<HeroSlideProps> = ({ data, isActive }) => {
     // 2. h-full 确保占满父容器高度
     <div className={`w-full h-full min-h-[450px] ${bgClass} text-white flex items-center transition-colors duration-700`}>
       
-      <div className="container max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-0">
+      <div className="container   mx-auto px-6 lg:px-12 py-12 md:py-0">
         
         {/* 布局容器 */}
         <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-10 lg:gap-20">

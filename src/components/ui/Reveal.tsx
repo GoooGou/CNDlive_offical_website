@@ -23,7 +23,7 @@ export const Reveal: React.FC<RevealProps> = ({
   // - narrow: 限制最大宽度 + 居中 + 两侧留白 (替代了原本 Main 里的 container)
   // - full: 撑满屏幕宽度
   const layoutClasses = layout === "narrow" 
-    ? "w-full max-w-7xl mx-auto px-4 sm:px-6" 
+    ? "w-full   mx-auto px-4 sm:px-6" 
     : "w-full";
 
   const variants = {
