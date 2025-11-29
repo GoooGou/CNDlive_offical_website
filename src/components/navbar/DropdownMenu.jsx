@@ -7,26 +7,33 @@ export default function DropdownMenu({
   items,
   onMouseEnter,
   onMouseLeave,
+  onItemClick,        // 👈 接收父组件传递的点击关闭函数
+  isTransitioning,    // 👈 接收父组件传递的过渡状态
 }) {
   return (
     <div
       className={clsx(
-        // 🔥 核心修改：
-        // 1. bg-[#0a0a0a] -> bg-[#050505] (与 Navbar/MegaMenu 统一使用纯黑)
-        // 2. border-white/10: 保持深色下的微弱边框
-        'absolute top-20 left-0 z-40 w-56 origin-top rounded-b-lg border border-white/10 bg-[#050505] py-2 shadow-xl transition-all duration-300',
+        // ... 其他类
+        'absolute top-20 left-0 z-40 w-56 origin-top rounded-b-lg border border-white/10 bg-[#050505] py-2 shadow-xl',
+        
+        // 🚨 核心修复点 A: 只有在 isTransitioning 为 true 时才启用过渡
+        //    点击时设置为 false，强制菜单立即消失，解决 Safari 闪烁问题。
+        isTransitioning && 'transition-all duration-300', 
+
         isOpen
           ? 'visible translate-y-0 opacity-100'
           : 'invisible -translate-y-2 opacity-0',
       )}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      
     >
       <div className="flex flex-col">
         {items?.map((item, index) => (
           <a
             key={index}
             href={item.href}
+            onClick={onItemClick} // 🚨 核心修复点 B: 绑定点击事件，调用父组件的关闭逻辑
             className="hover:text-primary block px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/5"
           >
             {item.label}

@@ -7,14 +7,19 @@ export default function MegaMenu({
   groups,
   onMouseEnter,
   onMouseLeave,
+  onItemClick,        // 👈 接收父组件传递的点击关闭函数
+  isTransitioning,    // 👈 接收父组件传递的过渡状态
 }) {
   return (
     <div
       className={clsx(
-        // 🔥 核心修改：
-        // 1. bg-surface-muted -> bg-[#050505] (强制纯黑背景，与 Navbar 融为一体)
-        // 2. border-white/10: 保持这个微弱的白色边框，用于深色模式下的分割
-        'fixed top-20 right-0 left-0 z-40 origin-top border-b border-white/10 bg-[#050505] shadow-2xl transition-all duration-300',
+        // ... 其他类
+        'fixed top-20 right-0 left-0 z-40 origin-top border-b border-white/10 bg-[#050505] shadow-2xl',
+
+        // 🚨 核心修复点 A: 只有在 isTransitioning 为 true 时才启用过渡
+        //    点击时设置为 false，强制菜单立即消失，解决 Safari 闪烁问题。
+        isTransitioning && 'transition-all duration-300',
+
         isOpen
           ? 'visible translate-y-0 opacity-100'
           : 'invisible -translate-y-2 opacity-0',
@@ -37,6 +42,7 @@ export default function MegaMenu({
                   <a
                     key={idx}
                     href={item.href}
+                    onClick={onItemClick} // 🚨 核心修复点 B: 绑定点击事件，调用父组件的关闭逻辑
                     className="group/link /* 链接颜色：默认白色半透明 -> 悬停品牌红 */ hover:text-primary flex items-center text-sm font-medium text-white/60 transition-colors"
                   >
                     <span
