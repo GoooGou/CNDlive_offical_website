@@ -1,0 +1,149 @@
+---
+title: '用 MDX 组件制作高质量技术文档：NDI 应用演示'
+description: '本教程向运营小伙伴展示如何利用内置 Astro 组件，快速创建结构化、视觉精美的文章，以 NDI 技术应用为例。'
+pubDate: 2025-11-29
+author: CNDLive Content Team
+cover: './covers/ndi-cover.png'
+tags: ['MDX', 'Tutorial', 'NDI', 'Content Creation']
+---
+import ndiNetwork from './covers/ndi-network.png';
+import AnimatedEmojiContainer from '@/components/mdx/AnimatedEmojiContainer.astro';
+import Callout from '@/components/mdx/Callout.astro';
+import CodeBlock from '@/components/mdx/CodeBlock.astro';
+import DownloadCard from '@/components/mdx/DownloadCard.astro';
+import FooterNavigationLinks from '@/components/mdx/FooterNavigationLinks.astro';
+import PostImage from '@/components/mdx/PostImage.astro';
+import ProsCons from '@/components/mdx/ProsCons.astro';
+import StatsGrid from '@/components/mdx/StatsGrid.astro';
+import Steps from '@/components/mdx/Steps.astro';
+import SocialContact from '@/components/mdx/SocialContact.astro';
+import StatItem from '@/components/mdx/StatItem.astro'; // 单独的统计项组件，通常嵌入 StatsGrid
+
+# 💡 快速入门：如何使用 MDX 组件提升内容质量
+
+欢迎！这篇文章将演示如何使用我们内置的 Astro 组件（MDX Components），快速将一篇枯燥的技术文章转化为结构清晰、视觉友好的内容。
+
+我们将以 **NDI (Network Device Interface)** 技术的应用场景为例。
+
+---
+
+## 1. 核心概念与提示 `(<Callout> & <AnimatedEmojiContainer>)`
+
+在介绍复杂技术前，我们先用醒目的 **提示框** 来吸引读者的注意力。
+
+<Callout type="tip" title="什么是 NDI？">
+  NDI 是 NewTek 公司开发的一种 IP 视频传输协议。简单来说，它能让你用普通的网络线缆（LAN）来传输高质量、低延迟的视频，就像传统的 HDMI 或 SDI 线缆一样，但更加灵活！
+  <AnimatedEmojiContainer client:load emoji="✨" size="text-xl" className="ml-2" />
+</Callout>
+
+### 组件用法
+
+* **提示框:** `<Callout type="tip" title="标题">内容</Callout>` (可选 `tip`, `warning`, `info`)
+* **动画 Emoji:** `<AnimatedEmojiContainer client:load emoji="🚀" />` (如果省略 `emoji` 属性，则随机选择)
+
+---
+
+## 2. 优势与不足的对比 `(<ProsCons>)`
+
+要说服用户采用新技术，对比是最好的方式。使用 `<ProsCons>` 组件来清晰地展示优缺点。
+
+### NDI 相较于传统 SDI/HDMI 的优势
+
+<ProsCons>
+  <div slot="pros">
+    * **灵活性高:** 只需一根网线，布线简单。
+    * **低延迟:** 专为实时传输设计，延迟极低。
+    * **成本效益:** 可使用现有网络设备，节省昂贵线缆费用。
+  </div>
+  <div slot="cons">
+    * **带宽要求:** 对网络带宽和交换机性能要求高。
+    * **配置复杂:** 初次设置时，需要一定的网络知识。
+    * **兼容性:** 并非所有旧设备都原生支持。
+  </div>
+</ProsCons>
+
+---
+
+## 3. 数据展示与性能 `(<StatsGrid> & <StatItem>)`
+
+用数据说话！使用 `<StatsGrid>` 和 `<StatItem>` 组合来突出关键性能指标。
+
+### NDI 关键性能指标 (Full NDI 模式)
+
+<StatsGrid>
+  <StatItem value="100 Mbps" label="所需带宽" />
+  <StatItem value="16 ms" label="平均延迟" />
+  <StatItem value="4K/60fps" label="最高分辨率" />
+</StatsGrid>
+
+---
+
+## 4. 详细设置步骤 `(<Steps> & <PostImage>)`
+
+对于教程类文章，清晰的步骤至关重要。将 `<Steps>` 与 `<PostImage>` 结合使用。
+
+### 部署 NDI 设备的简单四步
+
+<Steps>
+1.  **检查网络环境**
+    确保所有设备（摄像机、电脑、接收器）连接到同一个高性能交换机。
+    <PostImage
+        src={ndiNetwork}
+        alt="NDI 网络拓扑图"
+        caption="所有设备必须在同一个网段内。"
+    />
+2.  **安装 NDI Tools**
+    在您的控制电脑上安装 NewTek 提供的免费 NDI Tools 包。
+3.  **配置源设备**
+    在 NDI 摄像机或编码器中启用 NDI 输出，并设置 IP 地址（如果需要）。
+4.  **使用 NDI Monitor 接收**
+    在电脑上运行 NDI Monitor，即可自动发现并接收视频流。
+</Steps>
+
+---
+
+## 5. 高级应用与代码示例 `(<CodeBlock>)`
+
+展示代码或配置片段，方便用户复制粘贴。
+
+### OBS Studio NDI 插件配置代码
+
+使用 `CodeBlock`，并指定语言，它会自动高亮显示。
+
+<CodeBlock language="json" title="OBS NDI Source Settings">
+{`{
+  "ndi_source_name": "CNDLIVE-CAM-01",
+  "bandwidth_mode": "High",
+  "synchronize": true,
+  "yuv_format": "YV12"
+}`}
+</CodeBlock>
+
+---
+
+## 6. 额外资源与行动召唤 `(<DownloadCard> & <SocialContact>)`
+
+在文章末尾，提供下载链接和联系方式，引导用户采取行动。
+
+### 下载 NDI SDK
+
+<DownloadCard 
+    title="NewTek NDI SDK 下载"
+    description="获取最新的 NDI SDK，集成到您的自定义软件中。"
+    href="https://www.ndi.tv/sdk"
+    icon="download"
+/>
+
+### 联系我们
+
+有任何 NDI 部署问题？欢迎联系我们的技术支持团队！
+
+<SocialContact />
+
+---
+
+## 🚀 总结与下一步
+
+通过使用这些 MDX 组件，您的文章不仅内容丰富，而且结构清晰、专业。
+
+<FooterNavigationLinks />
