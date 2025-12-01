@@ -1,8 +1,20 @@
 ---
 // src/pages/products/[id]/specs.astro
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+// ⚠️ 请确认组件路径
 import ProductLayout from '@/components/products/ProductLayout.astro';
-import { marked } from 'marked'; // 🔥 1. 引入解析器
+import TechSpecs from '@/components/products/TechSpecs.astro';
+
+// 1. 扫描数据
+const specsModules = import.meta.glob('/src/content/products/**/specs.ts', {
+  eager: true,
+});
+const downloadsModules = import.meta.glob(
+  '/src/content/products/**/downloads.ts',
+  { eager: true }
+);
 
 export async function getStaticPaths() {
   const posts = await getCollection('products');
@@ -12,60 +24,41 @@ export async function getStaticPaths() {
   }));
 }
 
+interface Props {
+  post: CollectionEntry<'products'>;
+}
+
 const { post } = Astro.props;
-const basePath = '/products';
-const specs = post.data.specs || [];
+
+// 2. 查找数据
+const specKey = Object.keys(specsModules).find((path) =>
+  path.includes(post.id)
+);
+const downloadKey = Object.keys(downloadsModules).find((path) =>
+  path.includes(post.id)
+);
+
+const externalSpecs = specKey ? (specsModules[specKey] as any).specs : null;
+const externalDownloads = downloadKey
+  ? (downloadsModules[downloadKey] as any).downloads
+  : null;
+
+// 🔥🔥🔥 关键点：这个 return 必须在上面的 Frontmatter 区域 (两个 --- 之间) 🔥🔥🔥
+// 如果当前产品没有 specs 数据，直接重定向
+if (!externalSpecs) {
+  return Astro.redirect(`/products/${post.id}`);
+}
 ---
+
+{/* --- 下面是 HTML 模板区域，这里面绝对不能出现 return --- */}
 
 <ProductLayout
   post={post}
-  basePath={basePath}
-  parentTitle="Products"
   activeTabId="tech-specs"
+  customSpecs={externalSpecs}
+  customDownloads={externalDownloads}
 >
-  <div
-    class="animate-in fade-in slide-in-from-bottom-4 mx-auto max-w-4xl py-8 duration-500"
-  >
-    <h2 class="mb-8 text-center text-3xl font-bold text-white">
-      Technical Specifications
-    </h2>
-
-    {
-      specs.length > 0 ? (
-        <div class="overflow-hidden rounded-xl border border-white/10 bg-zinc-900 shadow-2xl">
-          <table class="w-full border-collapse text-left">
-            <tbody>
-              {specs.map((item, index) => (
-                <tr
-                  class={`border-b border-white/10 last:border-0 ${index % 2 === 0 ? 'bg-white/2' : 'bg-transparent'}`}
-                >
-                  {/* 左侧 Label */}
-                  <td class="w-1/4 border-r border-white/10 p-6 align-top text-sm font-bold tracking-wide text-zinc-400 uppercase">
-                    {item.label}
-                  </td>
-
-                  {/* 右侧 Value (Markdown 渲染区) */}
-                  <td class="p-6 align-top text-zinc-200">
-                    {/* 🔥 核心修改： 
-                     1. marked.parse(item.value) 把 markdown 转成 html
-                     2. set:html 将其插入
-                     3. prose 类名用于还原列表样式 (ul, li, strong)
-                  */}
-                    <div
-                      class="prose prose-invert prose-sm prose-ul:list-disc prose-ul:pl-4 prose-ul:my-2 prose-li:my-1 prose-li:text-zinc-300 prose-strong:text-white prose-strong:font-bold prose-p:my-2 prose-p:leading-relaxed max-w-none"
-                      set:html={marked.parse(item.value)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p class="py-12 text-center text-zinc-500">
-          No specifications available.
-        </p>
-      )
-    }
+  <div class="mt-8">
+    <TechSpecs data={externalSpecs} />
   </div>
 </ProductLayout>

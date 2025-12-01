@@ -4,13 +4,13 @@ import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import BackButton from '@/components/ui/BackButton.astro';
 
 interface Props {
-  title: string; // 页面标题 (传给 SEO)
+  title: string;
   description?: string;
-  image?: string; // 社交分享图
-  schema?: object; // 结构化数据
-  breadcrumbItems?: { label: string; href?: string }[]; // 面包屑数据
-  backHref?: string; // 返回按钮链接 (如果有才显示)
-  backLabel?: string; // 返回按钮文字
+  image?: string;
+  schema?: object;
+  breadcrumbItems?: { label: string; href?: string }[];
+  backHref?: string;
+  backLabel?: string;
 }
 
 const {
@@ -22,31 +22,37 @@ const {
   backHref,
   backLabel = 'Back',
 } = Astro.props;
+
+// 🔥 新增逻辑：判断是否需要显示顶部导航栏
+// 只有当“面包屑有内容”或者“有返回链接”时，才为 true
+const showTopNav = breadcrumbItems.length > 0 || !!backHref;
 ---
 
-{/* 1. 继承最基础的全局 Layout */}
 <Layout title={title} description={description} image={image} schema={schema}>
-  {
-    /* 🔥 [关键修改]: 
-    1. bg-black -> bg-surface-base (背景自动变色)
-    2. text-white -> text-text-main (文字自动变色)
-    3. 添加 transition-colors (平滑过渡)
-  */
-  }
   <main
     class="bg-surface-base text-text-main min-h-screen py-12 transition-colors duration-300"
   >
     <div class="container mx-auto max-w-7xl px-4">
-      {/* 2. 顶部导航区域 (面包屑 + 返回按钮) */}
-      <div
-        class="align-center mb-12 flex flex-col justify-between gap-6 lg:flex-row lg:items-center"
-      >
-        {/* 如果传了面包屑数据，就显示 */}
-        {breadcrumbItems.length > 0 && <Breadcrumb items={breadcrumbItems} />}
+      {/* 2. 顶部导航区域 */}
+      {/* 🔥 修改：包裹在 showTopNav 判断中 */}
+      {/* 如果不满足条件，这个带有 mb-12 的 div 根本不会被渲染，彻底不占空间 */}
+      {
+        showTopNav && (
+          <div class="align-center mb-12 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+            {/* 左侧：面包屑 */}
+            {breadcrumbItems.length > 0 ? (
+              <Breadcrumb items={breadcrumbItems} />
+            ) : (
+              /* 如果没有面包屑但有返回按钮，放一个空 div 占位，保持 flex 布局把返回按钮顶到右边 (可选) */
+              /* 或者直接留空，根据 flex-col/row 的效果自然排列 */
+              <div />
+            )}
 
-        {/* 如果传了返回链接，就显示返回按钮 */}
-        {backHref && <BackButton href={backHref} label={backLabel} />}
-      </div>
+            {/* 右侧：返回按钮 */}
+            {backHref && <BackButton href={backHref} label={backLabel} />}
+          </div>
+        )
+      }
 
       {/* 3. 页面的具体内容插槽 */}
       <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">

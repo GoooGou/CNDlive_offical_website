@@ -1,5 +1,6 @@
 ---
-// 文件路径: src/components/product/TechSpecs.astro
+// src/components/products/TechSpecs.astro
+
 interface SpecItem {
   label: string;
   value: string;
@@ -11,54 +12,53 @@ interface Props {
 
 const { data } = Astro.props;
 
-// 简单的格式化函数：处理 YAML 里的换行、加粗和列表点
+// 格式化函数
 function parseContent(text: string) {
   if (!text) return '';
   return text
     .split('\n')
     .map((line) => {
-      // 1. 处理加粗 **text** -> <strong>text</strong>
+      // 1. 处理加粗: 使用变量 --color-text-main (自动黑/白)
       let processed = line.replace(
         /\*\*(.*?)\*\*/g,
-        '<strong class="text-zinc-900 dark:text-white">$1</strong>'
+        '<strong class="text-[var(--color-text-main)] block mt-2 mb-1">$1</strong>'
       );
-      // 2. 处理列表项 * -> 圆点
+
+      // 2. 处理列表项: 使用变量 --color-primary (自动红/亮红)
       if (processed.trim().startsWith('* ')) {
-        return `<div class="flex items-start gap-2 pl-2 mb-1"><span class="text-[#AC121F] mt-1.5 text-xs shrink-0">●</span><span class="leading-relaxed">${processed.replace('* ', '')}</span></div>`;
+        return `<div class="flex items-start gap-2 pl-2 mb-1"><span class="text-[var(--color-primary)] mt-1.5 text-[10px] shrink-0">●</span><span class="leading-relaxed">${processed.replace('* ', '')}</span></div>`;
       }
+
       // 3. 普通文本
-      return `<div class="mb-1">${processed}</div>`;
+      return `<div class="leading-relaxed">${processed}</div>`;
     })
     .join('');
 }
 ---
 
-<div class="not-content mt-4 overflow-x-auto">
-  <table
-    class="min-w-full border-collapse text-sm text-zinc-900 dark:text-zinc-100"
-  >
-    <thead>
-      <tr class="border-b border-zinc-200 dark:border-zinc-700">
-        <th
-          class="w-[140px] py-3 text-left font-extrabold tracking-wider text-[#AC121F] uppercase md:w-1/4"
-          >类别</th
-        >
-        <th class="py-3 text-left font-extrabold tracking-wider uppercase"
-          >参数详情</th
-        >
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+{
+  /* 外层容器：
+  border-[var(--color-border)] -> 自动适配浅灰/深灰边框
+*/
+}
+<div
+  class="not-content overflow-hidden rounded-xl border border-[var(--color-border)] shadow-sm"
+>
+  <table class="w-full border-collapse text-left text-sm">
+    {/* 分割线颜色自动适配 */}
+    <tbody class="divide-y divide-[var(--color-border)]">
       {
         data &&
           data.map((item) => (
-            <tr class="group transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-              <td class="py-3 pr-4 align-top font-bold text-zinc-800 dark:text-zinc-200">
+            <tr class="group /* 1. 基础背景色：跟随页面背景 (白/黑) */ /* 2. 斑马纹：使用 Header 背景色作为隔行色 (浅灰/深灰) */ /* 3. 悬停高亮：使用定义的 hover 变量 */ bg-[var(--color-bg-base)] transition-colors odd:bg-[var(--color-bg-header)] hover:bg-[var(--color-bg-hover)]">
+              {/* 左侧 Label: 使用主文字色 (黑/白) */}
+              <th class="w-1/3 border-r border-transparent px-6 py-4 align-top font-bold whitespace-nowrap text-[var(--color-text-main)] md:whitespace-normal">
                 {item.label}
-              </td>
-              {/* 使用 set:html 渲染处理后的 HTML */}
+              </th>
+
+              {/* 右侧 Value: 使用次要文字色 (深灰/浅灰) */}
               <td
-                class="py-3 align-top text-zinc-600 dark:text-zinc-400"
+                class="px-6 py-4 align-top text-[var(--color-text-muted)]"
                 set:html={parseContent(item.value)}
               />
             </tr>

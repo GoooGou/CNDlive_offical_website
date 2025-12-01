@@ -1,18 +1,22 @@
 ---
 // src/pages/products/[id]/index.astro
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content'; // ✅ 1. 引入 render 函数
+import type { CollectionEntry } from 'astro:content';
 
-// ✅ 修正 1：路径通常是 layouts，除非你真的把它放在 components 里了
+// ⚠️ 请确认你的 ProductLayout 路径。通常建议放在 layouts 目录下。
+// 如果你的文件确实在 components 里，请保持原样；如果在 layouts 里，请改为 '@/layouts/ProductLayout.astro'
 import ProductLayout from '@/components/products/ProductLayout.astro';
-
-import Cover from '@/components/common/Cover.astro';
-import MDXContent from '@/components/mdx/MDXContent.astro';
 import ArticleBody from '@/components/mdx/ArticleBody.astro';
 
-// ❌ 删除：不需要在这里引入 ProductTabs，因为 ProductLayout 内部已经包含了
-// import ProductTabs from '@/components/products/ProductTabs.astro';
+// 2. 扫描同目录下的 ts 数据文件
+const specsModules = import.meta.glob('/src/content/products/**/specs.ts', {
+  eager: true,
+});
+const downloadsModules = import.meta.glob(
+  '/src/content/products/**/downloads.ts',
+  { eager: true }
+);
 
-// 生成所有产品的路径
 export async function getStaticPaths() {
   const posts = await getCollection('products');
   return posts.map((post) => ({
@@ -21,42 +25,36 @@ export async function getStaticPaths() {
   }));
 }
 
+interface Props {
+  post: CollectionEntry<'products'>;
+}
+
 const { post } = Astro.props;
-const basePath = '/products';
+
+// ✅ 3. 核心修复：使用 render(post) 而不是 post.render()
+const { Content } = await render(post);
+
+// 4. 动态查找当前 ID 对应的 TS 数据文件
+// 逻辑：在所有文件路径中，找到包含当前产品 ID (如 'encoder-c6') 的那个文件
+const specKey = Object.keys(specsModules).find((path) =>
+  path.includes(post.id)
+);
+const downloadKey = Object.keys(downloadsModules).find((path) =>
+  path.includes(post.id)
+);
+
+// 5. 获取数据 (如果有的话，提取 .specs 或 .downloads 导出)
+const externalSpecs = specKey ? (specsModules[specKey] as any).specs : null;
+const externalDownloads = downloadKey
+  ? (downloadsModules[downloadKey] as any).downloads
+  : null;
 ---
 
 <ProductLayout
   post={post}
-  basePath={basePath}
-  parentTitle="Products"
   activeTabId="overview"
+  customSpecs={externalSpecs}
+  customDownloads={externalDownloads}
 >
-  {/* 1. 封面图区域 */}
-  {/* ✅ 修正 2：使用语义化变量 bg-surface-card 适配黑白主题 */}
-  <div
-    class="border-surface-border bg-surface-card mb-10 overflow-hidden rounded-2xl border shadow-2xl"
-  >
-    <Cover
-      src={post.data.cover}
-      alt={post.data.title}
-      title={post.data.title}
-    />
-  </div>
-
-  {/* 2. 咨询按钮 */}
-  <div class="mb-16 flex justify-center">
-    <a
-      href="/contact"
-      class="bg-primary hover:bg-primary-dark shadow-primary/20 transform rounded-full px-8 py-3 text-lg font-bold text-white shadow-lg transition-all hover:-translate-y-1"
-    >
-      Enquire Now
-    </a>
-  </div>
-
-  {/* 3. 产品营销文案 (MDX) */}
-  {/* ✅ 修正 3：添加 prose 类，否则 Markdown 内容没有排版样式 */}
-   <ArticleBody post={post} />
-  
- 
-
+  <ArticleBody post={post} />
 </ProductLayout>

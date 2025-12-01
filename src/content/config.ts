@@ -101,59 +101,37 @@ const solutions = defineCollection({
 
 //新增产品集合
 const products = defineCollection({
+  // ✅ 1. 关键点：只匹配 md 和 mdx。
+  // 这样 specs.ts 和 downloads.ts 会被这个集合自动忽略（它们只是普通的数据文件），
+  // 从而彻底解决了 "post.render is not a function" 的报错。
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/products' }),
-  // 修改这里：改成 ({ image })
+
   schema: ({ image }) =>
     z.object({
+      // ✅ 2. 核心字段改为必填 (去掉 optional)
+      // 因为这里只加载 index.mdx，主文件必须要有这些信息，否则构建时报错提示你补全。
       title: z.string(),
       description: z.string(),
+
       category: z.enum([
         'Video Encoder',
         'Video Decoder',
         'NDI Converter',
         'Manage & IP Gateway',
       ]),
+
+      // --- 默认值字段 ---
       isNew: z.boolean().default(false),
       order: z.number().default(99),
-
-      // 🔥🔥 修复核心：补上 ResourcePost 组件必须的字段 🔥🔥
-
-      // 1. 给一个默认日期（当前时间），这样组件就不会报错了
       pubDate: z.date().default(() => new Date()),
-
-      // 2. 补上图片字段（可选），防止组件读取图片时报错
-      cover: image().optional(),
-      // 🔥 新增：核心卖点列表 (显示在产品图右侧)
-      features: z.array(z.string()).optional(),
-      // 3. 补上作者字段（可选，给个默认值）
       author: z.string().default('CNDLive'),
-      // 🔥 新增复杂的 downloads 结构
-      downloads: z
-        .array(
-          z.object({
-            category: z.string(), // 例如 "Documents" 或 "Firmware"
-            items: z.array(
-              z.object({
-                title: z.string(), // 例如 "Quick Start Guide" 或 "C6-V1.01.0031"
-                fileUrl: z.string(), // 文件路径
-                date: z.string().optional(), // 例如 "2024.10"
-                releaseNotes: z.string().optional(), // 固件更新日志 (支持 Markdown)
-              }),
-            ),
-          }),
-        )
-        .optional(),
-      manualPdf: z.string().optional(),
-      // 🔥 2. 新增：技术参数 (数组格式，方便遍历渲染表格)
-      // 保持这个结构不变
-      specs: z
-        .array(
-          z.object({
-            label: z.string(),
-            value: z.string(), // 这里存长文本 (Markdown)
-          }),
-        )
-        .optional(),
+
+      // --- 视觉字段 ---
+      // 建议 cover 也是必填的，保证列表页布局统一
+      cover: image(),
+
+      // 卖点列表依然可选，有的产品可能没有
+      features: z.array(z.string()).optional(),
     }),
 });
 

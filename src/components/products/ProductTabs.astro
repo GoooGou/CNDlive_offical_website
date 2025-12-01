@@ -1,45 +1,39 @@
 ---
-// src/components/ProductTabs.astro
+// src/components/products/ProductTabs.astro
+
+interface TabItem {
+  id: string;
+  label: string;
+  href: string;
+}
+
 interface Props {
-  items: {
-    id: string;
-    label: string;
-    href: string;
-  }[];
+  items: TabItem[];
   activeId: string;
 }
 
-const { items = [], activeId } = Astro.props;
+const { items, activeId } = Astro.props;
+
+// 定义样式
+const baseClass =
+  'inline-flex items-center justify-center px-1 py-4 text-sm font-medium border-b-2 transition-colors duration-200 no-underline whitespace-nowrap';
+// 选中状态：红色下划线 + 红色文字
+const activeClass = 'border-[#AC121F] text-[#AC121F]';
+// 未选中状态：透明边框 + 灰色文字 + hover变色
+const inactiveClass =
+  'border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300 dark:text-zinc-400 dark:hover:text-zinc-200';
 ---
 
-<nav
-  class="bg-surface-base border-surface-border sticky top-20 left-0 z-40 mb-8 w-full border-b shadow-lg transition-colors duration-300"
->
-  <div class="mx-auto max-w-5xl px-4">
-    <div class="flex h-14 items-center justify-center space-x-8">
-      {
-        items.map((tab) => (
-          <a
-            href={tab.href}
-            class:list={[
-              'relative px-3 py-2 text-sm font-medium transition-colors duration-200',
-              // [修改]: 悬停时变为主要文字颜色 (黑/白)
-              'hover:text-text-main',
-              // [修改]:
-              // 激活状态: text-text-main (黑/白)
-              // 默认状态: text-text-muted (灰)
-              activeId === tab.id ? 'text-text-main' : 'text-text-muted',
-            ]}
-          >
-            {tab.label}
-
-            {/* 选中时的下划线 (保持品牌色 bg-primary 不变) */}
-            {activeId === tab.id && (
-              <span class="bg-primary absolute bottom-0 left-0 h-[2px] w-full rounded-t-full" />
-            )}
-          </a>
-        ))
-      }
-    </div>
-  </div>
+<nav class="-mb-px flex space-x-8" aria-label="Tabs">
+  {
+    items.map((item) => (
+      <a
+        href={item.href}
+        class={`${baseClass} ${item.id === activeId ? activeClass : inactiveClass}`}
+        aria-current={item.id === activeId ? 'page' : undefined}
+      >
+        {item.label}
+      </a>
+    ))
+  }
 </nav>

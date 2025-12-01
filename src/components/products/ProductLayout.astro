@@ -2,85 +2,154 @@
 // src/layouts/ProductLayout.astro
 import ContentLayout from '@/layouts/ContentLayout.astro';
 import ProductTabs from '@/components/products/ProductTabs.astro';
-import { generateProductSchema } from '@/utils/seo';
+import Cover from '@/components/common/Cover.astro';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  post: any;
-  basePath: string;
-  parentTitle: string;
+  post: CollectionEntry<'products'>;
   activeTabId: 'overview' | 'tech-specs' | 'download';
+  customSpecs?: any[];
+  customDownloads?: any[];
 }
 
-const { post, basePath, parentTitle, activeTabId } = Astro.props;
+const { post, activeTabId, customSpecs, customDownloads } = Astro.props;
 
-// 1. 动态生成 URL
-const baseUrl = `${basePath}/${post.id}`;
+const { title, description, cover, features } = post.data;
+const specsData = customSpecs;
+const downloadsData = customDownloads;
+const baseUrl = `/products/${post.id}`;
 
-// 2. Tab 逻辑
-const tabItems = [
-  { id: 'overview', label: 'Overview', href: baseUrl },
-  { id: 'tech-specs', label: 'Tech Specs', href: `${baseUrl}/specs` },
-];
+const tabItems = [{ id: 'overview', label: 'Overview', href: baseUrl }];
 
-// 动态添加 Download Tab
-if (
-  post.data.downloadUrl ||
-  post.data.manualPdf ||
-  (post.data.downloads && post.data.downloads.length > 0)
-) {
+if (specsData && specsData.length > 0) {
+  tabItems.push({
+    id: 'tech-specs',
+    label: 'Tech Specs',
+    href: `${baseUrl}/specs`,
+  });
+}
+
+if (downloadsData && downloadsData.length > 0) {
   tabItems.push({
     id: 'download',
     label: 'Download',
     href: `${baseUrl}/downloads`,
   });
 }
-
-// 3. SEO Schema
-const productSchema = generateProductSchema(
-  post,
-  Astro.site || new URL('https://cndlive.com')
-);
 ---
 
 <ContentLayout
-  title={post.data.title}
-  description={post.data.description}
-  image={post.data.cover}
-  schema={productSchema}
-  breadcrumbItems={[
-    { label: parentTitle, href: basePath },
-    { label: post.data.title },
-  ]}
-  backHref={basePath}
-  backLabel={`Back to ${parentTitle}`}
+  title={title}
+  description={description}
+  image={cover?.src}
+  breadcrumbItems={[]}
 >
-  {/* 2. Tab 导航 (已适配深色/亮色) */}
-  <ProductTabs items={tabItems} activeId={activeTabId} />
-
-  {/* 页面主体容器 */}
-  <div class="relative mx-auto min-h-[60vh] w-full max-w-5xl">
-    {/* 1. 公共头部 */}
-    <header class="mb-8 pt-8 text-center">
-      <h1
-        class="text-text-main mb-4 text-3xl leading-tight font-bold transition-colors duration-300 md:text-5xl"
+  {/* Hero 区域 */}
+  <div
+    class="not-content mx-auto mb-10 max-w-6xl px-4"
+    transition:name={`product-shell-${post.id}`}
+    transition:persist
+  >
+    {/* 面包屑 */}
+    <nav
+      aria-label="Breadcrumb"
+      class="mb-6 flex items-center text-sm text-zinc-500 dark:text-zinc-400"
+    >
+      <a
+        href="/"
+        class="transition-colors hover:text-zinc-900 dark:hover:text-white"
       >
-        {post.data.title}
-      </h1>
-      {
-        post.data.description && (
-          <p class="text-text-muted mx-auto max-w-2xl text-xl transition-colors duration-300">
-            {post.data.description}
-          </p>
-        )
-      }
-    </header>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="h-5 w-5"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </a>
+      <span class="mx-2 text-zinc-300 dark:text-zinc-600">/</span>
+      <a
+        href="/products"
+        class="transition-colors hover:text-zinc-900 dark:hover:text-white"
+        >Products</a
+      >
+      <span class="mx-2 text-zinc-300 dark:text-zinc-600">/</span>
+      <span class="font-medium text-zinc-900 dark:text-white">{title}</span>
+    </nav>
 
-    {/* 3. 不同的页面内容在这里渲染 (Slot) */}
-    {
-      /* 这里通常是 MDX 内容，会自动应用全局 prose 样式 (prose dark:prose-invert) */
-    }
-    <article class="animate-in fade-in mt-8 w-full duration-500">
-      <slot />
-    </article>
+    {/* Hero 内容 */}
+    <div class="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
+      {/* 左侧封面 */}
+      <div
+        class="aspect-video w-full overflow-hidden rounded-2xl border border-zinc-200 shadow-sm dark:border-zinc-800"
+      >
+        <Cover
+          src={cover}
+          alt={title}
+          title={title}
+          variant="hero"
+          loading="eager"
+          className="h-full w-full"
+        />
+      </div>
+
+      {/* 右侧信息 */}
+      <div>
+        <h1
+          class="mb-4 text-3xl leading-tight font-extrabold text-zinc-900 md:text-5xl dark:text-white"
+        >
+          {title}
+        </h1>
+        <p class="mb-6 text-xl font-semibold text-[#AC121F]">{description}</p>
+
+        {
+          features && (
+            <ul class="mb-8 space-y-2">
+              {features.map((f) => (
+                <li class="flex items-start gap-2 text-zinc-700 dark:text-zinc-300">
+                  <span class="mt-1 text-[#AC121F]">✓</span> {f}
+                </li>
+              ))}
+            </ul>
+          )
+        }
+
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            href={`${baseUrl}/specs`}
+            class="inline-flex items-center justify-center rounded-lg bg-[#AC121F] px-6 py-3 text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#c91524] hover:shadow-lg active:translate-y-0"
+          >
+            View Specs
+          </a>
+
+          <a
+            href="/contact"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-lg border border-zinc-300 px-6 py-3 text-base font-medium text-zinc-700 transition-colors hover:border-[#AC121F] hover:bg-[#AC121F]/5 hover:text-[#AC121F] dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-white dark:hover:bg-white/5 dark:hover:text-white"
+          >
+            Contact Sales
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Tab 导航 */}
+  <div
+    class="sticky top-20 z-30 mb-8 border-b border-(--color-border) bg-(--color-bg-base)/80 backdrop-blur-md transition-colors duration-300"
+  >
+    <div class="mx-auto max-w-6xl px-4">
+      <ProductTabs items={tabItems} activeId={activeTabId} />
+    </div>
+  </div>
+
+  {/* 内容插槽 */}
+  <div class="mx-auto min-h-[40vh] max-w-6xl px-4" transition:animate="fade">
+    <slot />
   </div>
 </ContentLayout>

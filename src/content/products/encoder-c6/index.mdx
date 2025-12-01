@@ -1,12 +1,11 @@
 ---
+# src/content/products/encoder-c6/index.mdx
 title: 'C6 Encoder'
-description: '这是一个测试'
-# ⚠️ 这里的拼写必须和 config.ts 里的 enum 完全一致，一个字母都不能差！
-# ❌ 不要写: "Encoder", "video encoder"
-# ✅ 必须写: "Video Encoder"
+description: 'NDI | SRT | RTMP | KVM | H.265'
 category: 'Video Encoder'
 cover: './cover/cover.webp'
-# 🔥 填写核心卖点 (参考竞品页面右侧的列表)
+
+# 🔥 这个 features 会被 Layout 读取，显示在顶部大图右侧
 features:
   - 'Plug-and-Play operation'
   - 'NDI 5.0 Support (High Bandwidth)'
@@ -15,248 +14,53 @@ features:
   - 'PoE (Power over Ethernet) & DC 12V'
   - 'Built-in Tally Light System'
   - 'PTZ Camera Control Support'
-specs:
-  - label: 'Model'
-    value: 'C6'
-
-  - label: 'Video Inputs'
-    value: |
-      * 1× 3G-SDI (SMPTE 424M), compatible with HD-SDI and SD-SDI
-      * 1× HDMI 2.0
-
-  - label: 'Video Outputs'
-    value: '1× 3G-SDI and 1× HDMI'
-
-  - label: 'Video Resolutions'
-    # 🔥 注意这里的写法：使用 | 符号，然后缩进
-    value: |
-      **SDI:**
-      * 1920×1080p 23.98/24/25/29.97/30/50/59.94/60fps
-      * 1920×1080i 50/59.94/60fps
-      * 720×576i 50fps (PAL SD)
-
-      **HDMI:**
-      * 3840×2160p 30fps
-      * 1920×1080p 23.98/24/25/29.97/30/50/59.94/60fps
-
-  - label: 'Video Encoding'
-    value: |
-      * H.264(AVC): Baseline/Main/High profile, Level 5.1
-      * H.265(HEVC): Main profile, Level 5.0
-# 🔥 对应图片的复杂下载数据
-downloads:
-  - category: 'Documents'
-    items:
-      - title: 'Quick Start Guide for C6'
-        date: '2024.10'
-        fileUrl: '/downloads/c6-quick-start.pdf'
-      - title: 'User Manual for C6'
-        date: '2024.09'
-        fileUrl: '/downloads/c6-manual.pdf'
-
-  - category: 'Firmware'
-    items:
-      - title: 'C6-V1.01.0031'
-        fileUrl: '/downloads/fw-v1.01.0031.zip'
-        # 使用 | 符号开启多行文本
-        releaseNotes: |
-          1. Optimization of Video Recording Module
-          2. Removal of Encoding Frame Rate Limit for Interlaced SDI Signals
-          3. Optimization of OSD Module
-          4. Adjustment of Disk Display Strategy
-
-      - title: 'C6-V1.01.0017'
-        fileUrl: '/downloads/fw-v1.01.0017.zip'
-        releaseNotes: |
-          1. Added voice intercom functionality
-          2. Optimized the video recording module
-          3. Fixed known bugs
-order: 1
 ---
 
-import {
-  Tabs,
-  TabItem,
-  Card,
-  CardGrid,
-  Icon,
-} from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
 
-{/* --- 1. 产品 Hero 区域 (自定义 HTML/Tailwind) --- */}
+{/* --- Overview 正文开始 --- */}
 
-<div className="not-content mb-12">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-    
-    {/* 左侧：产品图片 */}
-    <div className="bg-[#111] rounded-2xl p-8 border border-gray-800 flex items-center justify-center aspect-video relative group overflow-hidden">
-        {/* 这里使用 HTML img 标签以便控制样式 */}
-        <img 
-            src="/products/c6-product.webp" 
-            alt="C6 Encoder" 
-            className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
-            onError={(e) => e.target.src = 'https://placehold.co/600x400/111/FFF?text=C6+Image'}
-        />
-        <div className="absolute top-4 right-4 bg-[#AC121F] text-white text-xs font-bold px-2 py-1 rounded">
-            NDI HX 5.0
-        </div>
-    </div>
-
-    {/* 右侧：核心卖点 */}
-    <div>
-      <h1 className="text-4xl font-extrabold mb-4 ">C6 4K Video Encoder</h1>
-      <p className="text-xl text-[#AC121F] font-semibold mb-6">NDI | SRT | RTMP | KVM | H.265</p>
-
-      <p className=" mb-8 leading-relaxed">
-        C6 是一款专业级视频编码器，支持 HDMI 4K 或 3G-SDI 输入。它具备强大的多协议支持（NDI HX, SRT, RTMP），并独创性地集成了 KVM 功能，不仅能推流，还能远程管理您的信号源设备。
-      </p>
-
-      <div className="flex flex-wrap gap-4">
-        <a href="#specs" className="px-6 py-3 bg-[#AC121F] hover:bg-[#c91524] text-white font-bold rounded-lg transition-colors no-underline">
-          查看参数
-        </a>
-        <a href="https://console.cndlive.com" target="_blank" className="px-6 py-3 border border-gray-600 hover:border-white text-white rounded-lg transition-colors no-underline">
-          联系购买
-        </a>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-{/* --- 2. 核心功能网格 (使用 Starlight Card) --- */}
+{/* 核心功能网格 - 这是一个很好的 Overview 内容，保留 */}
 
 <CardGrid>
   <Card title="NDI HX 5.0原生支持" icon="rocket">
-    通过 NDI HX
-    技术，在低带宽下实现高画质、低延迟的视频传输，即插即用，无缝接入局域网制作流程。
+    通过 NDI HX 技术，在低带宽下实现高画质、低延迟的视频传输，即插即用。
   </Card>
   <Card title="4K H.265 编码" icon="seti:video">
-    支持高达 3840x2160 @ 30fps 的输入与编码。采用高效 H.265 (HEVC)
-    压缩，同画质下比 H.264 节省 50% 带宽。
+    支持高达 3840x2160 @ 30fps 的输入与编码。采用高效 H.265 (HEVC) 压缩。
   </Card>
   <Card title="独家 KVM 功能" icon="laptop">
-    支持 USB
-    环出，允许通过网络远程控制编码器连接的电脑（键盘/鼠标），实现真正的远程制作。
+    支持 USB 环出，允许通过网络远程控制编码器连接的电脑（键盘/鼠标）。
   </Card>
   <Card title="全协议支持" icon="rss">
-    除了 NDI，还支持 SRT (点对点传输), RTMP/RTMPS (直播推流), RTSP, UDP, HLS
-    等主流协议。
+    支持 SRT, RTMP/RTMPS, RTSP, UDP, HLS 等主流协议。
   </Card>
 </CardGrid>
 
----
+<div class="my-10"></div>
 
-{/* --- 3. 详细内容切换 (Tabs) --- */}
+### 为什么选择 C6？
 
-<Tabs>
-  
-  <TabItem label="产品概述" icon="information">
-    
-    ### 为什么选择 C6？
-    
-    C6 专为专业直播、远程制作和医疗/教育录播设计。它解决了传统编码器功能单一的问题，将**高质量传输**与**远程控制 (KVM)** 完美结合。
+C6 专为专业直播、远程制作和医疗/教育录播设计。它解决了传统编码器功能单一的问题，将**高质量传输**与**远程控制 (KVM)** 完美结合。
 
-    #### 1. 可视化 OLED 屏幕
-    前面板配备 OLED 显示屏，实时显示：
-    * 当前 IP 地址
-    * 视频分辨率与帧率
-    * CPU 使用率与核心温度
-    * 推流状态 (Stream Status)
+#### 1. 可视化 OLED 屏幕
 
-    #### 2. 真正的双流输出 (Dual Stream)
-    支持主码流和子码流同时输出。
-    * **主码流**: 用于高质量 NDI 制作或 4K 直播。
-    * **子码流**: 用于低带宽监看或预览。
+前面板配备 OLED 显示屏，实时显示：
 
-    #### 3. 7x24小时 稳定运行
-    工业级设计，低功耗，散热优异。支持 POE (Power over Ethernet) 供电，一根网线搞定供电与网络。
+- 当前 IP 地址
+- 视频分辨率与帧率
+- CPU 使用率与核心温度
+- 推流状态 (Stream Status)
 
-    ![C6 Connection Diagram](https://placehold.co/800x300/1a1a1a/666?text=Connection+Diagram+Placeholder)
+#### 2. 真正的双流输出 (Dual Stream)
 
-  </TabItem>
+支持主码流和子码流同时输出。
 
-  <TabItem label="技术规格" icon="setting">
-    
-    <div className="overflow-x-auto ">
-      {/* 1. text-zinc-900 dark:text-zinc-100: 确保文字在亮色下黑，深色下白
-      */}
-      <table className="min-w-full text-sm text-zinc-900 dark:text-zinc-100">
-        <thead>
-          {/* 2. border-zinc-200 dark:border-zinc-700: 表头分割线适配
-          */}
-          <tr className="border-b border-zinc-200 dark:border-zinc-700">
-            <th className="py-2 text-left text-[#AC121F]">类别</th>
-            <th className="py-2 text-left">参数详情</th>
-          </tr>
-        </thead>
-        {/* 3. divide-zinc-200 dark:divide-zinc-800: 行与行之间的分割线适配
-        */}
-        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-          <tr>
-            <td className="font-bold py-3">视频输入</td>
-            <td className="py-3">1x HDMI 1.4 (最高 4K30), 1x 3G-SDI (最高 1080p60)</td>
-          </tr>
-          <tr>
-            <td className="font-bold py-3">视频环出</td>
-            <td className="py-3">1x HDMI, 1x SDI</td>
-          </tr>
-          <tr>
-            <td className="font-bold py-3">网络接口</td>
-            <td className="py-3">1x RJ45 1000M 自适应以太网口 (支持 POE)</td>
-          </tr>
-          <tr>
-            <td className="font-bold py-3">编码格式</td>
-            <td className="py-3">H.265 (HEVC), H.264 (AVC), Motion-JPEG</td>
-          </tr>
-          <tr>
-            <td className="font-bold py-3">NDI 支持</td>
-            <td className="py-3">NDI|HX 2.0 / 5.0 (需 License)</td>
-          </tr>
-          <tr>
-            <td className="font-bold py-3">输出分辨率</td>
-            <td className="py-3">4K30, 1080p60, 1080p30, 720p60, 720p30 等可自定义</td>
-          </tr>
-          <tr>
-            <td className="font-bold py-3">传输协议</td>
-            <td className="py-3">NDI|HX, SRT, RTMP/RTMPS, HLS, TS over UDP, RTSP, Onvif</td>
-          </tr>
-          <tr>
-            <td className="font-bold py-3">KVM 功能</td>
-            <td className="py-3">支持 (通过 USB Type-A 连接 PC)</td>
-          </tr>
-           <tr>
-            <td className="font-bold py-3">电源</td>
-            <td className="py-3">DC 12V/1A 或 POE (802.3af)</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+- **主码流**: 用于高质量 NDI 制作或 4K 直播。
+- **子码流**: 用于低带宽监看或预览。
 
-  </TabItem>
+#### 3. 7x24小时 稳定运行
 
-  <TabItem label="下载与支持" icon="download">
-    
-    {/* Callout 组件之前已经适配过了 */}
-    :::tip[固件更新提示]
-    升级固件时请勿断电。建议在升级前备份当前配置文件。
-    :::
+工业级设计，低功耗，散热优异。支持 POE (Power over Ethernet) 供电，一根网线搞定供电与网络。
 
-    {/* 4. 给下载列表加一个容器，确保在非 Prose 环境下文字也是黑/白的
-       text-zinc-900 dark:text-zinc-100
-    */}
-    <div className="text-zinc-900 dark:text-zinc-100 mt-4 space-y-2">
-        <ul className="list-disc pl-5 space-y-1">
-            <li>
-                📥 <a href="/downloads/c6-manual.pdf" className="font-bold text-[#AC121F] hover:underline">用户手册 (User Manual PDF)</a>
-            </li>
-            <li>
-                💾 <a href="/downloads/c6-firmware.bin" className="font-bold text-[#AC121F] hover:underline">最新固件 (Firmware v2.01)</a>
-            </li>
-            <li>
-                🔧 <a href="/downloads/search-tool.zip" className="font-bold text-[#AC121F] hover:underline">设备搜索工具 (Search Tool)</a>
-            </li>
-        </ul>
-    </div>
-
-  </TabItem>
-</Tabs>
+![C6 Connection Diagram](https://placehold.co/800x300/1a1a1a/666?text=Connection+Diagram+Placeholder)

@@ -22,7 +22,6 @@ const {
 } = Astro.props;
 
 // --- 1. 简单的哈希函数 ---
-// 将标题字符串转为数字，确保同一标题永远对应同一种颜色
 const getHashIndex = (str: string) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -31,22 +30,38 @@ const getHashIndex = (str: string) => {
   return Math.abs(hash);
 };
 
-// --- 2. 定义两套特定背景 ---
+// --- 2. 定义丰富的渐变色板 (6种风格) ---
 const gradients = [
-  // 🔴🟠 方案一：红橙暖色 (Red-Orange)
-  // 充满活力，从亮橙过渡到深红
-  'bg-gradient-to-br from-orange-400 via-red-500 to-red-700',
+  // 1. 🔴 经典红橙 (活力/品牌色)
+  // 适合: 强调、热点内容
+  'bg-gradient-to-br from-orange-500 via-red-600 to-red-900',
 
-  // ⚫️🔵🟢 方案二：黑蓝青冷色 (Black-Blue-Cyan)
-  // 科技感深色，从接近黑色的深蓝过渡到青色
-  'bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-800',
+  // 2. 🔵 深邃科技蓝 (专业/稳重)
+  // 适合: 技术文档、硬核内容
+  'bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-900',
+
+  // 3. 🟣 赛博霓虹紫 (创新/未来感)
+  // 适合: 新功能、创意内容
+  'bg-gradient-to-br from-indigo-600 via-purple-700 to-violet-900',
+
+  // 4. 🟢 深海极光绿 (清新/生长)
+  // 适合: 教程、入门指南
+  'bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-800',
+
+  // 5. 🌑 高级暗黑灰 (极简/高端)
+  // 适合: 硬件参数、通用内容
+  'bg-gradient-to-br from-zinc-600 via-zinc-800 to-black',
+
+  // 6. 🌅 落日熔金 (温暖/醒目)
+  // 适合: 社区动态、公告
+  'bg-gradient-to-br from-rose-500 via-pink-600 to-orange-600',
 ];
 
-// 根据标题哈希值，在 0 和 1 之间选择
+// 根据标题哈希值，在 gradients 数组长度范围内取余
 const themeClass = gradients[getHashIndex(title) % gradients.length];
 const hasImage = !!src;
 
-// --- 3. 样式配置 (Hero vs List) ---
+// --- 3. 样式配置 ---
 const variantStyles = {
   hero: {
     wrapper: 'p-8 md:p-12',
@@ -82,9 +97,9 @@ const currentStyle = variantStyles[variant];
         class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
     ) : (
-      /* --- 情况 B: 无图片，使用计算出的渐变背景 --- */
+      /* --- 情况 B: 无图片，使用随机渐变背景 --- */
       <div
-        class={`flex h-full w-full flex-col items-center justify-center text-center transition-transform duration-700 group-hover:scale-105 ${currentStyle.wrapper} ${themeClass} /* 👈 应用随机选中的背景 */`}
+        class={`flex h-full w-full flex-col items-center justify-center text-center transition-transform duration-700 group-hover:scale-105 ${currentStyle.wrapper} ${themeClass} /* 👈 应用随机背景 */`}
       >
         <div class="relative z-10 mx-auto w-full max-w-4xl">
           <h3
