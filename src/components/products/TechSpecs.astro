@@ -1,0 +1,69 @@
+---
+// 文件路径: src/components/product/TechSpecs.astro
+interface SpecItem {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  data: SpecItem[];
+}
+
+const { data } = Astro.props;
+
+// 简单的格式化函数：处理 YAML 里的换行、加粗和列表点
+function parseContent(text: string) {
+  if (!text) return '';
+  return text
+    .split('\n')
+    .map((line) => {
+      // 1. 处理加粗 **text** -> <strong>text</strong>
+      let processed = line.replace(
+        /\*\*(.*?)\*\*/g,
+        '<strong class="text-zinc-900 dark:text-white">$1</strong>'
+      );
+      // 2. 处理列表项 * -> 圆点
+      if (processed.trim().startsWith('* ')) {
+        return `<div class="flex items-start gap-2 pl-2 mb-1"><span class="text-[#AC121F] mt-1.5 text-xs shrink-0">●</span><span class="leading-relaxed">${processed.replace('* ', '')}</span></div>`;
+      }
+      // 3. 普通文本
+      return `<div class="mb-1">${processed}</div>`;
+    })
+    .join('');
+}
+---
+
+<div class="not-content mt-4 overflow-x-auto">
+  <table
+    class="min-w-full border-collapse text-sm text-zinc-900 dark:text-zinc-100"
+  >
+    <thead>
+      <tr class="border-b border-zinc-200 dark:border-zinc-700">
+        <th
+          class="w-[140px] py-3 text-left font-extrabold tracking-wider text-[#AC121F] uppercase md:w-1/4"
+          >类别</th
+        >
+        <th class="py-3 text-left font-extrabold tracking-wider uppercase"
+          >参数详情</th
+        >
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+      {
+        data &&
+          data.map((item) => (
+            <tr class="group transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+              <td class="py-3 pr-4 align-top font-bold text-zinc-800 dark:text-zinc-200">
+                {item.label}
+              </td>
+              {/* 使用 set:html 渲染处理后的 HTML */}
+              <td
+                class="py-3 align-top text-zinc-600 dark:text-zinc-400"
+                set:html={parseContent(item.value)}
+              />
+            </tr>
+          ))
+      }
+    </tbody>
+  </table>
+</div>
