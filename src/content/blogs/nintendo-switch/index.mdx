@@ -5,16 +5,41 @@ pubDate: 2024-09-02
 updatedDate: 2025-11-28
 author: 'CNDLive Team'
 cover: './covers/nintendo1.webp'
-
 tags: ['Nintendo Switch', 'Live Streaming', 'Hardware Encoder', 'Tutorial']
 heroImage: './covers/nintendo1.webp'
 ---
-
 
 import PostImage from '@/components/mdx/PostImage.astro';
 import Steps from '@/components/mdx/Steps.astro';
 import Callout from '@/components/mdx/Callout.astro';
 import ProsCons from '@/components/mdx/ProsCons.astro';
+
+{/* --- 图片导入区域 (请确保图片文件实际存在于对应路径) --- */}
+import outdoorStreamingImg from './images/8aad82311de28b4d170df3700d6c4ec5_MD5.webp';
+import limitationsImg from './images/9cd2128177a6dabd34af00f98f397f9f_MD5.webp';
+import captureCardDiagramImg from './images/d2bb6520e21329947237daecaae60544_MD5.webp';
+import directStreamingImg from './images/fd3c0a15fe441fe831ad03df91e1c7a2_MD5.webp';
+
+{/* 步骤图 */}
+import step1ConnectImg from './images/b0f03811bafedf3ac22d5fc8b06667d3_MD5.webp';
+import step2NetworkImg from './images/f67c80f9316f8c61fa98ffdb541bde4a_MD5.webp';
+import step3ConfigImg from './images/c770ea8a2bd57af526fedc7fda665ddd_MD5.webp';
+import step4StartImg from './images/2888a5dd0b5482b7db95c5f8321b8aff_MD5.webp';
+import step5MonitorImg from './images/ac94b621f435ee84a4bdcf051c3ef912_MD5.webp';
+import step6LiveImg from './images/0329bbc1a9607c3ce866cefd3a33ae41_MD5.webp';
+
+{/* 功能特性图 */}
+import stableConnectionImg from './images/0d778831518e186f4f788bb0eca9b38c_MD5.webp';
+import noPCNeededImg from './images/f85d7ad3b923d40c7330d8972f6e33f6_MD5.png';
+import multiPlatformImg from './images/cb606c1ffbf6b3921de7605eb7ad8a1b_MD5.webp';
+import bondingTechImg from './images/568de2e98dee7fe2b0683527acf3c607_MD5.webp';
+import compactSetupImg from './images/733fe55eef2d3dafba3ca4d245370052_MD5.webp';
+
+{/* 产品与品牌图 */}
+import c6EncoderImg from './images/412e9414df6ac38982563ab122fc0888_MD5.webp';
+import x1EncoderImg from './images/6b25ce011bd234e7ec79ea2a886c5e53_MD5.webp';
+import lifestyleImg from './images/0cd5a401870a647165975581cd97a991_MD5.webp';
+import proTipsImg from './images/d86ce8fd733b3a7139e26fa7c4ad26c6_MD5.webp';
 
 ## Introduction: Can You Go Live on Nintendo Switch?
 
@@ -24,10 +49,7 @@ Unlike PlayStation or Xbox, the Switch doesn’t come with built-in streaming ap
 
 In this article, we’ll walk you through how to stream Nintendo Switch gameplay using a **hardware encoder** — a powerful, portable device that lets you broadcast anytime, anywhere, even outdoors.
 
-<PostImage
-  src="/images/pages/files/8aad82311de28b4d170df3700d6c4ec5_MD5.webp"
-  alt="Streaming Nintendo Switch outdoors"
-/>
+<PostImage src={outdoorStreamingImg} alt="Streaming Nintendo Switch outdoors" />
 
 ## Why Nintendo Switch Doesn’t Support Built-in Streaming
 
@@ -37,10 +59,7 @@ The Nintendo Switch was designed for portability and local play, not integrated 
 - **Hardware limitations:** It focuses on gaming performance and mobility rather than encoding or broadcast functions.
 - **Result:** To go live, you’ll need a third-party tool — such as a capture card or encoder.
 
-<PostImage
-  src="/images/pages/files/9cd2128177a6dabd34af00f98f397f9f_MD5.webp"
-  alt="Nintendo Switch hardware limitations"
-/>
+<PostImage src={limitationsImg} alt="Nintendo Switch hardware limitations" />
 
 ## Two Main Ways to Go Live on Nintendo Switch
 
@@ -60,10 +79,7 @@ The Nintendo Switch was designed for portability and local play, not integrated 
   </div>
 </ProsCons>
 
-<PostImage
-  src="/images/pages/files/d2bb6520e21329947237daecaae60544_MD5.webp"
-  alt="Capture card connection diagram"
-/>
+<PostImage src={captureCardDiagramImg} alt="Capture card connection diagram" />
 
 ### Option 2: Using a Hardware Encoder for Direct Streaming
 
@@ -75,7 +91,7 @@ A hardware encoder simplifies everything. You can go live **without a PC**, dire
 - ✅ **Works even outdoors**
 
 <PostImage
-  src="/images/pages/files/fd3c0a15fe441fe831ad03df91e1c7a2_MD5.webp"
+  src={directStreamingImg}
   alt="Direct streaming with hardware encoder"
 />
 
@@ -89,49 +105,33 @@ Follow these simple steps to start your broadcast.
 1.  **Connect Video Source**
     Connect Switch Dock → HDMI cable → Encoder Input.
     <PostImage
-      src="/images/pages/files/b0f03811bafedf3ac22d5fc8b06667d3_MD5.webp"
+      src={step1ConnectImg}
       alt="Connecting HDMI"
-      
     />
 
 2.  **Network Setup**
     Set up your network (Ethernet, Wi-Fi, or SIM card).
 
-    <PostImage
-      src="/images/pages/files/f67c80f9316f8c61fa98ffdb541bde4a_MD5.webp"
-      alt="Setting up network"
-    />
+    <PostImage src={step2NetworkImg} alt="Setting up network" />
 
 3.  **Configure Stream**
     Add your stream key and RTMP/SRT server address from your platform.
 
-    <PostImage
-      src="/images/pages/files/c770ea8a2bd57af526fedc7fda665ddd_MD5.webp"
-      alt="RTMP configuration"
-    />
+    <PostImage src={step3ConfigImg} alt="RTMP configuration" />
 
 4.  **Start Streaming**
     Tap **Start Streaming** on the encoder screen.
 
-    <PostImage
-      src="/images/pages/files/2888a5dd0b5482b7db95c5f8321b8aff_MD5.webp"
-      alt="Start streaming button"
-    />
+    <PostImage src={step4StartImg} alt="Start streaming button" />
 
 5.  **Monitor Status**
     Monitor your bitrate and resolution directly from the encoder dashboard.
 
-    <PostImage
-      src="/images/pages/files/ac94b621f435ee84a4bdcf051c3ef912_MD5.webp"
-      alt="Monitoring dashboard"
-    />
+    <PostImage src={step5MonitorImg} alt="Monitoring dashboard" />
 
 6.  **You Are Live!**
     That’s it–you’re broadcasting to the world!
-    <PostImage
-      src="/images/pages/files/0329bbc1a9607c3ce866cefd3a33ae41_MD5.webp"
-      alt="Live stream result"
-    />
+    <PostImage src={step6LiveImg} alt="Live stream result" />
 
 </Steps>
 
@@ -145,10 +145,7 @@ One of the biggest challenges for streamers is keeping their video smooth and st
 
 A hardware encoder solves this by using a dedicated chip to process and send your video in real time, instead of relying on your computer. This means **less delay, better synchronization, and fewer dropped frames**.
 
-<PostImage
-  src="/images/pages/files/0d778831518e186f4f788bb0eca9b38c_MD5.webp"
-  alt="Stable streaming connection"
-/>
+<PostImage src={stableConnectionImg} alt="Stable streaming connection" />
 
 ### No Need for a PC
 
@@ -156,19 +153,13 @@ Traditional streaming setups can be messy — a PC, cables, capture cards, and s
 
 With an encoder, you can skip all that. Just connect your Nintendo Switch Dock via HDMI, set up your internet connection, and hit start streaming. **Everything runs directly on the device.**
 
-<PostImage
-  src="/images/pages/files/f85d7ad3b923d40c7330d8972f6e33f6_MD5.png"
-  alt="No PC needed setup"
-/>
+<PostImage src={noPCNeededImg} alt="No PC needed setup" />
 
 ### Multi-Platform Output
 
 A professional encoder lets you stream to several platforms (Twitch, YouTube, Facebook) at the same time, all from one device. This helps you reach more viewers without extra setup or heavy CPU load.
 
-<PostImage
-  src="/images/pages/files/cb606c1ffbf6b3921de7605eb7ad8a1b_MD5.webp"
-  alt="Multi-platform streaming"
-/>
+<PostImage src={multiPlatformImg} alt="Multi-platform streaming" />
 
 ### Outdoor Bonded Streaming: Go Live Anywhere
 
@@ -176,19 +167,13 @@ Sometimes the best content happens outside. But mobile networks can be unstable.
 
 Our encoders use **Bonded Streaming** to combine multiple networks — like 4G/5G, Wi-Fi, and Ethernet — to create one powerful, stable connection. Even if one signal drops, your stream stays live.
 
-<PostImage
-  src="/images/pages/files/568de2e98dee7fe2b0683527acf3c607_MD5.webp"
-  alt="Outdoor bonding technology"
-/>
+<PostImage src={bondingTechImg} alt="Outdoor bonding technology" />
 
 ### Compact and Professional Setup
 
 Encoders are small, lightweight, and portable. Despite their size, they pack serious power. You can take it to events, use it in your studio, or keep it in your bag for spontaneous outdoor sessions.
 
-<PostImage
-  src="/images/pages/files/733fe55eef2d3dafba3ca4d245370052_MD5.webp"
-  alt="Compact encoder setup"
-/>
+<PostImage src={compactSetupImg} alt="Compact encoder setup" />
 
 ---
 
@@ -196,10 +181,7 @@ Encoders are small, lightweight, and portable. Despite their size, they pack ser
 
 ### **Model: C6 4K HDMI/SDI Video Encoder**
 
-<PostImage
-  src="/images/pages/files/412e9414df6ac38982563ab122fc0888_MD5.webp"
-  alt="C6 Encoder"
-/>
+<PostImage src={c6EncoderImg} alt="C6 Encoder" />
 
 - Supports RTMP, RTMPS, SRT, HLS, TS over UDP, RTSP, NDI|HX 2/3
 - Dual HDMI & SDI inputs
@@ -208,10 +190,7 @@ Encoders are small, lightweight, and portable. Despite their size, they pack ser
 
 ### **Model: X1 H265 SDI/HDMI 4G Bonding Encoder**
 
-<PostImage
-  src="/images/pages/files/6b25ce011bd234e7ec79ea2a886c5e53_MD5.webp"
-  alt="X1 Bonding Encoder"
-/>
+<PostImage src={x1EncoderImg} alt="X1 Bonding Encoder" />
 
 - Combines up to 7 networks (3x SIM, Wi-Fi 6, GbE, 2x USB modems)
 - 3-4 hours battery life
@@ -235,10 +214,7 @@ Our hardware encoder allows creators to easily bridge both worlds.
 
 By using a portable encoder, you can maintain a consistent flow of content even when traveling. Mixing gameplay with real-life storytelling allows fans to feel personally connected and emotionally invested.
 
-<PostImage
-  src="/images/pages/files/0cd5a401870a647165975581cd97a991_MD5.webp"
-  alt="Streamer lifestyle branding"
-/>
+<PostImage src={lifestyleImg} alt="Streamer lifestyle branding" />
 
 ---
 
@@ -249,10 +225,7 @@ By using a portable encoder, you can maintain a consistent flow of content even 
   docked for long sessions.
 </Callout>
 
-<PostImage
-  src="/images/pages/files/d86ce8fd733b3a7139e26fa7c4ad26c6_MD5.webp"
-  alt="Pro tips summary"
-/>
+<PostImage src={proTipsImg} alt="Pro tips summary" />
 
 ---
 

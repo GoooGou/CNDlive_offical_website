@@ -29,7 +29,7 @@ export default function Navbar() {
   }, [isMobileOpen]);
 
   const hasSubMenu = (type) => type === 'mega' || type === 'dropdown';
-  
+
   // 🚨 新增：处理鼠标进入事件 (重新启用过渡)
   const handleMouseEnter = (idx) => {
     setIsTransitioning(true); // 鼠标进入时启用过渡动画
@@ -39,7 +39,7 @@ export default function Navbar() {
   // 🚨 新增：处理菜单项点击事件 (强制关闭并禁用过渡)
   const handleItemClick = (e) => {
     // 1. 禁用过渡：防止 Safari 闪烁
-    setIsTransitioning(false); 
+    setIsTransitioning(false);
     // 2. 立即关闭菜单：解决点击后不消失的问题
     setActiveMega(null);
 
@@ -51,7 +51,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 right-0 left-0 z-50 h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md">
-      <div className="mx-auto h-full   px-6 lg:px-8">
+      <div className="mx-auto h-full px-6 lg:px-8">
         <div className="flex h-full items-center justify-between">
           {/* Logo */}
           <div className="flex shrink-0 items-center">
@@ -68,9 +68,11 @@ export default function Navbar() {
                 key={idx}
                 className="group relative flex h-full items-center"
                 // 🚨 调用新的 handleMouseEnter
-                onMouseEnter={() => hasSubMenu(item.type) && handleMouseEnter(idx)} 
+                onMouseEnter={() =>
+                  hasSubMenu(item.type) && handleMouseEnter(idx)
+                }
                 // 🚨 保持 onMouseLeave 关闭菜单
-                onMouseLeave={() => setActiveMega(null)} 
+                onMouseLeave={() => setActiveMega(null)}
               >
                 <a
                   href={item.href || '#'}
@@ -113,7 +115,7 @@ export default function Navbar() {
                     items={item.items}
                     onMouseEnter={() => setActiveMega(idx)}
                     onMouseLeave={() => setActiveMega(null)}
-                    isTransitioning={isTransitioning} // 🚨 新增 isTransitioning 
+                    isTransitioning={isTransitioning} // 🚨 新增 isTransitioning
                     onItemClick={handleItemClick} // 🚨 新增 onItemClick
                   />
                 )}

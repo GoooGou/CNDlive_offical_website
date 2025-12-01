@@ -46,9 +46,9 @@ const blogs = defineCollection({
       title: z.string(),
       description: z.string(),
       pubDate: z.date(),
-      updatedDate: z.date().optional(),
       author: z.string(),
       tags: z.array(z.string()),
+      updatedDate: z.date().optional(),
 
       // 修改处：加上 .optional()
       // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
