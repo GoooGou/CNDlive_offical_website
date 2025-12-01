@@ -19,6 +19,7 @@ import Cover from '../common/Cover.astro';
 import CodeBlock from './CodeBlock.astro';
 import AnimatedEmojiContainer from './AnimatedEmojiContainer.astro';
 import FooterNavigationLinks from './FooterNavigationLinks.astro';
+import FAQ from './FAQ.astro';
 
 interface Props {
   post: any; // 接收文章数据对象
@@ -32,8 +33,6 @@ const { Content } = await render(post);
 // 3. 定义组件映射表 (Mapping)
 // 左边是 MDX/HTML 标签名，右边是你的组件
 const mdxComponents = {
-  
-
   // === 注册自定义组件 (让 MDX 认识这些标签) ===
   Callout,
   Video,
@@ -48,6 +47,10 @@ const mdxComponents = {
   CodeBlock,
   AnimatedEmojiContainer,
   FooterNavigationLinks,
+  PostImage,
+  FAQ,
+  Blockquote,
+  Link,
 };
 ---
 

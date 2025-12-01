@@ -1,0 +1,63 @@
+---
+interface Props {
+  title: string; // 问题文本
+  open?: boolean; // 是否默认展开
+}
+
+const { title, open } = Astro.props;
+---
+
+<details
+  class="group border-surface-border bg-surface-muted my-3 overflow-hidden rounded-xl border transition-all duration-300"
+  {open}
+>
+  <summary
+    class="flex cursor-pointer list-none items-center justify-between p-4 font-medium transition-colors select-none [&::-webkit-details-marker]:hidden"
+  >
+    <!-- 问题标题 -->
+    <span class="text-text-main">{title}</span>
+
+    <!-- 箭头图标 (纯 CSS 旋转动画) -->
+    <span
+      class="text-text-main transform transition-transform duration-300 group-open:rotate-180"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+    </span>
+  </summary>
+
+  <!-- 答案内容区域 -->
+  <div
+    class="animate-fadeIn px-4 pt-2 pb-4 text-sm leading-relaxed text-gray-600 dark:text-gray-300"
+  >
+    <slot />
+  </div>
+</details>
+
+<style>
+  /* 可选：添加一点淡入动画让展开更自然 */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out;
+  }
+</style>

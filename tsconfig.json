@@ -5,7 +5,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      // mdx,
+      "@/components/mdx/*": ["src/components/mdx/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
