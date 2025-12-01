@@ -1,7 +1,5 @@
 ---
-import { Image } from 'astro:assets';
-import { ArrowUpRight } from 'lucide-react';
-import IMG from './IMG.astro';
+import Cover from './Cover.astro';
 
 interface Props {
   post: any;
@@ -12,31 +10,20 @@ const { post, basePath } = Astro.props;
 
 // 构建跳转链接
 // ⚠️ 注意：如果你的文章文件是 .md 或 .mdx，通常使用 post.slug 而不是 post.id
-// 如果链接不正确，请检查这里。
 const href = `${basePath}/${post.slug || post.id}`;
 ---
 
 <a href={href} class="group flex h-full flex-col gap-4">
-  {/* 图片区域 */}
+  {/* 图片区域 - 由 Cover 组件完全接管（含图片、大字报兜底、边框） */}
   <div
     class="border-surface-border relative aspect-video shrink-0 overflow-hidden rounded-xl border transition-colors duration-300"
   >
-    {
-      post.data.cover ? (
-        <IMG
-          src={post.data.cover}
-          alt={post.data.title}
-          class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          width={600}
-        />
-      ) : (
-        // 无图兜底显示
-        <div class="bg-surface-muted flex h-full w-full items-center justify-center transition-colors duration-300">
-          {/* [修改]: text-white/20 -> text-text-main/20 (适配兜底文字，使用主色调的低透明度) */}
-          <span class="text-text-main/20 font-black select-none">IMG</span>
-        </div>
-      )
-    }
+    <Cover
+      src={post.data.cover}
+      alt={post.data.title}
+      title={post.data.title}
+      loading="lazy"
+    />
   </div>
 
   {/* 文字区域 */}

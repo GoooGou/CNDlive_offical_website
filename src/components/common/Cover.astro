@@ -1,5 +1,4 @@
 ---
-// src/components/ui/Cover.astro
 import IMG from './IMG.astro';
 
 interface Props {
@@ -8,6 +7,7 @@ interface Props {
   title?: string;
   className?: string;
   raw?: boolean;
+  variant?: 'hero' | 'list';
   loading?: 'eager' | 'lazy';
 }
 
@@ -17,8 +17,50 @@ const {
   title = 'CNDLive',
   className = '',
   raw = false,
-  loading = 'lazy',
+  variant = 'list',
+  loading = variant === 'hero' ? 'eager' : 'lazy',
 } = Astro.props;
+
+// --- 1. 简单的哈希函数 ---
+// 将标题字符串转为数字，确保同一标题永远对应同一种颜色
+const getHashIndex = (str: string) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash);
+};
+
+// --- 2. 定义两套特定背景 ---
+const gradients = [
+  // 🔴🟠 方案一：红橙暖色 (Red-Orange)
+  // 充满活力，从亮橙过渡到深红
+  'bg-gradient-to-br from-orange-400 via-red-500 to-red-700',
+
+  // ⚫️🔵🟢 方案二：黑蓝青冷色 (Black-Blue-Cyan)
+  // 科技感深色，从接近黑色的深蓝过渡到青色
+  'bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-800',
+];
+
+// 根据标题哈希值，在 0 和 1 之间选择
+const themeClass = gradients[getHashIndex(title) % gradients.length];
+const hasImage = !!src;
+
+// --- 3. 样式配置 (Hero vs List) ---
+const variantStyles = {
+  hero: {
+    wrapper: 'p-8 md:p-12',
+    text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-wide drop-shadow-xl',
+    clamp: '',
+  },
+  list: {
+    wrapper: 'p-4',
+    text: 'text-lg md:text-xl font-bold leading-snug tracking-tight text-shadow-md',
+    clamp: 'line-clamp-3',
+  },
+};
+
+const currentStyle = variantStyles[variant];
 ---
 
 <div
@@ -29,26 +71,33 @@ const {
 `}
 >
   {
-    /* 核心修改：
-    直接使用 IMG 组件。
-    1. 所有的图片处理逻辑（原生vs压缩）都由 IMG 接管。
-    2. 所有的无图兜底逻辑（渐变、噪点、首字母）都由 IMG 接管。
-    3. Cover 组件只需要关注“样式表现” (CSS)。
-  */
+    hasImage ? (
+      /* --- 情况 A: 有图片 --- */
+      <IMG
+        src={src}
+        alt={alt}
+        title={title}
+        raw={raw}
+        loading={loading}
+        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+    ) : (
+      /* --- 情况 B: 无图片，使用计算出的渐变背景 --- */
+      <div
+        class={`flex h-full w-full flex-col items-center justify-center text-center transition-transform duration-700 group-hover:scale-105 ${currentStyle.wrapper} ${themeClass} /* 👈 应用随机选中的背景 */`}
+      >
+        <div class="relative z-10 mx-auto w-full max-w-4xl">
+          <h3
+            class={`wrap-break-word hyphens-auto text-white ${currentStyle.text} ${currentStyle.clamp}`}
+          >
+            {title}
+          </h3>
+        </div>
+      </div>
+    )
   }
-  <IMG
-    src={src}
-    alt={alt}
-    title={title}
-    raw={raw}
-    loading={loading}
-    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-  />
 
   {/* ✨ 统一内边框 (Overlay Ring) */}
-  {
-    /* 保留这个覆盖层，因为它是 Cover 组件特有的装饰，覆盖在图片或兜底背景之上 */
-  }
   <div
     class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-black/5 ring-inset dark:ring-white/10"
   >
