@@ -6,6 +6,7 @@ import '@/styles/global.css';
 import Navbar from '@/components/navbar/Navbar.jsx';
 import FloatingTools from '@/components/ui/FloatingTools.jsx';
 import '@fontsource-variable/montserrat';
+import PromotionBanner from '@/components/ui/PromotionBanner.astro';
 
 const SITE_TITLE =
   'CNDLive - Professional Video Streaming Solutions | Encoders & Decoders';
@@ -115,6 +116,7 @@ const orgSchema = {
       transition:persist
       class="sticky top-0 z-50 h-20 w-full"
     >
+      <PromotionBanner isActive={true} />
       {/* ✅ 建议改为 client:load，保证移动端菜单点击即响应 */}
       <Navbar client:load />
     </div>
