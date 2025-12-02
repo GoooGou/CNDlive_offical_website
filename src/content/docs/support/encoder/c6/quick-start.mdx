@@ -1,0 +1,46 @@
+---
+title: 快速入门指南
+---
+
+import { Steps, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+欢迎使用 CNDLive C6。本指南将帮助您完成硬件连接、网络配置并开始第一次推流。
+
+1. 硬件连接
+
+<p>连接视频源 使用 HDMI 或 SDI 线缆将摄像机连接到 C6 的 Input 接口。</p>
+<p>连接网络 将网线插入 ETH 1 端口（默认开启 DHCP）。</p>
+<p>连接电源 插入 12V DC 电源适配器并旋紧锁扣。</p>
+
+<Aside type="tip">如果面板上的 LINK 灯亮起绿色，说明网络连接正常。</Aside>
+
+2. 登录管理后台
+
+C6 默认启用了 mDNS 服务，您无需知道 IP 地址即可访问。
+
+<Tabs>
+  <TabItem label="Windows">
+    1. 打开浏览器 (Chrome/Edge)。 2. 在地址栏输入: http://c6-encoder.local 3.
+    默认用户名: admin 4. 默认密码: admin
+  </TabItem>
+  <TabItem label="macOS">
+    1. 打开 Safari 或 Chrome。 2. 在地址栏输入: http://c6-encoder.local 3.
+    默认用户名: admin 4. 默认密码: admin
+  </TabItem>
+  <TabItem label="通过 IP 访问">
+    如果上述方法无效，请长按设备上的 RESET 键 3 秒，OLED 屏幕将显示当前 IP
+    地址。
+  </TabItem>
+</Tabs>
+
+3. 您的第一次推流
+
+进入 Encoding 菜单。
+
+在 Stream 1 选项卡下，选择协议为 RTMP。
+
+输入您的推流地址 (URL) 和 推流码 (Key)。
+
+点击右上角的 ON/OFF 开关启动推流。
+
+✅ 成功！ 如果状态栏显示 Bitrate: 4500kbps，说明推流成功。

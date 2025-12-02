@@ -6,19 +6,20 @@ import react from '@astrojs/react';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 import partytown from '@astrojs/partytown';
-import rehypePrettyCode from "rehype-pretty-code";
-import { transformerCopyButton } from '@rehype-pretty/transformers'
+import rehypePrettyCode from 'rehype-pretty-code';
+import { transformerCopyButton } from '@rehype-pretty/transformers';
 
 /** @type {import('rehype-pretty-code').Options} */
 const prettyCodeOptions = {
   theme: 'one-dark-pro',
   transformers: [
-    transformerCopyButton({       // 复制按钮
+    transformerCopyButton({
+      // 复制按钮
       visibility: 'always',
-      feedbackDuration: 3000
-    })
-  ]
-}
+      feedbackDuration: 3000,
+    }),
+  ],
+};
 const isDev = process.env.npm_lifecycle_event === 'dev';
 // https://astro.build/config
 export default defineConfig({
@@ -31,8 +32,8 @@ export default defineConfig({
     service: isDev ? { entrypoint: 'astro/assets/services/noop' } : undefined,
   },
   markdown: {
-    syntaxHighlight: false,      // 关闭 Astro 自带 Shiki，防止重复
-    rehypePlugins: [[rehypePrettyCode, prettyCodeOptions]]
+    syntaxHighlight: false, // 关闭 Astro 自带 Shiki，防止重复
+    rehypePlugins: [[rehypePrettyCode, prettyCodeOptions]],
   },
   vite: {
     plugins: [tailwindcss()],
@@ -127,8 +128,10 @@ export default defineConfig({
           // 可选：新标签页打开
           attrs: { target: '_blank' },
         },
+
+        // ✅ 只要指向 support 目录，里面的 encoder/c6 等会自动变成子菜单
         {
-          label: 'Support Docs',
+          label: 'Support Center',
           autogenerate: { directory: 'support' },
         },
       ],
@@ -146,6 +149,4 @@ export default defineConfig({
         prefetchAll: true,
         defaultStrategy: 'hover',
       },
-
-    
 });

@@ -1,0 +1,43 @@
+---
+title: Welcome to c6 Encoder 欢迎
+---
+
+import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="4K 超高清画质" icon="laptop">
+    支持高达 4Kp60 的分辨率，采用先进的 HEVC/H.265
+    编码技术，画质细腻，带宽更省。
+  </Card>
+  <Card title="多协议支持" icon="signal">
+    原生支持 SRT, RTMP, RTSP, UDP, HLS 等多种流媒体协议，适配各种直播平台。
+  </Card>
+  <Card title="超低延迟" icon="rocket">
+    端到端延迟低至 80ms，非常适合远程制作和互动直播场景。
+  </Card>
+  <Card title="7x24小时 稳定运行" icon="approve-check">
+    工业级散热设计，支持双电源冗余，确保关键任务不掉线。
+  </Card>
+</CardGrid>
+
+资源中心
+
+<div class="not-content flex flex-wrap gap-4">
+  <LinkButton href="/support/encoder/c6/quick-start" icon="rocket">
+    快速入门指南
+  </LinkButton>
+  <LinkButton
+    href="/support/encoder/c6/specs"
+    variant="secondary"
+    icon="list-format"
+  >
+    查看技术规格
+  </LinkButton>
+  <LinkButton
+    href="https://www.google.com/search?q=https://cndlive.com/downloads/firmware/c6"
+    variant="minimal"
+    icon="external"
+  >
+    固件下载中心
+  </LinkButton>
+</div>
