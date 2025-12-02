@@ -31,7 +31,7 @@ tags:
 
 2. **Files and Links** 页签：
    - 第二点：设置为“当前文件夹的子文件夹”
-   - 第三点：填 `image`  
+   - 第三点：填 `images`  
      ![](./images/26f37470869379ac0d39a90a11c10dc5_MD5.webp)
 
 3. 页面底部勾选 **copy obsidian settings**。  
