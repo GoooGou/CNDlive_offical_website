@@ -32,7 +32,6 @@ interface Props {
 const { post } = Astro.props;
 
 // ✅ 3. 核心修复：使用 render(post) 而不是 post.render()
-const { Content } = await render(post);
 
 // 4. 动态查找当前 ID 对应的 TS 数据文件
 // 逻辑：在所有文件路径中，找到包含当前产品 ID (如 'encoder-c6') 的那个文件
@@ -48,6 +47,7 @@ const externalSpecs = specKey ? (specsModules[specKey] as any).specs : null;
 const externalDownloads = downloadKey
   ? (downloadsModules[downloadKey] as any).downloads
   : null;
+console.log(post);
 ---
 
 <ProductLayout
