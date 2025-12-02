@@ -1,6 +1,6 @@
 ---
 title: Obsidian 使用指南
-author: “Yang Ju AN
+author: Yang Ju AN
 pubDate: 2025-12-02
 created: 2025-12-02
 description: 本文关于官网如何更新文章和内容做出基础指南
