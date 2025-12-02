@@ -12,6 +12,7 @@ import Intro from '@/components/sections/Intro.astro';
 import { Reveal } from '@/components/ui/Reveal';
 import NewsSection from '@/components/sections/NewSection.astro';
 import CaseSection from '@/components/sections/CaseSection.astro';
+import SolutionSection from '@/components/sections/SolutionSection.astro';
 ---
 
 <Layout title="CNDLive ">
@@ -30,20 +31,22 @@ import CaseSection from '@/components/sections/CaseSection.astro';
     <Reveal client:idle layout="full">
       <Intro />
     </Reveal>
-    
+
     {/* 4. 新闻列表 - 改为 client:idle */}
     <Reveal client:idle layout="narrow">
       <NewsSection />
     </Reveal>
-    
+    {/* 6. 解决方案列表 - 改为 client:idle */}
+    <Reveal client:idle layout="narrow">
+      <SolutionSection />
+    </Reveal>
+    {/* 7. 案例列表 - 改为 client:idle */}
+    <Reveal client:idle layout="narrow">
+      <CaseSection />
+    </Reveal>
     {/* 5. 特性 BentoGrid - 改为 client:idle */}
     <Reveal client:idle layout="full">
       <Features />
-    </Reveal>
-    
-    {/* 6. 案例列表 - 改为 client:idle */}
-    <Reveal client:idle layout="narrow">
-      <CaseSection />
     </Reveal>
   </Main>
 </Layout>
