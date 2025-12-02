@@ -10,12 +10,55 @@ interface Props {
   basePath: string; // 基础路径 "/news"
 }
 
-const { title, subtitle, posts, basePath } = Astro.props;
+// 1. 获取原始数据
+const { title, subtitle, posts: rawPosts, basePath } = Astro.props;
+
+// =========================================
+// ✅ 新的“插队”排序逻辑开始
+// =========================================
+
+// 第一步：拆分两组数据
+// 1. 插队组：有 order 且 order 是数字的文章
+const orderedPosts = rawPosts.filter((p) => typeof p.data.order === 'number');
+// 2. 自然组：没有 order 的文章
+const naturalPosts = rawPosts.filter((p) => typeof p.data.order !== 'number');
+
+// 第二步：让“自然组”先按时间倒序排好（这是底色）
+naturalPosts.sort((a, b) => {
+  return (
+    new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
+  );
+});
+
+// 第三步：让“插队组”按 order 从小到大排好
+// (为了防止乱序插入，比如先插第10个再插第1个会乱，所以要从小到大处理)
+orderedPosts.sort((a, b) => a.data.order - b.data.order);
+
+// 第四步：执行“插入”动作
+// 我们直接修改 naturalPosts 数组，把它变成最终结果
+orderedPosts.forEach((post) => {
+  // 目标位置：用户写 1 代表第 1 个 (Index 0)，写 5 代表第 5 个 (Index 4)
+  const targetIndex = Math.max(0, post.data.order - 1);
+
+  // 逻辑：如果在范围内，就插队；如果超出范围（比如只有3篇文章你写order:100），就放到最后
+  if (targetIndex < naturalPosts.length) {
+    naturalPosts.splice(targetIndex, 0, post);
+  } else {
+    naturalPosts.push(post);
+  }
+});
+
+// 最终结果就是处理完的 naturalPosts
+const sortedPosts = naturalPosts;
+
+// =========================================
+// 逻辑结束
+// =========================================
 
 // 生成列表结构化数据
 const listSchema = generateItemListSchema(
   title,
-  posts,
+  sortedPosts,
   basePath,
   Astro.site || new URL('https://cndlive.com')
 );
@@ -28,31 +71,17 @@ const listSchema = generateItemListSchema(
   schema={listSchema}
   backLabel="Back to Home"
 >
-  {
-    /* 2. 头部：标题区域 
-      [修改]: border-zinc-800 -> border-surface-border (适配边框颜色)
-      [添加]: transition-colors (平滑过渡)
-  */
-  }
+  {/* 4. 头部：标题区域 */}
   <div
     class="border-surface-border mb-16 border-b pb-8 transition-colors duration-300"
   >
-    {
-      /* [修改]: 移除了原先的 bg-gradient (它在亮色模式下看不见)
-      改为 text-text-main (亮色黑字，深色白字)
-    */
-    }
     <h1 class="text-text-main mb-4 text-5xl font-bold tracking-tight">
       {title}
     </h1>
 
-    {
-      /* [修改]: text-zinc-400 -> text-text-muted (适配副标题颜色)
-       */
-    }
     {subtitle && <p class="text-text-muted max-w-2xl text-lg">{subtitle}</p>}
   </div>
 
-  {/* 3. 内容：使用 PostGrid 展示列表 */}
-  <PostGrid posts={posts} basePath={basePath} layout="grid" />
+  {/* 5. 内容：使用 sortedPosts 展示排序后的列表 */}
+  <PostGrid posts={sortedPosts} basePath={basePath} layout="grid" />
 </ContentLayout>

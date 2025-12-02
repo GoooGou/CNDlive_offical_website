@@ -20,6 +20,7 @@ const news = defineCollection({
       // 修改处：加上 .optional()
       // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
       cover: image().optional(),
+      order: z.number().optional(),
     }),
 });
 
@@ -37,6 +38,7 @@ const cases = defineCollection({
       // 修改处：加上 .optional()
       // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
       cover: image().optional(),
+      order: z.number().optional(),
     }),
 });
 const blogs = defineCollection({
@@ -53,6 +55,7 @@ const blogs = defineCollection({
       // 修改处：加上 .optional()
       // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
       cover: image().optional(),
+      order: z.number().optional(),
     }),
 });
 
@@ -70,6 +73,7 @@ const learning = defineCollection({
       // 修改处：加上 .optional()
       // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
       cover: image().optional(),
+      order: z.number().optional(),
     }),
 });
 
@@ -81,6 +85,7 @@ const pages = defineCollection({
     z.object({
       title: z.string(),
       description: z.string(),
+      order: z.number().optional(),
     }),
 });
 
@@ -96,6 +101,7 @@ const solutions = defineCollection({
       // 🔥🔥 补上这两个字段，跟 News 保持一致
       pubDate: z.date(),
       author: z.string().optional(), // 作者可以是可选的
+      order: z.number().optional(),
     }),
 });
 
@@ -129,7 +135,6 @@ const products = defineCollection({
       // --- 视觉字段 ---
       // 建议 cover 也是必填的，保证列表页布局统一
       cover: image(),
-
       // 卖点列表依然可选，有的产品可能没有
       features: z.array(z.string()).optional(),
     }),
