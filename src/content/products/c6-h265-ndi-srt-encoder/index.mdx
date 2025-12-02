@@ -16,30 +16,183 @@ features:
   - 'PTZ Camera Control Support'
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import {
+  Tabs,
+  TabItem,
+  Card,
+  CardGrid,
+  Icon,
+  Steps,
+  LinkButton,
+  Badge,
+} from '@astrojs/starlight/components';
 
-{/* --- Overview 正文开始 --- */}
+{/* 容器：添加 px-4 防止移动端贴边；调整 py 间距 */}
+import ProductTitle from '@/components/products/overview/ProductTitle.astro';
+import ProductHeroSection from '@/components/products/overview/ProductHeroSection.astro';
+import heroimg from 'images/c6-encoder-hero.webp';
+import { Image } from 'astro:assets';
 
-{/* 核心功能网格 - 这是一个很好的 Overview 内容，保留 */}
+<ProductTitle title="CNDLive C6" description="4K UHD HDMI&SDI Video Encoder" subtitle="Enhanced H.265 Streaming and Recording" tagline="Enhanced H.265 Streaming and Recording" />
+<div align="center">
 
-<div class="my-10"></div>
+<Image src={heroimg} alt="c6 编码器" width={600} />
 
-### 为什么选择 C6？
+</div>
 
-C6 专为专业直播、远程制作和医疗/教育录播设计。它解决了传统编码器功能单一的问题，将**高质量传输**与**远程控制 (KVM)** 完美结合。
+<Callout>
+  The CNDLive C6 is a compact, H265 video encoder with dual 4K HDMI and 3G-SDI
+  inputs and outputs, supporting SRT, RTMP, NDI HX2/3 and more.With features of
+  Tally,recording by TF card, Wi-Fi 6, 2'' LCD screen, C6 is designed to provide
+  reliable and versatile live streaming solutions.
+</Callout>
 
-#### 1. 可视化 OLED 屏幕
+<Video id="at7e0pWZGEU" alt="c6 encoder demo" />
 
-前面板配备 OLED 显示屏，实时显示：
+import ProductFeatureGrid from './overview/ProductFeatureGrid.astro';
 
-- 当前 IP 地址
-- 视频分辨率与帧率
-- CPU 使用率与核心温度
-- 推流状态 (Stream Status)
+<ProductFeatureGrid />
 
-#### 2. 真正的双流输出 (Dual Stream)
+---
 
-支持主码流和子码流同时输出。
+<ProductTitle
+  size="sm"
+  title="Dual HDMI&SDI Source"
+  description="4K UHD HDMI&SDI Video Encoder"
+  subtitle="One Unit More Functions"
+/>
 
-- **主码流**: 用于高质量 NDI 制作或 4K 直播。
-- **子码流**: 用于低带宽监看或预览。
+import interfaceimg from './images/interface.webp';
+
+<Image src={interfaceimg} alt="c6 encoder interface" />
+
+import InterfaceSection from './overview/InterfaceSection.astro';
+
+<InterfaceSection />
+
+import screenshotimg from './images/screen.webp';
+
+<Image src={screenshotimg} alt="c6 encoder interface" />
+
+---
+
+<ProductTitle
+  size="sm"
+  title="Powerful Streaming to 8 Destinations"
+  description="4K UHD HDMI&SDI Video Encoder"
+  subtitle="Stream like a Pro"
+/>
+
+import streamimg from './images/stream.webp';
+
+<div class="flex justify-center">
+  <Image src={streamimg} alt="c6 encoder interface" width={800} />
+</div>
+
+import ProtocolsSection from './overview/ProtocolsSection.astro';
+
+<ProtocolsSection />
+
+---
+
+<ProductTitle
+  size="sm"
+  title="Instant Streaming to the World!"
+  description="4K UHD HDMI&SDI Video Encoder"
+  subtitle="Big LCD screen, instant streaming and recording"
+/>
+
+<Callout>
+  C6 comes with a **2.0’’ big screen** and resolution is 320x240. You can easily
+  start/stop streaming and recording. Real-time insights on system status,
+  device details, network info, recording, and video input formats—all on one
+  screen.
+</Callout>
+
+import BigScreen from './images/big-screen.webp';
+
+<div class="flex justify-center">
+  <PostImage src={BigScreen} alt="c6 encoder big screen" width={1000} />
+</div>
+
+---
+
+<ProductTitle
+  size="sm"
+  title="Fast Recording with USB Keypad"
+  description="4K UHD HDMI&SDI Video Encoder"
+  subtitle="Easy-to-use recording controls"
+/>
+
+import Keypad from './images/usbkeyboad.webp';
+
+<PostImage src={Keypad} alt="c6 encoder keypad" width={1000} />
+
+<div class="text-center">
+## One-Click Control & Capture
+
+Streamline your workflow with instant controls.
+
+</div>
+
+import UsbKeyboardSection from './overview/UsbKeyboardSection.astro';
+
+<UsbKeyboardSection />
+
+---
+
+<ProductTitle
+  size="sm"
+  title="What’s NEW on the Web UI"
+  description="4K UHD HDMI&SDI Video Encoder"
+/>
+
+import UI from './images/ui.webp';
+
+<div class="flex justify-center">
+  <PostImage src={UI} alt="c6 encoder Ui" width={1000} />
+</div>
+
+<ProductTitle
+  size="sm"
+  title="Simple but Powerful"
+  description="4K UHD HDMI&SDI Video Encoder"
+  subtitle="More choices for your streaming"
+/>
+
+import wifi6img from './images/wifi6.webp';
+
+<div class="flex justify-center">
+  <PostImage src={wifi6img} alt="c6 encoder wifi6" width={1000} />
+</div>
+
+import Wifi6Section from './overview/Wifi6Section.astro';
+
+<Wifi6Section />
+
+---
+
+<ProductTitle
+  size="sm"
+  title="Simple Workflow"
+  description="4K UHD HDMI&SDI Video Encoder"
+  subtitle="More choices for your streaming"
+/>
+
+import workflowimg from './images/workflow.webp';
+
+<div class="flex justify-center">
+  <PostImage src={workflowimg} alt="c6 encoder workflow" width={1000} />
+</div>
+
+<ProductTitle
+  size="sm"
+  title="More Features"
+  description="4K UHD HDMI&SDI Video Encoder"
+/>
+
+import morefeature from './images/morefeature.webp';
+
+<div class="flex justify-center">
+  <Image src={morefeature} alt="c6 encoder more feature" width={1200} />
+</div>

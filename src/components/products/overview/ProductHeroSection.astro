@@ -1,0 +1,94 @@
+---
+// 1. 引入 Image 组件
+import { Image } from 'astro:assets';
+
+interface Props {
+  // ✅ 修复点：将类型改为 any，解决 "has no exported member 'ImageMetadata'" 报错
+  // Astro 的 Image 组件能自动处理 import 进来的对象
+  imageSrc: any;
+  imageAlt: string;
+  title: string;
+  subtitle: string;
+  paragraph?: string;
+  tagline?: string;
+  imageOnRight?: boolean;
+  class?: string;
+}
+
+const {
+  imageSrc,
+  imageAlt,
+  title,
+  subtitle,
+  paragraph,
+  tagline,
+  imageOnRight = false,
+  class: className = '',
+} = Astro.props;
+
+// 控制图片在左还是在右
+const flexDirectionClass = imageOnRight ? 'md:flex-row-reverse' : 'md:flex-row';
+---
+
+<section
+  class:list={[
+    'w-full px-4 py-12 transition-colors duration-300 md:py-24',
+    className,
+  ]}
+>
+  <div
+    class:list={[
+      'mx-auto flex max-w-6xl flex-col items-center gap-10 md:gap-16',
+      flexDirectionClass,
+    ]}
+  >
+    <div class="flex w-full justify-center md:w-1/2">
+      <div class="group relative w-full max-w-md md:max-w-full">
+        <div
+          class="absolute -inset-1 rounded-2xl bg-linear-to-r from-blue-500 to-purple-600 opacity-20 blur-lg transition duration-500 group-hover:opacity-40 dark:opacity-30"
+        >
+        </div>
+
+        <Image
+          src={imageSrc}
+          alt={imageAlt}
+          class="relative h-auto w-full rounded-xl border border-slate-200 object-cover shadow-2xl transition-all duration-300 hover:scale-[1.02] dark:border-slate-800/50 dark:shadow-slate-900/50"
+        />
+      </div>
+    </div>
+
+    <div
+      class="flex w-full flex-col items-start space-y-4 text-left md:w-1/2 md:space-y-6"
+    >
+      {
+        tagline && (
+          <div>
+            <span class="inline-block rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 transition-colors dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+              {tagline}
+            </span>
+          </div>
+        )
+      }
+
+      <h1
+        class="text-3xl font-bold tracking-tight text-slate-900 transition-colors md:text-4xl lg:text-5xl dark:text-slate-100"
+      >
+        {title}
+      </h1>
+
+      <p
+        class="max-w-prose text-lg leading-relaxed text-slate-600 transition-colors md:text-xl dark:text-slate-300"
+      >
+        {subtitle}
+      </p>
+
+      {
+        paragraph && (
+          <p class="max-w-prose text-lg leading-relaxed text-slate-600 transition-colors md:text-xl dark:text-slate-300">
+            {paragraph}
+          </p>
+        )
+      }
+    </div>
+  </div>
+</section>

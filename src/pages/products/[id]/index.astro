@@ -1,10 +1,8 @@
 ---
 // src/pages/products/[id]/index.astro
-import { getCollection, render } from 'astro:content'; // ✅ 1. 引入 render 函数
+import { getCollection } from 'astro:content'; // 1. 移除了没用到的 render
 import type { CollectionEntry } from 'astro:content';
 
-// ⚠️ 请确认你的 ProductLayout 路径。通常建议放在 layouts 目录下。
-// 如果你的文件确实在 components 里，请保持原样；如果在 layouts 里，请改为 '@/layouts/ProductLayout.astro'
 import ProductLayout from '@/components/products/ProductLayout.astro';
 import ArticleBody from '@/components/mdx/ArticleBody.astro';
 
@@ -31,23 +29,23 @@ interface Props {
 
 const { post } = Astro.props;
 
-// ✅ 3. 核心修复：使用 render(post) 而不是 post.render()
-
-// 4. 动态查找当前 ID 对应的 TS 数据文件
-// 逻辑：在所有文件路径中，找到包含当前产品 ID (如 'encoder-c6') 的那个文件
+// 3. ✅ 核心优化：更安全的路径匹配
+// 原来的 includes(post.id) 是模糊匹配。如果有一个产品叫 'c6'，另一个叫 'c6-pro'，
+// 访问 'c6' 时可能会错误加载到 'c6-pro' 的数据。
+// 改为 split('/') 精确匹配文件夹名称。
 const specKey = Object.keys(specsModules).find((path) =>
-  path.includes(post.id)
-);
-const downloadKey = Object.keys(downloadsModules).find((path) =>
-  path.includes(post.id)
+  path.split('/').includes(post.id)
 );
 
-// 5. 获取数据 (如果有的话，提取 .specs 或 .downloads 导出)
+const downloadKey = Object.keys(downloadsModules).find((path) =>
+  path.split('/').includes(post.id)
+);
+
+// 4. 获取数据
 const externalSpecs = specKey ? (specsModules[specKey] as any).specs : null;
 const externalDownloads = downloadKey
   ? (downloadsModules[downloadKey] as any).downloads
   : null;
-console.log(post);
 ---
 
 <ProductLayout
