@@ -1,6 +1,7 @@
 ---
 // src/layouts/Layout.astro
 import { ClientRouter } from 'astro:transitions';
+
 import Footer from '@/components/Footer.astro';
 import '@/styles/global.css';
 import Navbar from '@/components/navbar/Navbar.jsx';
@@ -120,8 +121,18 @@ const orgSchema = {
       {/* ✅ 建议改为 client:load，保证移动端菜单点击即响应 */}
       <Navbar client:load />
     </div>
+    <header>
+      <div
+        id="main-navbar"
+        transition:persist
+        class="sticky top-0 z-50 h-20 w-full"
+      >
+        {/* ✅ 建议改为 client:load，保证移动端菜单点击即响应 */}
+        <Navbar client:load />
+      </div>
+    </header>
 
-    <main class="relative z-0 grow" transition:animate="slide">
+    <main class="relative z-0 grow" transition:animate="fade">
       <slot />
     </main>
 
