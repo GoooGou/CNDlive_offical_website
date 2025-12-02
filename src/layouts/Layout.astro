@@ -8,6 +8,7 @@ import Navbar from '@/components/navbar/Navbar.jsx';
 import FloatingTools from '@/components/ui/FloatingTools.jsx';
 import '@fontsource-variable/montserrat';
 import PromotionBanner from '@/components/ui/PromotionBanner.astro';
+import { SITE_CONFIG } from '@/global.config';
 
 const SITE_TITLE =
   'CNDLive - Professional Video Streaming Solutions | Encoders & Decoders';
@@ -54,6 +55,8 @@ const orgSchema = {
     contactType: 'customer support',
   },
 };
+// 推广横幅是否激活
+const isActive = true;
 ---
 
 <!doctype html>
@@ -114,7 +117,7 @@ const orgSchema = {
   <body class="text-text-main flex min-h-screen flex-col antialiased">
     <header class="sticky top-0 z-50 w-full">
       {/* 1. 推广横幅 (Banner) - 位于最顶端 */}
-      <PromotionBanner isActive={true} />
+      <PromotionBanner isActive={SITE_CONFIG.showPromotionBanner} />
 
       {/* 2. 主导航栏 (Navbar) - 位于 Banner 之下 */}
       <div id="main-navbar" transition:persist class="h-20 w-full bg-black">
