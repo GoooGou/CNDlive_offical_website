@@ -28,6 +28,19 @@ const href = `${basePath}/${post.slug || post.id}`;
 
   {/* 文字区域 */}
   <div class="flex flex-1 flex-col space-y-2">
+    {/* 🔥 新增：Tag 徽章列表 (放置在标题上方) */}
+    {
+      post.data.tags && post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 text-xs">
+          {post.data.tags.map((tag: string) => (
+            <span class="bg-surface-muted text-text-muted border-text-muted/20 rounded-full border px-2 py-0.5 text-[10px] font-medium transition-colors duration-300">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
     {/* 标题 */}
     <h3
       class="text-text-main group-hover:text-primary line-clamp-2 text-xl font-bold transition-colors"

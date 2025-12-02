@@ -36,7 +36,7 @@ const formatDate = (date: Date) => {
 
   {/* 右侧文字 */}
   <div class="flex flex-1 flex-col space-y-2">
-    {/* 元信息: 作者 • 日期 */}
+    {/* 1. 元信息: 作者 • 日期 */}
     <div
       class="text-text-muted flex items-center gap-2 text-xs transition-colors"
     >
@@ -45,14 +45,27 @@ const formatDate = (date: Date) => {
       <span>{formatDate(post.data.pubDate)}</span>
     </div>
 
-    {/* 标题 */}
+    {/* 2. 🔥 新增：Tag 徽章列表 */}
+    {
+      post.data.tags && post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {post.data.tags.map((tag: string) => (
+            <span class="bg-surface-muted text-text-muted border-text-muted/20 rounded-full border px-2 py-0.5 text-[10px] font-medium transition-colors duration-300">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    {/* 3. 标题 */}
     <h3
       class="text-text-main group-hover:text-primary line-clamp-2 text-lg leading-tight font-bold transition-colors"
     >
       {post.data.title}
     </h3>
 
-    {/* 描述 */}
+    {/* 4. 描述 */}
     <p
       class="text-text-muted line-clamp-2 hidden text-sm transition-colors sm:block"
     >
