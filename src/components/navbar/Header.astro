@@ -1,0 +1,27 @@
+---
+// src/components/Header.astro
+import Navbar from '@/components/navbar/Navbar.jsx';
+// ✅ 引入 Astro 组件
+import PromotionBanner from '@/components/ui/PromotionBanner.astro'; 
+import { SITE_CONFIG } from '@/global.config';
+
+// 计算高度：广告(40px) + 导航(80px) = 120px
+const spacerHeight = SITE_CONFIG.showPromotionBanner ? 'h-[120px]' : 'h-20';
+---
+
+<header class="fixed top-0 left-0 right-0 z-[100] w-full">
+  
+  {/* 1. 推广横幅 */}
+  {/* ✅ Astro 组件直接渲染，不需要 client:load */}
+  {SITE_CONFIG.showPromotionBanner && (
+    <PromotionBanner />
+  )}
+
+  {/* 2. 主导航栏 */}
+  <div id="main-navbar" class="w-full bg-[#050505]">
+    <Navbar client:load />
+  </div>
+
+</header>
+
+<div class={spacerHeight}></div>

@@ -50,7 +50,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md">
+    <nav className="h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md ">
       <div className="mx-auto h-full px-6 lg:px-8">
         <div className="flex h-full items-center justify-between">
           {/* Logo */}
