@@ -1,14 +1,115 @@
 ---
+// src/pages/products/index.astro
 import { getCollection } from 'astro:content';
-import ResourceIndex from '@/components/common/ResourceIndex.astro';
+import ContentLayout from '@/layouts/ContentLayout.astro';
 
-const posts = await getCollection('products');
-const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+// 引入拆分后的组件
+import ProductSidebar from '@/components/products/ProductSidebar.astro';
+import ProductGroup from '@/components/products/ProductGroup.astro';
+import ProductScrollSpy from '@/components/products/ProductScrollSpy.astro';
+
+// --- 1. 数据处理逻辑 ---
+const allPosts = await getCollection('products');
+
+// 提取页面标题变量
+const title = 'Product Center';
+
+const categories = [
+  {
+    id: 'video-encoder',
+    title: 'Video Encoder',
+    desc: 'Professional H.265/H.264 streaming encoders.',
+  },
+  {
+    id: 'video-decoder',
+    title: 'Video Decoder',
+    desc: 'High-quality decoding for NDI and SRT.',
+  },
+  {
+    id: 'ndi-converter',
+    title: 'NDI Converter',
+    desc: 'Bi-directional converters for seamless IP production.',
+  },
+  {
+    id: 'manage-gateway',
+    title: 'Manage & IP Gateway',
+    desc: 'Centralized management and routing software.',
+  },
+];
+
+const groups = categories.map((cat) => ({
+  ...cat,
+  items: allPosts
+    .filter((post) => post.data.category === cat.title)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+}));
+
+// --- 2. SEO Schema 生成 (ItemList) ---
+// 这是一个产品列表页，生成 ItemList Schema 有助于 SEO
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: allPosts.map((post, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    url: `/products/${post.id}`,
+    name: post.data.title,
+    image: post.data.cover?.src || '',
+  })),
+};
+
+// --- 3. 页面配置 ---
+const breadcrumbItems = [
+  { label: title }, // 当前页不需要 href
+];
+
+const ogImage = '/images/products-cover.jpg';
 ---
 
-<ResourceIndex 
-  title="Products" 
-  subtitle="Latest updates from CNDLive."
-  posts={sortedPosts} 
-  basePath="/products" 
-/>
+<ContentLayout
+  title={`${title} - CNDLive`}
+  description="Explore our professional video transmission solutions including Video Encoders, Decoders, and NDI Converters."
+  image={ogImage}
+  breadcrumbItems={breadcrumbItems}
+  backHref="/"
+  backLabel="Back to Home"
+  schema={listSchema}
+>
+  <div class="text-gray-200">
+    {/* 页面标题 Header */}
+    <div class="mb-12 border-b border-white/10 pb-10">
+      <h1 class="text-text-main text-4xl font-bold tracking-tight sm:text-5xl">
+        {title}
+      </h1>
+      <p class="text-medium text-text-main/60 mt-4 text-lg leading-8">
+        Explore our professional video transmission solutions.
+      </p>
+    </div>
+
+    {/* 核心 Grid 布局 */}
+    <div class="lg:grid lg:grid-cols-[240px_1fr] lg:gap-x-12">
+      {/* 左侧侧边栏组件 */}
+      <ProductSidebar groups={groups} />
+
+      {/* 右侧内容区域 */}
+      <main class="space-y-20">
+        {
+          groups.map(
+            (group) =>
+              group.items.length > 0 && (
+                <ProductGroup
+                  id={group.id}
+                  title={group.title}
+                  desc={group.desc}
+                  items={group.items}
+                />
+              )
+          )
+        }
+      </main>
+    </div>
+  </div>
+</ContentLayout>
+
+{/* 滚动监听逻辑组件 */}
+<ProductScrollSpy />

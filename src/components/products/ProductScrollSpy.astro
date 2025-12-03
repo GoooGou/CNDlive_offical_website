@@ -1,0 +1,25 @@
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const sections = document.querySelectorAll('[data-section]');
+    const navLinks = document.querySelectorAll('[data-nav-link]');
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-10% 0px -70% 0px', // 调整感应区域
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navLinks.forEach((link) => link.setAttribute('data-active', 'false'));
+          const id = entry.target.getAttribute('id');
+          const activeLink = document.querySelector(`a[href="#${id}"]`);
+          if (activeLink) activeLink.setAttribute('data-active', 'true');
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((section) => observer.observe(section));
+  });
+</script>

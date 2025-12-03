@@ -1,0 +1,55 @@
+---
+// src/components/products/ProductCard.astro
+import { ArrowRight } from 'lucide-react';
+import type { CollectionEntry } from 'astro:content';
+
+// 🔥 引入你的自定义 Cover 组件
+// 请根据实际路径修改，例如 '../common/Cover.astro' 或 '@/components/common/Cover.astro'
+import Cover from '@/components/common/Cover.astro';
+
+interface Props {
+  post: CollectionEntry<'products'>;
+}
+
+const { post } = Astro.props;
+console.log(post);
+---
+
+<a
+  href={`/products/${post.id}`}
+  class="group hover:shadow-primary/10 bg-surface-card border-surface-border relative flex flex-col overflow-hidden rounded-2xl border transition-all hover:-translate-y-1 hover:shadow-2xl"
+>
+  {/* 图片区域 */}
+  <div class="aspect-4/3 w-full overflow-hidden bg-gray-800">
+    {/* 🔥 使用封装的 Cover 组件 */}
+    {/* 传入 post.data.cover 数据 */}
+    <Cover
+      src={post.data.cover}
+      alt={post.data.title}
+      className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+    />
+  </div>
+
+  {/* 内容区域 */}
+  <div class="flex flex-1 flex-col p-5">
+    {/* 标题 */}
+    <h3
+      class="group-hover:text-primary text-text-main text-lg font-semibold transition-colors"
+    >
+      {post.data.title}
+    </h3>
+
+    {/* 描述 */}
+    <p class="mt-2 line-clamp-2 flex-1 text-sm text-gray-400">
+      {post.data.description}
+    </p>
+
+    {/* 底部 Link */}
+    <div class="text-primary mt-4 flex items-center text-sm font-medium">
+      View Details
+      <ArrowRight
+        className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+      />
+    </div>
+  </div>
+</a>

@@ -1,0 +1,28 @@
+---
+import ProductCard from './ProductCard.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  id: string;
+  title: string;
+  desc: string;
+  items: CollectionEntry<'products'>[];
+}
+
+const { id, title, desc, items } = Astro.props;
+---
+
+<section id={id} class="scroll-mt-24" data-section>
+  {/* 分组头部 */}
+  <div class="mb-6 border-b border-white/5 pb-2">
+    <h2 class="text-text-main text-2xl font-bold">
+      {title}
+    </h2>
+    <p class="text-text-main/60 mt-1 text-sm">{desc}</p>
+  </div>
+
+  {/* 产品卡片 Grid */}
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {items.map((post) => <ProductCard post={post} />)}
+  </div>
+</section>

@@ -10,12 +10,10 @@ export default function MobileMenu({ isOpen, onClose }) {
   const [mounted, setMounted] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState({});
 
-  // 1. 客户端挂载检查
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // 2. 锁定 Body 滚动 (Navbar.jsx 里其实已经做了，这里保留也没坏处，双重保险)
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -32,30 +30,19 @@ export default function MobileMenu({ isOpen, onClose }) {
   };
 
   const hasSubMenu = (item) => item.type === 'mega' || item.type === 'dropdown';
-
-  // 3. 动态计算避让高度
   const paddingTopClass = SITE_CONFIG.showPromotionBanner ? 'pt-36' : 'pt-24';
 
   if (!mounted) return null;
 
-  // 4. Portal 挂载
   return createPortal(
     <div
       className={clsx(
-        // 基础样式
-        'fixed inset-0 z-[90] h-[100dvh] w-screen bg-[#050505] transition-transform duration-300 ease-in-out lg:hidden',
+        'fixed inset-0 z-90 h-dvh w-screen bg-[#050505] transition-transform duration-300 ease-in-out lg:hidden',
         paddingTopClass,
         isOpen ? 'translate-x-0' : 'translate-x-full',
-
-        // 🔥🔥🔥 核心修改 1：防止滚动链 (Scroll Chaining) 🔥🔥🔥
-        // 加上这个，到了菜单底部再滑也不会带动 body 滚动了
         'overscroll-contain',
-
-        // 允许内部滚动
         'overflow-y-auto pb-20',
       )}
-      // 🔥🔥🔥 核心修改 2：恢复触摸事件 🔥🔥🔥
-      // 必须加这个！因为 Navbar.jsx 把 body 的 touch-action 关了
       style={{ touchAction: 'auto' }}
     >
       <div className="space-y-6 px-6">
@@ -78,27 +65,62 @@ export default function MobileMenu({ isOpen, onClose }) {
                     )}
                   />
                 </button>
+
                 <div
                   className={clsx(
-                    'space-y-6 overflow-hidden pl-4 transition-all duration-300',
+                    'overflow-hidden pl-4 transition-all duration-300',
                     expandedGroups[index]
-                      ? 'mt-4 max-h-[1000px] opacity-100'
+                      ? 'mt-4 max-h-[1000px] opacity-100' // 如果内容很多，建议适当调大 max-h
                       : 'max-h-0 opacity-0',
                   )}
                 >
-                  {(item.type === 'mega'
-                    ? item.groups.flatMap((g) => g.items)
-                    : item.items
-                  ).map((sub, sIdx) => (
-                    <a
-                      key={sIdx}
-                      href={sub.href}
-                      onClick={onClose}
-                      className="active:text-primary block text-sm text-gray-300"
-                    >
-                      {sub.label}
-                    </a>
-                  ))}
+                  {/* 🔥🔥🔥 修改开始：区分 Mega Menu (带分组) 和 普通 Dropdown 🔥🔥🔥 */}
+                  {item.type === 'mega' ? (
+                    // 方案 A: 渲染分组 (Mega Menu)
+                    <div className="space-y-6">
+                      {item.groups.map((group, gIdx) => (
+                        <div key={gIdx} className="flex flex-col gap-3">
+                          {/* 分组标题 */}
+                          <div className="text-xs font-bold tracking-wider text-gray-500 uppercase">
+                            {group.title}
+                          </div>
+                          {/* 分组内的链接 */}
+                          <div className="flex flex-col gap-3 border-l border-white/10 pl-3">
+                            {group.items.map((sub, sIdx) => (
+                              <a
+                                key={sIdx}
+                                href={sub.href}
+                                onClick={onClose}
+                                className="active:text-primary block text-sm text-gray-300"
+                              >
+                                {sub.label}
+                                {sub.badge && (
+                                  <span className="bg-primary/20 text-primary ml-2 rounded px-1.5 py-0.5 text-[10px]">
+                                    {sub.badge}
+                                  </span>
+                                )}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    // 方案 B: 普通 Dropdown (无分组)
+                    <div className="flex flex-col gap-4">
+                      {item.items.map((sub, sIdx) => (
+                        <a
+                          key={sIdx}
+                          href={sub.href}
+                          onClick={onClose}
+                          className="active:text-primary block text-sm text-gray-300"
+                        >
+                          {sub.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {/* 🔥🔥🔥 修改结束 🔥🔥🔥 */}
                 </div>
               </div>
             ) : (
