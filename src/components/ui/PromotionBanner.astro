@@ -1,25 +1,69 @@
----
-// src/components/ui/PromotionBanner.astro
-// 不需要导入 X 图标了
----
-
-<div 
+<div
   id="promo-banner"
-  class="relative z-[101] flex h-10 w-full items-center justify-center bg-zinc-900 px-4 text-sm font-medium text-white shadow-xl"
+  class="relative z-50 flex h-10 w-full items-center justify-center overflow-hidden bg-zinc-900 px-4 text-sm font-medium text-white shadow-xl"
 >
-  <div class="flex w-full max-w-7xl items-center justify-center text-center">
-    
-    {/* 文本内容 */}
-    <p class="truncate">
-      🎉 新年促销！全场产品 <strong>8 折优惠</strong>！
-      <a href="/promo" class="ml-2 underline hover:text-red-200">
-        立即抢购 &rarr;
-      </a>
-    </p>
+  {
+    /* 滚动容器 
+    - 动画名称: vertical-scroll
+    - 持续时间: 6s (可自行调整)
+    - 循环: infinite
+  */
+  }
+  <div class="animate-vertical-scroll flex flex-col items-center">
+    {/* --- 消息 1 --- */}
+    <div class="flex h-10 w-full items-center justify-center">
+      <p class="truncate">
+        🎉 新年促销！全场产品 <strong>8 折优惠</strong>！
+        <a href="/promo" class="ml-2 underline hover:text-red-200">
+          立即抢购 &rarr;
+        </a>
+      </p>
+    </div>
 
-    {/* ❌ 关闭按钮已移除 */}
+    {/* --- 消息 2 --- */}
+    <div class="flex h-10 w-full items-center justify-center">
+      <p class="truncate">
+        🚀 新品 C6 编码器现已上市，<span class="text-red-600">现货发售</span>
+        <a href="/products/c6" class="ml-2 underline hover:text-red-200">
+          查看详情 &rarr;
+        </a>
+      </p>
+    </div>
 
+    {/* --- 消息 1 的克隆 (用于无缝衔接) --- */}
+    {/* ⚠️ 必须和第一条完全一样，用于动画循环时的视觉欺骗 */}
+    <div class="flex h-10 w-full items-center justify-center">
+      <p class="truncate">
+        🎉 新年促销！全场产品 <strong>8 折优惠</strong>！
+        <a href="/promo" class="ml-2 underline hover:text-red-200">
+          立即抢购 &rarr;
+        </a>
+      </p>
+    </div>
   </div>
 </div>
 
-{/* ❌ <script> 脚本已移除，因为不再需要处理关闭逻辑 */}
+<style>
+  /* 定义垂直滚动动画 */
+  @keyframes vertical-scroll {
+    /* 0% - 45%: 显示第一条消息 (停留) */
+    0%,
+    45% {
+      transform: translateY(0);
+    }
+    /* 50% - 95%: 显示第二条消息 (上滑并停留) */
+    /* -2.5rem 等于 h-10 (40px) 的高度 */
+    50%,
+    95% {
+      transform: translateY(-2.5rem);
+    }
+    /* 100%: 瞬间切换到第三条(克隆的第一条)，然后立即重置回 0% */
+    100% {
+      transform: translateY(-5rem);
+    }
+  }
+
+  .animate-vertical-scroll {
+    animation: vertical-scroll 6s cubic-bezier(0.8, 0, 0.2, 1) infinite;
+  }
+</style>

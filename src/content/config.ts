@@ -1,150 +1,110 @@
 // src/content/config.ts
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-
-// 👇 1. 必须引入 Starlight 的这两个工具
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 
+// ----------------------------------------------------------------------------
+// 🛠️ 1. 提取公共 Schema 生成器 (DRY 原则)
+// ----------------------------------------------------------------------------
+// 这涵盖了 news, cases, blogs, learning, solutions 共有的字段
+const createBaseSchema = (image: any) =>
+  z.object({
+    title: z.string(),
+    description: z.string(),
+
+    // ✅ 优化：日期自动生成
+    // 如果 MD 文件里没写 pubDate，默认使用当前构建时间 (new Date())
+    pubDate: z.date().default(() => new Date()),
+
+    updatedDate: z.date().optional(),
+
+    // ✅ 优化：作者默认值
+    // 如果没写 author，默认为 'CNDLive'，省去每次都写的麻烦
+    author: z.string().default('CNDLive'),
+
+    // ✅ 优化：标签默认值
+    // 如果没写 tags，默认为空数组 []，防止报错
+    tags: z.array(z.string()).default([]),
+
+    cover: image().optional(),
+    order: z.number().optional(),
+  });
+
+// ----------------------------------------------------------------------------
+// 📂 2. 定义集合
+// ----------------------------------------------------------------------------
+
+// 使用公共 Schema 的集合
 const news = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/news' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      pubDate: z.date(),
-      updatedDate: z.date().optional(),
-      author: z.string(),
-      tags: z.array(z.string()),
-
-      // 修改处：加上 .optional()
-      // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
-      cover: image().optional(),
-      order: z.number().optional(),
-    }),
+  schema: ({ image }) => createBaseSchema(image),
 });
 
 const cases = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/cases' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      pubDate: z.date(),
-      updatedDate: z.date().optional(),
-      author: z.string(),
-      tags: z.array(z.string()),
-
-      // 修改处：加上 .optional()
-      // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
-      cover: image().optional(),
-      order: z.number().optional(),
-    }),
+  schema: ({ image }) => createBaseSchema(image),
 });
+
 const blogs = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blogs' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      pubDate: z.date(),
-      author: z.string(),
-      tags: z.array(z.string()),
-      updatedDate: z.date().optional(),
-
-      // 修改处：加上 .optional()
-      // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
-      cover: image().optional(),
-      order: z.number().optional(),
-    }),
+  schema: ({ image }) => createBaseSchema(image),
 });
 
 const learning = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/learning' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      pubDate: z.date(),
-      author: z.string(),
-      updatedDate: z.date().optional(),
-      tags: z.array(z.string()),
-
-      // 修改处：加上 .optional()
-      // 这表示：这个字段可以没有，如果没有，它的值就是 undefined
-      cover: image().optional(),
-      order: z.number().optional(),
-    }),
+  schema: ({ image }) => createBaseSchema(image),
 });
 
-// 🔥 新增：pages 集合 (用于 About, Contact, Privacy Policy 等单页)
-// 🔥 必须有 pages 的定义
-const pages = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      order: z.number().optional(),
-    }),
-});
-
-// 🔥 新增：solutions 集合
 const solutions = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/solutions' }),
-  schema: ({ image }) =>
+  // Solutions 直接复用公共 Schema，因为它现在的字段跟上面完全一致了
+  schema: ({ image }) => createBaseSchema(image),
+});
+
+// Pages 比较简单，单独定义
+const pages = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
+  schema: () =>
     z.object({
       title: z.string(),
       description: z.string(),
-      cover: image().optional(),
-
-      // 🔥🔥 补上这两个字段，跟 News 保持一致
-      pubDate: z.date(),
-      author: z.string().optional(), // 作者可以是可选的
       order: z.number().optional(),
     }),
 });
 
-//新增产品集合
+// Products 结构特殊，单独定义
 const products = defineCollection({
-  // ✅ 1. 关键点：只匹配 md 和 mdx。
-  // 这样 specs.ts 和 downloads.ts 会被这个集合自动忽略（它们只是普通的数据文件），
-  // 从而彻底解决了 "post.render is not a function" 的报错。
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/products' }),
-
   schema: ({ image }) =>
     z.object({
-      // ✅ 2. 核心字段改为必填 (去掉 optional)
-      // 因为这里只加载 index.mdx，主文件必须要有这些信息，否则构建时报错提示你补全。
       title: z.string(),
       description: z.string(),
-
       category: z.enum([
         'Video Encoder',
         'Video Decoder',
         'NDI Converter',
         'Manage & IP Gateway',
       ]),
-
-      // --- 默认值字段 ---
+      // 这里的日期也加上默认值
+      pubDate: z.date().default(() => new Date()),
       isNew: z.boolean().default(false),
       order: z.number().default(99),
-      pubDate: z.date().default(() => new Date()),
       author: z.string().default('CNDLive'),
-
-      // --- 视觉字段 ---
-      // 建议 cover 也是必填的，保证列表页布局统一
-      cover: image(),
-      // 卖点列表依然可选，有的产品可能没有
+      cover: image(), // 必填
       features: z.array(z.string()).optional(),
     }),
 });
 
-// 👇 2. 补上 Starlight 的 docs 集合定义
+// Starlight Docs
 const docs = defineCollection({
-  loader: docsLoader(), // 这里的 loader 会自动去 src/content/docs 里找文件
+  loader: docsLoader(),
   schema: docsSchema(),
 });
+
+// ----------------------------------------------------------------------------
+// 📤 3. 导出
+// ----------------------------------------------------------------------------
 export const collections = {
   news,
   pages,
@@ -154,4 +114,4 @@ export const collections = {
   cases,
   blogs,
   learning,
-}; // 记得导出
+};

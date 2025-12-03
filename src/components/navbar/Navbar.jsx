@@ -13,44 +13,52 @@ import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeMega, setActiveMega] = useState(null); // 桌面下拉索引
-  const [isTransitioning, setIsTransitioning] = useState(true); // 🚨 新状态：控制 CSS 过渡
+  const [activeMega, setActiveMega] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
-  // 桌面菜单根节点（只包桌面，避免移动端被外部点击监听误杀）
   const desktopMenuRef = useRef(null);
 
-  // 外部点击 → 关闭桌面下拉
   useOnClickOutside(desktopMenuRef, () => setActiveMega(null), {
     eventTypes: ['mousedown', 'touchstart'],
   });
 
+  // ✅✅✅ 修复核心：更稳健的滚动锁定逻辑
   useEffect(() => {
-    document.body.style.overflow = isMobileOpen ? 'hidden' : 'unset';
+    if (isMobileOpen) {
+      // 1. 物理禁止 Body 滚动
+      document.body.style.overflow = 'hidden';
+      // 2. 针对 iOS 的增强：禁止默认触摸行为 (需要在 MobileMenu 里开启 auto)
+      document.body.style.touchAction = 'none';
+    } else {
+      // 恢复滚动 (使用空字符串比 unset 兼容性更好)
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+
+    // 清理函数：组件卸载时确保恢复，防止死锁
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
   }, [isMobileOpen]);
 
   const hasSubMenu = (type) => type === 'mega' || type === 'dropdown';
 
-  // 🚨 新增：处理鼠标进入事件 (重新启用过渡)
   const handleMouseEnter = (idx) => {
-    setIsTransitioning(true); // 鼠标进入时启用过渡动画
+    setIsTransitioning(true);
     setActiveMega(idx);
   };
 
-  // 🚨 新增：处理菜单项点击事件 (强制关闭并禁用过渡)
   const handleItemClick = (e) => {
-    // 1. 禁用过渡：防止 Safari 闪烁
     setIsTransitioning(false);
-    // 2. 立即关闭菜单：解决点击后不消失的问题
     setActiveMega(null);
-
-    // 3. 解决 Safari 焦点残留问题
     if (e && e.currentTarget && typeof e.currentTarget.blur === 'function') {
       e.currentTarget.blur();
     }
   };
 
   return (
-    <nav className="h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md ">
+    <nav className="h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md">
       <div className="mx-auto h-full px-6 lg:px-8">
         <div className="flex h-full items-center justify-between">
           {/* Logo */}
@@ -58,7 +66,7 @@ export default function Navbar() {
             <NavLogo />
           </div>
 
-          {/* 桌面菜单 - 包在 desktopMenuRef 里 */}
+          {/* 桌面菜单 */}
           <div
             ref={desktopMenuRef}
             className="hidden h-full items-center space-x-8 lg:flex"
@@ -67,11 +75,9 @@ export default function Navbar() {
               <div
                 key={idx}
                 className="group relative flex h-full items-center"
-                // 🚨 调用新的 handleMouseEnter
                 onMouseEnter={() =>
                   hasSubMenu(item.type) && handleMouseEnter(idx)
                 }
-                // 🚨 保持 onMouseLeave 关闭菜单
                 onMouseLeave={() => setActiveMega(null)}
               >
                 <a
@@ -97,14 +103,13 @@ export default function Navbar() {
                   )}
                 </a>
 
-                {/* 子菜单 - 🚨 新增 isTransitioning 和 onItemClick */}
                 {item.type === 'mega' && (
                   <MegaMenu
                     isOpen={activeMega === idx}
                     groups={item.groups}
                     onMouseEnter={() => setActiveMega(idx)}
                     onMouseLeave={() => setActiveMega(null)}
-                    isTransitioning={isTransitioning} // MegaMenu也需要这个属性来控制过渡
+                    isTransitioning={isTransitioning}
                     onItemClick={handleItemClick}
                   />
                 )}
@@ -115,8 +120,8 @@ export default function Navbar() {
                     items={item.items}
                     onMouseEnter={() => setActiveMega(idx)}
                     onMouseLeave={() => setActiveMega(null)}
-                    isTransitioning={isTransitioning} // 🚨 新增 isTransitioning
-                    onItemClick={handleItemClick} // 🚨 新增 onItemClick
+                    isTransitioning={isTransitioning}
+                    onItemClick={handleItemClick}
                   />
                 )}
               </div>
