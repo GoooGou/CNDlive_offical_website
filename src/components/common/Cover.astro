@@ -9,6 +9,9 @@ interface Props {
   raw?: boolean;
   variant?: 'hero' | 'list';
   loading?: 'eager' | 'lazy';
+  // 🔥 新增参数
+  aspect?: '16/9' | '4/3' | '1/1' | 'auto'; // 比例
+  border?: boolean; // 是否显示边框
 }
 
 const {
@@ -19,9 +22,11 @@ const {
   raw = false,
   variant = 'list',
   loading = variant === 'hero' ? 'eager' : 'lazy',
+  aspect = 'auto', // 默认不强制，由父级控制
+  border = false, // 默认无边框
 } = Astro.props;
 
-// --- 1. 简单的哈希函数 ---
+// --- 1. 哈希函数 (保持不变) ---
 const getHashIndex = (str: string) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -30,39 +35,42 @@ const getHashIndex = (str: string) => {
   return Math.abs(hash);
 };
 
-// --- 2. 定义丰富的渐变色板 (6种风格) ---
+// --- 2. 🎨 升级后的深色渐变色板 (拒绝明亮，追求质感) ---
 const gradients = [
-  // 2. 🔵 深邃科技蓝 (专业/稳重)
-  // 适合: 技术文档、硬核内容
-  'bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-900',
-
-  // 4. 🟢 深海极光绿 (清新/生长)
-  // 适合: 教程、入门指南
-  'bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-800',
-
-  // 5. 🌑 高级暗黑灰 (极简/高端)
-  // 适合: 硬件参数、通用内容
-  'bg-gradient-to-br from-zinc-600 via-zinc-800 to-black',
-
-  // 6. 🌅 落日熔金 (温暖/醒目)
-  // 适合: 社区动态、公告
-  'bg-gradient-to-br from-rose-500 via-pink-600 to-orange-600',
+  // 深空灰/工业黑
+  'bg-gradient-to-br from-zinc-800 via-neutral-900 to-black',
+  // 深海蓝 (商务/科技)
+  'bg-gradient-to-br from-slate-900 via-blue-950 to-black',
+  // 暗夜紫 (高端/神秘)
+  'bg-gradient-to-br from-gray-900 via-indigo-950 to-slate-900',
+  // 墨绿色 (稳重)
+  'bg-gradient-to-br from-emerald-950 via-teal-950 to-gray-900',
+  // 暗红/黑金 (强调)
+  'bg-gradient-to-br from-red-950 via-orange-950 to-black',
 ];
 
-// 根据标题哈希值，在 gradients 数组长度范围内取余
 const themeClass = gradients[getHashIndex(title) % gradients.length];
 const hasImage = !!src;
 
-// --- 3. 样式配置 ---
+// --- 3. 比例映射 ---
+const aspectStyles = {
+  '16/9': 'aspect-video',
+  '4/3': 'aspect-[4/3]',
+  '1/1': 'aspect-square',
+  auto: '',
+};
+
+// --- 4. 字体与质感样式 ---
 const variantStyles = {
   hero: {
     wrapper: 'p-8 md:p-12',
-    text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-wide drop-shadow-xl',
+    // 增加 drop-shadow 增强图片上的文字
+    text: 'text-3xl sm:text-4xl font-black leading-tight tracking-wide',
     clamp: '',
   },
   list: {
-    wrapper: 'p-4',
-    text: 'text-lg md:text-xl font-bold leading-snug tracking-tight text-shadow-md',
+    wrapper: 'p-6',
+    text: 'text-xl md:text-2xl font-bold leading-snug tracking-tight',
     clamp: 'line-clamp-3',
   },
 };
@@ -72,10 +80,11 @@ const currentStyle = variantStyles[variant];
 
 <div
   class={`
-  relative w-full h-full overflow-hidden 
-  bg-zinc-100 dark:bg-zinc-900
-  ${className}
-`}
+    relative w-full h-full overflow-hidden 
+    bg-zinc-900 
+    ${aspectStyles[aspect]} 
+    ${className}
+  `}
 >
   {
     hasImage ? (
@@ -89,13 +98,15 @@ const currentStyle = variantStyles[variant];
         class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
     ) : (
-      /* --- 情况 B: 无图片，使用随机渐变背景 --- */
+      /* --- 情况 B: 无图片，深色渐变背景 --- */
       <div
-        class={`flex h-full w-full flex-col items-center justify-center text-center transition-transform duration-700 group-hover:scale-105 ${currentStyle.wrapper} ${themeClass} /* 👈 应用随机背景 */`}
+        class={`flex h-full w-full flex-col items-center justify-center text-center transition-transform duration-700 group-hover:scale-105 ${currentStyle.wrapper} ${themeClass} `}
       >
         <div class="relative z-10 mx-auto w-full max-w-4xl">
+          {/* 🔥 增加 text-shadow 样式 */}
           <h3
             class={`wrap-break-word hyphens-auto text-white ${currentStyle.text} ${currentStyle.clamp}`}
+            style="text-shadow: 0 4px 12px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);"
           >
             {title}
           </h3>
@@ -104,9 +115,10 @@ const currentStyle = variantStyles[variant];
     )
   }
 
-  {/* ✨ 统一内边框 (Overlay Ring) */}
-  <div
-    class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-black/5 ring-inset dark:ring-white/10"
-  >
-  </div>
+  {/* 🔥 可选的内边框 (Overlay Ring) */}
+  {
+    border && (
+      <div class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-white/10 ring-inset" />
+    )
+  }
 </div>
