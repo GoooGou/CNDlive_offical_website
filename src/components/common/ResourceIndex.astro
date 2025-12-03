@@ -8,10 +8,17 @@ interface Props {
   subtitle?: string; // 副标题
   posts: any[]; // 文章数据
   basePath: string; // 基础路径 "/news"
+  collectionName: string; // 集合名称 "news"
 }
 
 // 1. 获取原始数据
-const { title, subtitle, posts: rawPosts, basePath } = Astro.props;
+const {
+  title,
+  subtitle,
+  posts: rawPosts,
+  basePath,
+  collectionName,
+} = Astro.props;
 
 // =========================================
 // ✅ 新的“插队”排序逻辑开始
@@ -70,6 +77,7 @@ const listSchema = generateItemListSchema(
   backHref="/"
   schema={listSchema}
   backLabel="Back to Home"
+  collectionName={collectionName}
 >
   {/* 4. 头部：标题区域 */}
   <div

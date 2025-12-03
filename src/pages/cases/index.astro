@@ -3,12 +3,15 @@ import { getCollection } from 'astro:content';
 import ResourceIndex from '@/components/common/ResourceIndex.astro';
 
 const posts = await getCollection('cases');
-const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const sortedPosts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
 ---
 
-<ResourceIndex 
-  title="Case Studies" 
+<ResourceIndex
+  title="Case Studies"
   subtitle="Real-world examples of CNDLive in action."
-  posts={sortedPosts} 
-  basePath="/cases" 
+  posts={sortedPosts}
+  basePath="/cases"
+  collectionName="cases"
 />

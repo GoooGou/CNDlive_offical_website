@@ -1,0 +1,142 @@
+---
+// src/components/PrevNext.astro
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  currentSlug: string;
+  collectionName: string;
+  basePath?: string;
+}
+
+const { currentSlug, collectionName, basePath } = Astro.props;
+
+// ✅ 【修复1】定义数据接口，解决 TypeScript 报红 "Property 'data' does not exist"
+interface Post {
+  id: string;
+  slug: string;
+  data: {
+    title: string;
+    pubDate: Date | string;
+    order?: number | string;
+    [key: string]: any;
+  };
+}
+
+// 1. 获取数据
+const rawCollection = await getCollection(collectionName as any);
+// 强制转为 Post[] 类型
+const rawPosts = (rawCollection || []) as unknown as Post[];
+
+// ✅ 【修复2】核心修复：兼容 id 和 slug
+// 你的控制台显示 slug 是 undefined，说明可能是 Astro v5，或者数据里用的是 id
+const getPostId = (p: Post) => {
+  // 优先取 slug，如果没有则取 id，确保一定能拿到唯一标识
+  return p.slug || p.id;
+};
+
+// =========================================
+// 排序逻辑 (兼容字符串 order)
+// =========================================
+
+const getOrder = (post: Post) => {
+  const val = post.data.order;
+  if (val === undefined || val === null || val === '') return null;
+  const num = Number(val);
+  return isNaN(num) ? null : num;
+};
+
+const orderedPosts = rawPosts.filter((p) => getOrder(p) !== null);
+// 使用浅拷贝防止副作用
+const naturalPosts = [...rawPosts.filter((p) => getOrder(p) === null)];
+
+// 自然组按时间倒序
+naturalPosts.sort((a, b) => {
+  const dateA = new Date(a.data.pubDate).valueOf();
+  const dateB = new Date(b.data.pubDate).valueOf();
+  return dateB - dateA;
+});
+
+// 插队组按 order 小到大
+orderedPosts.sort((a, b) => (getOrder(a) as number) - (getOrder(b) as number));
+
+// 执行插入
+orderedPosts.forEach((post) => {
+  const orderVal = getOrder(post) as number;
+  const targetIndex = Math.max(0, orderVal - 1);
+  if (targetIndex < naturalPosts.length) {
+    naturalPosts.splice(targetIndex, 0, post);
+  } else {
+    naturalPosts.push(post);
+  }
+});
+
+const sortedPosts = naturalPosts;
+
+// =========================================
+
+// ✅ 【修复3】使用兼容函数 getPostId 来查找索引
+const currentIndex = sortedPosts.findIndex(
+  (post) => getPostId(post) === currentSlug
+);
+
+// 4. 计算前后篇
+let prevPost: Post | null = null;
+let nextPost: Post | null = null;
+const urlPrefix = basePath || collectionName;
+
+if (currentIndex !== -1) {
+  if (currentIndex > 0) prevPost = sortedPosts[currentIndex - 1];
+  if (currentIndex < sortedPosts.length - 1)
+    nextPost = sortedPosts[currentIndex + 1];
+} else {
+  // 调试日志：如果还是找不到，会在服务端打印出列表里到底有什么
+  console.error(`❌ [PrevNext] 找不到当前文章: "${currentSlug}"`);
+  console.log(
+    `   -> 列表前3项 ID/Slug:`,
+    sortedPosts.slice(0, 3).map((p) => `${p.id} / ${p.slug}`)
+  );
+}
+---
+
+<div
+  class="border-surface-border mt-12 grid min-h-[100px] grid-cols-1 gap-4 border-t pt-8 md:grid-cols-2"
+>
+  {/* 左侧：上一篇 (Previous) */}
+  {
+    prevPost ? (
+      <a
+        href={`/${urlPrefix}/${getPostId(prevPost)}/`}
+        class="group bg-surface-card border-surface-border relative flex flex-col rounded-xl border p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-red-500/20 hover:shadow-xl"
+      >
+        <span class="text-text-main mb-1 text-xs transition-colors group-hover:text-red-500">
+          &larr; Previous
+        </span>
+        <span class="line-clamp-2 font-medium text-gray-900 decoration-red-500 underline-offset-4 group-hover:underline dark:text-gray-100">
+          {prevPost.data.title}
+        </span>
+      </a>
+    ) : (
+      /* 占位符: 保持布局平衡 */
+      <div class="hidden md:block" />
+    )
+  }
+
+  {/* 下一篇 */}
+  {
+    nextPost ? (
+      <a
+        href={`/${urlPrefix}/${getPostId(nextPost)}/`}
+        class="group bg-surface-card border-surface-border relative flex flex-col items-end rounded-xl border p-4 text-right transition-all duration-300 hover:-translate-y-1 hover:border-red-500/20 hover:shadow-xl"
+      >
+        <span class="text-text-main mb-1 text-xs transition-colors group-hover:text-red-500">
+          Next &rarr;
+        </span>
+        <span class="line-clamp-2 font-medium text-gray-900 decoration-red-500 underline-offset-4 group-hover:underline dark:text-gray-100">
+          {nextPost.data.title}
+        </span>
+      </a>
+    ) : (
+      <div class="hidden md:block" />
+    )
+  }
+</div>

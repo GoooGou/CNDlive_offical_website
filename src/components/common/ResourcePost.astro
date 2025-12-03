@@ -5,19 +5,22 @@ import ContentLayout from '@/layouts/ContentLayout.astro';
 import Cover from '@/components/common/Cover.astro';
 import TableOfContents from '@/components/mdx/TableOfContents.astro';
 import ArticleBody from '../mdx/ArticleBody.astro';
+import PrevNext from './PrevNext.astro';
 
 interface Props {
   post: any;
   basePath: string;
   parentTitle: string;
   schema?: object;
+  collectionName: string;
 }
 
-const { post, basePath, parentTitle, schema } = Astro.props;
+const { post, basePath, parentTitle, schema, collectionName } = Astro.props;
 
 // ✅ 2. 关键修复：在这里调用 render 是正确的！
 // 我们需要它来生成右侧的目录 (headings)
 const { headings } = await render(post);
+console.log('post.id:', post.id);
 ---
 
 {/* 把 schema 传给 Layout 以生成 JSON-LD 结构化数据 */}
@@ -71,6 +74,7 @@ const { headings } = await render(post);
 
       {/* 正文内容 */}
       <ArticleBody post={post} />
+      <PrevNext currentSlug={post.id} collectionName={collectionName} />
     </article>
 
     {/* === 右侧：粘性目录 (仅在电脑端显示) === */}

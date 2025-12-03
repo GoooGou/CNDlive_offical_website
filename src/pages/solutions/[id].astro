@@ -21,4 +21,9 @@ const { post } = Astro.props;
 ---
 
 {/* 3. 直接调用布局组件，传数据进去即可 */}
-<ResourcePost post={post} basePath="/solutions" parentTitle="Solutions" />
+<ResourcePost
+  post={post}
+  basePath="/solutions"
+  parentTitle="Solutions"
+  collectionName="solutions"
+/>

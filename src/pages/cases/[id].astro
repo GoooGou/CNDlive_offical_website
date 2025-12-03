@@ -5,7 +5,7 @@ import ResourcePost from '@/components/common/ResourcePost.astro';
 // 1. 生成静态路径
 export async function getStaticPaths() {
   const cases = await getCollection('cases');
-  return cases.map(post => ({
+  return cases.map((post) => ({
     // ✅ 正确：post.slug 是 URL 友好的名称 (例如 "case01")
     params: { id: post.id },
     props: { post },
@@ -21,8 +21,9 @@ const { post } = Astro.props;
 ---
 
 {/* 3. 直接调用布局组件，传数据进去即可 */}
-<ResourcePost 
-  post={post} 
-  basePath="/cases" 
-  parentTitle="Case Studies" 
+<ResourcePost
+  post={post}
+  basePath="/cases"
+  collectionName="cases"
+  parentTitle="Case Studies"
 />
