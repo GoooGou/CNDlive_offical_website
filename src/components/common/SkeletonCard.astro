@@ -1,0 +1,22 @@
+---
+// src/components/SkeletonCard.astro
+// 这是一个模拟博客文章卡片的骨架屏
+---
+
+<div class="mx-auto w-full rounded-lg border border-gray-200 p-4">
+  <div class="flex animate-pulse space-x-4">
+    <div class="h-24 w-24 rounded-lg bg-gray-200"></div>
+
+    <div class="flex-1 space-y-6 py-1">
+      <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+
+      <div class="space-y-3">
+        <div class="grid grid-cols-3 gap-4">
+          <div class="col-span-2 h-4 rounded bg-gray-200"></div>
+          <div class="col-span-1 h-4 rounded bg-gray-200"></div>
+        </div>
+        <div class="h-4 rounded bg-gray-200"></div>
+      </div>
+    </div>
+  </div>
+</div>

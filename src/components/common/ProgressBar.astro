@@ -1,0 +1,37 @@
+---
+// src/components/ProgressBar.astro
+---
+
+<script>
+  import NProgress from 'nprogress';
+  // 引入默认样式，或者你可以稍后自定义
+  import 'nprogress/nprogress.css';
+
+  // 配置 NProgress (关闭右侧那个旋转的 spinner，通常只需要顶部的条)
+  NProgress.configure({ showSpinner: false });
+
+  // 1. 当路由开始准备跳转时（用户点击链接后），开始进度条
+  document.addEventListener('astro:before-preparation', () => {
+    NProgress.start();
+  });
+
+  // 2. 当页面加载完成时，结束进度条
+  document.addEventListener('astro:page-load', () => {
+    NProgress.done();
+  });
+
+  // 3. (可选) 如果跳转被取消或发生错误，也应该结束
+  document.addEventListener('astro:after-preparation', () => {
+    // 这里通常不需要做太多，因为 page-load 会触发，
+    // 但为了保险起见，可以在出错时重置，视具体需求而定。
+  });
+</script>
+
+<style is:global>
+  /* 自定义进度条颜色 - 配合你之前的红色主题 */
+  #nprogress .bar {
+    background: #ac121f !important; /* Tailwind 的 red-500 */
+    height: 4px !important; /* 进度条高度 */
+    z-index: 99999;
+  }
+</style>

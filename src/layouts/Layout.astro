@@ -10,6 +10,7 @@ import '@fontsource-variable/montserrat';
 import PromotionBanner from '@/components/ui/PromotionBanner.astro';
 import { SITE_CONFIG } from '@/global.config';
 import Header from '@/components/navbar/Header.astro';
+import ProgressBar from '@/components/common/ProgressBar.astro';
 
 const SITE_TITLE =
   'CNDLive - Professional Video Streaming Solutions | Encoders & Decoders';
@@ -116,9 +117,10 @@ const isActive = true;
   </head>
 
   <body class="text-text-main flex min-h-screen flex-col antialiased">
-    <Header transition:persist/>
+    <Header transition:persist />
 
     <main class="relative z-0 grow" transition:animate="fade">
+      <ProgressBar />
       <slot />
     </main>
 
