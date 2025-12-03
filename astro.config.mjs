@@ -6,12 +6,16 @@ import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 import partytown from '@astrojs/partytown';
 import astroExpressiveCode from 'astro-expressive-code';
+import vercel from '@astrojs/vercel';
 
 const isDev = process.env.npm_lifecycle_event === 'dev';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'http://www.cndlive.com/',
+  
+  output: 'static', // 确保你的官网是静态输出
+  adapter: vercel({}),
+  site: 'https://cndlive.com',
 
   image: {
     // 🚀 性能优化：开发环境不处理图片，生产环境使用默认 Sharp

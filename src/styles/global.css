@@ -1,7 +1,12 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 @import './markdown.css'; /* 刚刚写的 */
+/* src/styles/global.css */
 
+/* 导入 MontSerrat 可变字体 */
+@import '@fontsource-variable/montserrat/index.css'; 
+
+/* ... 其他 Tailwind/CSS ... */
 /* =========================================
    1. 定义变量逻辑 (Theme Logic)
    ========================================= */

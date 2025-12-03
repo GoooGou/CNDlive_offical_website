@@ -60,6 +60,22 @@ const orgSchema = {
 };
 // 推广横幅是否激活
 const isActive = true;
+// 确保在你的 astro.config.mjs 中设置了 site: 'https://yourwebsite.com'
+
+// 1. 获取网站基础 URL
+// Astro.site 是一个 URL 对象，来自 astro.config.mjs 中的 `site` 属性。
+const siteUrl = Astro.site; 
+
+// 2. 获取当前页面的路径（例如 /blog/post-title 或 /about）
+// Astro.url 是一个 URL 对象，包含当前页面的完整信息。
+const pathname = Astro.url.pathname;
+
+// 3. 构建完整的规范 URL
+// 使用 URL 构造函数安全地合并基础URL和路径。
+const canonicalUrl = new URL(pathname, siteUrl).href;
+
+// 注意：如果你的 Astro 版本较旧，可能需要手动拼接：
+// const canonicalUrl = `${siteUrl.href.replace(/\/$/, '')}${pathname}`;
 ---
 
 <!doctype html>
@@ -71,6 +87,23 @@ const isActive = true;
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
+    <!-- 预加载 Montserrat 字体 -->
+    <link 
+        rel="preload" 
+        href="/fonts/montserrat-latin-wght-normal.woff2" 
+        as="font" 
+        type="font/woff2" 
+        crossorigin
+    />
+
+    <link 
+        rel="preload" 
+        href="/fonts/montserrat-latin-wght-italic.woff2" 
+        as="font" 
+        type="font/woff2" 
+        crossorigin
+    />
+
     <meta name="description" content={description} />
     <meta name="keywords" content={SITE_KEYWORDS} />
 
@@ -115,6 +148,7 @@ const isActive = true;
       applyTheme();
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
+    <link rel="canonical" href={canonicalUrl}>  
   </head>
 
   <body class="text-text-main flex min-h-screen flex-col antialiased">
