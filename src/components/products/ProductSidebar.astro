@@ -10,6 +10,8 @@ interface Props {
 }
 
 const { groups } = Astro.props;
+
+import SocialMediaButton from '@/components/ui/SocialMediaButton.astro';
 ---
 
 <aside class="hidden lg:block">
@@ -36,7 +38,7 @@ const { groups } = Astro.props;
 
     {/* CTA 卡片 */}
     <div
-      class="bg-surface-card border-surface-border mt-10 rounded-2xl border p-6"
+      class="bg-surface-card border-surface-border mt-10 rounded-2xl border p-4"
     >
       <h3 class="text-text-main text-sm font-semibold">Need Help?</h3>
       <p class="text-medium text-text-main/60 text-md mt-2">
@@ -48,6 +50,9 @@ const { groups } = Astro.props;
       >
         Contact Sales &rarr;
       </a>
+      <div class="mt-4">
+        <SocialMediaButton />
+      </div>
     </div>
   </div>
 </aside>
