@@ -20,6 +20,8 @@ import CodeBlock from './CodeBlock.astro';
 import AnimatedEmojiContainer from './AnimatedEmojiContainer.astro';
 import FooterNavigationLinks from './FooterNavigationLinks.astro';
 import FAQ from './FAQ.astro';
+// [新增] 引入 Mermaid 组件
+import Mermaid from './Mermaid.astro';
 
 interface Props {
   post: any; // 接收文章数据对象
@@ -51,6 +53,8 @@ const mdxComponents = {
   FAQ,
   Blockquote,
   Link,
+  // [新增] 注册 Mermaid 组件
+  Mermaid,
 };
 ---
 

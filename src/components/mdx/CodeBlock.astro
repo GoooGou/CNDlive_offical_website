@@ -1,65 +1,123 @@
 ---
-// src/components/mdx/CodeBlock.astro
-// 这个组件覆盖了 MDX 渲染器输出的 <pre> 标签
+interface Props {
+  class?: string; // Astro 会自动传入 class，比如 "language-js"
+  [key: string]: any; // 捕获其他所有属性
+}
 
-// 从 <pre class="language-js"> 中接收属性
-const { class: languageClass, ...rest } = Astro.props;
+const { class: className, ...props } = Astro.props;
 
-// 提取语言标签，例如从 "language-ts" 得到 "TS"
-const lang = languageClass?.replace('language-', '').toUpperCase() || 'CODE';
+// 从 className 中提取语言名称 (例如 "language-js" => "js")
+// 注意：Astro 的 Shiki 渲染后，class 可能比较复杂，这里做一个简单的提取
+const matches = className ? className.match(/language-(\w+)/) : null;
+const lang = matches ? matches[1] : '';
 ---
 
-<div class="code-wrapper relative my-8 rounded-xl shadow-lg">
-  {/* 顶部语言标签 - Tailwind Styling */}
+<div
+  class="code-block-wrapper my-6 overflow-hidden rounded-lg border border-gray-700/50 bg-[#1e1e1e] shadow-xl"
+>
+  {/* 顶部标题栏 (Mac 风格) */}
   <div
-    class="absolute top-0 right-0 rounded-tr-xl rounded-bl-lg bg-[var(--code-border)] px-2 py-1 font-mono text-xs text-zinc-300 select-none dark:bg-[var(--code-border-dark)]"
+    class="flex items-center justify-between border-b border-gray-700 bg-[#2d2d2d] px-4 py-2"
   >
-    {lang}
+    {/* 左侧红黄绿圆点 */}
+    <div class="flex gap-2">
+      <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+      <span class="h-3 w-3 rounded-full bg-yellow-500/80"></span>
+      <span class="h-3 w-3 rounded-full bg-green-500/80"></span>
+    </div>
+
+    {/* 中间显示语言名称 */}
+    <span class="font-mono text-xs tracking-wider text-gray-400 uppercase">
+      {lang || 'CODE'}
+    </span>
+
+    {/* 右侧复制按钮 */}
+    <button
+      class="copy-btn group relative rounded-md p-1.5 transition-colors hover:bg-gray-600"
+      aria-label="Copy code"
+    >
+      {/* 复制图标 (默认显示) */}
+      <svg
+        class="copy-icon h-4 w-4 text-gray-400 group-hover:text-white"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 012-2v-2h-2m-4 0V9a2 2 0 012-2h5a2 2 0 012 2v9a2 2 0 01-2 2h-5a2 2 0 01-2-2z"
+        ></path></svg
+      >
+
+      {/* 成功图标 (复制后显示) */}
+      <svg
+        class="check-icon hidden h-4 w-4 text-green-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M5 13l4 4L19 7"></path></svg
+      >
+    </button>
   </div>
 
-  {/* 渲染代码区域 (Slot 包含 Expressive Code/Shiki 生成的 <code> 结构) */}
-  <pre
-    class={`
-      // --- 布局和字体 ---
-      !m-0 p-5 overflow-x-auto rounded-xl text-sm font-mono 
-      
-      // 这里的颜色会被 style 块里的变量覆盖，但我们仍需保持结构完整
-      ${languageClass} 
-    `}
-    {...rest}><slot /></pre>
+  {/* 代码内容区域 */}
+  <div class="code-content relative overflow-x-auto">
+    {
+      /* 关键点：这里我们将原本的 <pre> 标签透传下去。
+      Astro 的 Shiki 已经把代码转换成了带有颜色的 HTML span，
+      我们只需要把它放在这里。
+    */
+    }
+    <pre class={className} {...props}><slot /></pre>
+  </div>
 </div>
 
-{/* ---------------------------------------------------- */}
-{
-  /* 🔥 核心修复：通过 CSS 变量，确保亮暗模式的背景和边框切换，并解决 prose 冲突 */
-}
+<script>
+  // 处理复制功能的逻辑
+  const copyButtons = document.querySelectorAll('.copy-btn');
+
+  copyButtons.forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      // 找到当前按钮对应的代码块
+      const wrapper = btn.closest('.code-block-wrapper');
+      const pre = wrapper?.querySelector('pre');
+      const code = pre?.innerText;
+
+      if (code) {
+        try {
+          await navigator.clipboard.writeText(code);
+
+          // 切换图标显示状态
+          const copyIcon = btn.querySelector('.copy-icon');
+          const checkIcon = btn.querySelector('.check-icon');
+
+          copyIcon?.classList.add('hidden');
+          checkIcon?.classList.remove('hidden');
+
+          // 2秒后恢复
+          setTimeout(() => {
+            copyIcon?.classList.remove('hidden');
+            checkIcon?.classList.add('hidden');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      }
+    });
+  });
+</script>
+
 <style>
-  /* 1. 定义 Light/Dark 模式下的颜色变量 */
-  .code-wrapper {
-    /* Light Mode Default */
-    --code-bg: #ffffff;
-    --code-border: #e4e4e7;
-    --code-text: #1f2937;
-  }
-
-  html.dark .code-wrapper {
-    /* Dark Mode Override */
-    --code-bg: #1a1a20; /* 统一的深色背景 */
-    --code-border: #3f3f46;
-    --code-text: #f3f4f6;
-  }
-
-  /* 2. 应用变量到 <pre> 标签 (高优先级覆盖) */
-  /* 使用 ::slotted(pre) 确保即使 MDX 更改了 DOM 结构，样式也能穿透应用 */
-  .code-wrapper pre {
-    /* 强制应用背景/文字颜色 */
-    background-color: var(--code-bg) !important;
-    color: var(--code-text) !important;
-    border: 1px solid var(--code-border);
-    border-radius: 0.75rem !important; /* 保持圆角 */
-
-    /* 确保代码块内的文字颜色是亮的 */
-    /* 这一步非常关键，因为它会覆盖 Expressive Code 注入的行内颜色 */
-    /* 实际上，Expressive Code/Shiki 应该负责这里的颜色，但为了调试，我们先强制 */
+  /* 强制移除 Astro 默认给 pre 添加的 margin/padding，由外层 wrapper 控制 */
+  pre {
+    margin: 0 !important;
+    padding: 1.5rem !important;
+    background-color: transparent !important; /* 让背景色透明，使用外层容器的背景 */
+    border-radius: 0 !important;
   }
 </style>

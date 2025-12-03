@@ -1,0 +1,27 @@
+---
+const { code } = Astro.props;
+---
+
+<div class="mermaid-diagram">
+  {/* 如果有 code 属性则优先使用，否则使用 slot 插槽内容 */}
+  <pre class="mermaid">
+    {code ? code : <slot />}
+  </pre>
+</div>
+
+<script>
+  import mermaid from 'mermaid';
+  mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  document.addEventListener('astro:page-load', () => {
+    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+  });
+</script>
+
+<style>
+  .mermaid-diagram {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+</style>

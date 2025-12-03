@@ -1,0 +1,22 @@
+---
+title: 'Mermaid 图表指南'
+description: '了解如何在 MDX 文章中插入精美的图表，包括流程图、序列图、状态图等。'
+updatedDate: 2025-11-29 # 如果文章有更新，建议加上这个字段
+author: CNDLive Academy
+tags: ['Tutorial', 'MDX', 'Astro', 'CNDLive Academy'] # 方便分类和搜索
+---
+
+## 流程图示例
+
+这里是一个简单的流程图：
+
+<Mermaid
+  code={`
+  graph TD
+  A[开始] --> B{是否集成?}
+  B -- 是 --> C[享受图表]
+  B -- 否 --> D[继续配置]
+`}
+/>
+```mermaid graph TD A --> B{测试}
+```
