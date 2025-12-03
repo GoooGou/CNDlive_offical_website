@@ -11,6 +11,7 @@ import PromotionBanner from '@/components/ui/PromotionBanner.astro';
 import { SITE_CONFIG } from '@/global.config';
 import Header from '@/components/navbar/Header.astro';
 import ProgressBar from '@/components/common/ProgressBar.astro';
+import { Reveal } from '@/components/ui/Reveal';
 
 const SITE_TITLE =
   'CNDLive - Professional Video Streaming Solutions | Encoders & Decoders';
@@ -121,7 +122,9 @@ const isActive = true;
 
     <main class="relative z-0 grow" transition:animate="fade">
       <ProgressBar />
-      <slot />
+      <Reveal client:load layout="full">
+        <slot />
+      </Reveal>
     </main>
 
     {/* ✅ 建议改为 client:idle，让主内容先加载，工具栏稍后加载，提升性能 */}
