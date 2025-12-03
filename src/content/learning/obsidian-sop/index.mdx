@@ -1,0 +1,202 @@
+---
+title: Obsidian 内容生产指南
+author: CNDLive
+pubDate: 2025-12-02
+created: 2025-12-02
+description: 针对 CNDLive 官网的内容生产标准操作流程（SOP），涵盖环境配置、插件使用及交付标准。
+tags:
+  - guide
+  - obsidian
+  - workflow
+---
+
+import imgSetting1 from './images/3e369e65eceb4e6b6a08ac700503592e_MD5.webp';
+import imgSetting2 from './images/e4e5553f2ad37dbb8a2c29c2ebb1476f_MD5.webp';
+import imgPathConfig from './images/26f37470869379ac0d39a90a11c10dc5_MD5.webp';
+import imgMarkDownload from './images/245f0a8899c8243af387b67123e38e9b_MD5.webp';
+import imgWikiError from './images/wikierro.webp';
+
+官网内容基于标准 Markdown/MDX 构建。为了确保从写作到发布的无缝衔接，我们需要对 Obsidian 进行一些标准化配置。
+
+---
+
+## 🛠️ 第一步：关键插件配置 (一次性)
+
+为了自动化处理图片和格式，请安装并配置以下核心插件。
+
+### 1. Local Images Plus (图片自动化)
+
+**作用**：当你粘贴或导入文章时，自动将图片下载到本地 `images` 文件夹，并统一转换为 WebP 格式。
+
+<Steps>
+1.  **启用插件**
+    在设置中开启插件，确保其处于运行状态。
+    <div class="grid grid-cols-2 gap-4">
+      <PostImage src={imgSetting1} alt="启用插件" />
+      <PostImage src={imgSetting2} alt="插件列表" />
+    </div>
+
+2.  **配置路径规则 (Files and Links)**
+    进入插件设置页的 **Files and Links** 标签：
+    - **Media folder**: 选择 `Use subfolder in current folder` (当前文件夹的子文件夹)。
+    - **Folder name**: 填写 `images`。
+      <PostImage src={imgPathConfig} alt="路径配置" />
+
+3.  **应用设置**
+    页面底部勾选 **Copy obsidian settings** 以保存更改。
+
+    <PostImage src={imgSetting2} alt="应用设置" />
+
+   </Steps>
+
+### 2. Obsidian Link Converter (链接格式转换)
+
+**作用**：这是解决“图片无法显示”问题的核心插件。它能一键将 Obsidian 默认的 Wiki 链接 (`![[image]]`) 批量转换为前端可识别的标准 Markdown 链接 (`![](image)`)。
+
+<Callout type="warning" title="为什么必须用它？">
+  Obsidian 默认使用双中括号 `[[ ]]` 引用图片，但这种格式不是标准的
+  Markdown，我们的官网无法识别。发布前**必须**使用此插件进行转换。
+</Callout>
+
+**使用方法：**
+
+1.  **安装**：在社区插件市场搜索 `Link Converter` 并安装启用。
+2.  **设置**：进入插件设置，确保 **"Relative Path"** (相对路径) 选项已开启（根据需要，通常默认即可）。
+3.  **执行转换 (日常操作)**：
+    - 按 `Ctrl + P` (Mac: `Cmd + P`) 打开命令面板。
+    - 输入关键词 `convert`。
+    - 选择 **Link Converter: Convert WikiLinks to Markdown Links in active file** (转换当前文件)。
+
+    _(提示：你也可以为这个命令设置一个快捷键，例如 `Alt + C`，提高效率)_
+
+### 3. MarkDownload (Chrome 扩展)
+
+**作用**：用于“扒”现有网页。它可以将网页内容一键转换为 Markdown 并提取图片。
+
+<div class="flex items-center gap-4 rounded-lg border bg-zinc-50 p-4 dark:bg-zinc-900">
+  <PostImage
+    src={imgMarkDownload}
+    alt="MarkDownload 图标"
+    className="h-16 w-16"
+  />
+  <div>
+    **安装方式**：在 Chrome Web Store 搜索 "MarkDownload" 安装。
+    <br />
+    **使用方法**：打开目标网页 -> 点击插件图标 -> 点击 "Copy" 或 "Download"。
+  </div>
+</div>
+
+---
+
+## 📝 第二步：日常写作流程
+
+根据内容来源，选择对应的工作流。
+
+### 场景 A：从外部迁移 (扒网页)
+
+适用于将旧官网或公众号文章迁移到新系统。
+
+1.  **提取内容**：使用 **MarkDownload** 插件复制网页 Markdown 内容。
+2.  **创建结构**：在 Obsidian 中新建文件夹（命名规则见下文）。
+3.  **粘贴**：将内容粘贴到 `index.md` 中。**Local Images Plus** 会自动将远程图片下载到你的 `images` 文件夹。
+4.  **格式化**：呼出命令面板，运行 **Link Converter** 将链接转为标准格式。
+
+### 场景 B：原创写作
+
+适用于发布新产品、新案例或公告。
+
+1.  **新建**：创建标准文件夹结构。
+2.  **写作**：填写 Properties (元数据)，编写正文。
+3.  **插图**：直接 Ctrl+V 粘贴截图，插件会自动处理命名和格式。
+4.  **格式化**：写作完成后，运行 **Link Converter** 确保所有图片链接正确。
+
+---
+
+## 📏 第三步：交付标准规范
+
+所有交付给前端的文件夹必须符合以下标准。
+
+### 1. 文件夹结构 (Page Bundle)
+
+我们采用“页面包”模式，每篇文章是一个独立的文件夹。
+
+```text
+📂 c6-education-case/       <-- 总文件夹：英文小写、短横线 (作为 URL 路径)
+├── 📂 cover/               <-- 封面文件夹 (可选)
+│   └── 🖼️ cover.webp       <-- 封面图
+├── 📂 images/              <-- 正文配图 (插件自动生成)
+│   ├── 🖼️ topology.webp
+│   └── 🖼️ setup.webp
+└── 📄 index.md             <-- 文章正文 (必须命名为 index)
+```
+
+### 2. Properties 元数据 (必填)
+
+文章顶部必须包含 YAML Frontmatter。
+
+```markdown
+---
+title: 'C6 在远程教育中的应用' # 官网显示的标题
+author: 'CNDLive' # 固定作者
+pubDate: 2025-12-02 # 发布日期 (注意 D 大写)
+created: 2025-12-02 # 创建日期
+description: '利用 C6 编码器实现低延迟远程教学的完整案例分析...' # SEO 描述 (必填)
+tags: # 标签 (回车列表格式)
+  - education
+  - streaming
+  - case-study
+---
+```
+
+### 3. 图片引用检查 (高频错误)
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+  {/* 左侧：错误示范 */}
+  <div class="border border-red-500/20 bg-red-500/5 p-4 rounded-xl">
+    <div class="flex items-center gap-2 text-red-500 font-bold mb-2">
+      <span>❌ 错误 (Wiki Link)</span>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+      这是 Obsidian 特有的双链格式，网页无法识别，会导致图片裂开。
+    </p>
+    <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-lg border border-red-200 dark:border-red-900/50">
+      <code class="text-xs font-mono text-red-700 dark:text-red-300">
+       {"\"![[cover.webp]]\""}
+      </code>
+    </div>
+    {/* 如果你有错误示例图，可以放这里，没有可以删掉下面这行 */}
+    
+    <PostImage src={imgWikiError} alt="Wiki Link Error" className="mt-4 opacity-80 border border-red-200 rounded" />
+  </div>
+
+{/* 右侧：正确示范 */}
+
+  <div class="border border-emerald-500/20 bg-emerald-500/5 p-4 rounded-xl">
+    <div class="flex items-center gap-2 text-emerald-500 font-bold mb-2">
+      <span>✅ 正确 (Standard Link)</span>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+      这是标准 Markdown 格式。请务必包含 <span class="font-mono text-emerald-600 bg-emerald-100 px-1 rounded">./images/</span> 前缀。
+    </p>
+    <div class="bg-emerald-100 dark:bg-emerald-900/30 p-3 rounded-lg border border-emerald-200 dark:border-emerald-900/50">
+      <code class="text-xs font-mono text-emerald-700 dark:text-emerald-300">
+       
+        {"\" ![](./images/cover.webp)\""}
+      </code>
+    </div>
+    <div class="mt-4 text-xs text-emerald-600/70 italic">
+      💡 提示：使用 Link Converter 插件可一键转换。
+    </div>
+  </div>
+</div>
+
+### ✅ 最终交付清单（检查清单）
+
+> 在打包文件夹之前，请自查：
+
+1. `文件夹名`：是否为英文 kebab-case (例如 c6-education)？☑️
+
+2. `文件名`：入口文件是否为 `index.md`？☑️
+3. `图片位置`：所有正文图片是否都在 `images/ 子文件夹内`？☑️
+4. `链接格式`：是否已运行 `Link Converter` 转换为 `![]()`？☑️
+5. `元数据`：`pubDate` 和 `description` 是否已填写？☑️
