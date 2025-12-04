@@ -28,26 +28,157 @@ import {
 } from '@astrojs/starlight/components';
 import { ProductOverview } from '@/components/products/product-overview';
 import heroimg from './cover/cover.webp';
+import FadeUp from '@/components/animation/FadeUp.astro';
 import h265svg from './images/h265.svg';
-import SvgBox from '@/components/common/SvgBox.astro';
+import ndifullsvg from './images/ndi-full.svg';
+import hdmisvg from './images/hdmi.svg';
 
 <ProductOverview.Title
   title="CNDLive D1"
   description="4K HDMI/SDI Video Decoder"
   subtitle="Enhanced H.265 Streaming and Recording"
-  tagline="D1 is an advanced and professional video decoder,equipped with HDMI2.0 and 3GSDI dual outputs, capable of dealing with multiple video formats and coding standard."
+  paragraph="D1 is an advanced and professional video decoder,equipped with HDMI2.0 and 3GSDI dual outputs, capable of dealing with multiple video formats and coding standard."
 />
 
-<ProductOverview.HeroImg
-  src={heroimg}
-  alt="d1 4k ip video decoder"
-  width={600}
-/>
-
-<div class="flex h-[64px] w-[64px] items-center justify-center">
-  <ProductOverview.SvgBox
-    src={h265svg}
-    alt="h.265"
-    size="w-[100px] aspect-video"
+<FadeUp>
+  <ProductOverview.HeroImg
+    src={heroimg}
+    alt="d1 4k ip video decoder"
+    width={600}
   />
-</div>
+</FadeUp>
+{/* h.265 */}
+<FadeUp class="flex justify-center gap-[20px]">
+  {/* h.265 */}
+  <div class="flex h-[100px] w-[100px] items-center justify-center">
+    <img
+      src={h265svg.src}
+      alt="h.265"
+      className="h-full w-full object-contain"
+    />
+  </div>
+  {/* hdmi */}
+  <div class="flex h-[100px] w-[100px] items-center justify-center">
+    <img
+      src={hdmisvg.src}
+      alt="hdmi"
+      className="h-full w-full object-contain"
+    />
+  </div>
+  {/* ndi */}
+  <div class="flex h-[100px] w-[100px] items-center justify-center">
+    <img
+      src={ndifullsvg.src}
+      alt="ndi full"
+      className="h-full w-full object-contain"
+    />
+  </div>
+</FadeUp>
+
+---
+
+<FadeUp>
+  <ProductOverview.Title
+    title="One Unit for Multiple Needs"
+    description="One Unit for Multiple Needs"
+    subtitle="Multiple protocols supported to meet the different market demands"
+    paragraph="D1 supports full protocols in the market,including NDIHB, NDI HX2, SRT, RTSP, RTMP, RTMPS, HLS, TS over UDP,meeting diverse market demands and ensuring seamless integration and decoding for various workflows"
+  />
+</FadeUp>
+
+import protocols from './images/protocols.webp';
+
+<FadeUp>
+  <div class="flex justify-center">
+    <ProductOverview.PostImage
+      src={protocols.src}
+      alt="protocols"
+      className="h-full w-full object-contain"
+      width={900}
+      transparent={true}
+      border={false}
+
+/>
+
+  </div>
+
+</FadeUp>
+
+---
+
+<FadeUp>
+  <ProductOverview.Title
+    title="Dual Interfaces Flexible Output Selection"
+    description="Dual Interfaces Flexible Output Selection"
+    subtitle="4K HDMI and 3G-SDI"
+    paragraph="D1 offers users the flexibility to select between 3G-SDI and 4K HDMI output interfaces,enabling them to synchronize the display of same or different video sources according to the real scene."
+  />
+</FadeUp>
+
+---
+
+<FadeUp>
+  <ProductOverview.Title
+    title="Easy to Use and Set Up"
+    description="Dual Interfaces Flexible Output Selection"
+    subtitle="Big LCD screen for easy configuration and real time preview"
+    paragraph="Equipped with a built-in 2 LCD screen for easy configuration and preview in realime, to effortlessly check the working status, monitor network conditions and access other data at a glance.
+"
+/>
+
+</FadeUp>
+
+<FadeUp>
+  <div class="flex justify-center">
+    <div class="flex w-3/5">
+      <ProductOverview.LottieBox src="/lottie/d1/screen.json" />
+    </div>
+  </div>
+</FadeUp>
+
+---
+
+<FadeUp>
+  <ProductOverview.Title
+    title="Powerful and Professional Decoding Capability"
+    description="Dual Interfaces Flexible Output Selection"
+    subtitle="Enriching Your Experience Interlaced and B-frame sources decoding on both device and Web-side , 4 channels preview"
+
+/>
+
+</FadeUp>
+
+<FadeUp>
+  <div class="flex justify-center">
+    <div class="flex w-3/5">
+      <ProductOverview.LottieBox src="/lottie/d1/powerfull.json" />
+    </div>
+  </div>
+</FadeUp>
+
+import FeatureGrid from './overview/FeatureGrid.astro';
+
+<FeatureGrid />
+
+---
+
+<FadeUp>
+  <ProductOverview.Title
+    title="Multiple-Audio Decoding and Rich Audio Formats"
+    description="Dual Interfaces Flexible Output Selection"
+    subtitle="8 channels for SDI/HDMI"
+    paragraph="D1 supports standards such as AAC, MP3, MP2, MPA, G.711, Opus, LPCM and SDI/HDMI 8 channels audio decoding.
+
+"
+
+/>
+
+</FadeUp>
+
+<FadeUp>
+  <div class="flex justify-center">
+    <div class="flex w-3/5">
+      <ProductOverview.LottieBox src="/lottie/d1/multiple-audio.json" />
+    </div>
+  </div>
+</FadeUp>

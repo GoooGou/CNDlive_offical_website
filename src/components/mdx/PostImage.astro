@@ -5,26 +5,49 @@ import IMG from '@/components/common/IMG.astro';
 interface Props {
   src: any;
   alt: string;
-  title?: string; // 主要用于 Caption，也可以作为 title 属性透传
-  raw?: boolean; // 1. 透传控制属性：true = 强制使用原生 img
+  title?: string;
+  raw?: boolean;
+  transparent?: boolean;
+  border?: boolean;
+  /** ✅ 新增: 宽度控制 (支持数字 500 或字符串 "50%") */
+  width?: number | string;
 }
 
-const { src, alt, title, raw = false } = Astro.props;
+const {
+  src,
+  alt,
+  title,
+  raw = false,
+  transparent = false,
+  border = true,
+  width, // ✅ 解构出 width
+} = Astro.props;
+
+// --- 样式逻辑 ---
+// 如果传入了 width，将其转换为 CSS 的 max-width 样式
+// 这样在小屏幕上它依然是响应式的 (w-full)，但在大屏幕上会被限制在这个宽度内
+const containerStyle = width
+  ? { maxWidth: typeof width === 'number' ? `${width}px` : width }
+  : {};
 ---
 
-<figure class="my-8">
+<figure class="my-8 flex w-full flex-col items-center justify-center">
   <div
     class:list={[
-      'border-surface-border relative overflow-hidden rounded-xl border shadow-2xl',
-      // ✅ 新增：添加基础背景色。
-      // 因为 IMG 组件现在有 fade-in 动画，设置背景色可以避免图片加载前出现"空窗期"或透明穿透
-      'bg-zinc-100 dark:bg-zinc-800',
+      // 1. 基础: 相对定位、圆角、阴影、居中(mx-auto)、宽度占满(w-full)
+      'relative mx-auto w-full overflow-hidden rounded-xl shadow-2xl',
+
+      // 2. 边框
+      border && 'border-surface-border border',
+
+      // 3. 背景色 (非透明模式)
+      !transparent && 'bg-zinc-100 dark:bg-zinc-800',
     ]}
+    style={containerStyle}
   >
     {
-      /* ✨ 纯净版 IMG 调用：
-      只负责渲染图片 + 淡入动画。
-      宽高样式 (h-auto w-full) 由这里传入控制。
+      /* ✅ 内部 IMG 保持 w-full。
+       原理：IMG 占满 DIV，DIV 被 style={maxWidth...} 限制住，从而实现宽度控制。
     */
     }
     <IMG
@@ -36,7 +59,7 @@ const { src, alt, title, raw = false } = Astro.props;
     />
   </div>
 
-  {/* Caption 部分：显示 title 或 alt */}
+  {/* Caption */}
   {
     (title || alt) && (
       <figcaption class="mt-2 text-center font-mono text-xs text-zinc-500">

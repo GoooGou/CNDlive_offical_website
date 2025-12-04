@@ -1,0 +1,87 @@
+---
+interface Props {
+  /** 容器类名 (通常用于 grid 或 flex 布局) */
+  class?: string;
+  /** 每个子元素之间的间隔时间 (秒)，默认 0.1 */
+  stagger?: number;
+  /** 上浮距离 (px)，默认 30 */
+  y?: number;
+  /** 动画时长 (秒)，默认 0.6 */
+  duration?: number;
+}
+
+const {
+  class: className = '',
+  stagger = 0.1,
+  y = 30,
+  duration = 0.6,
+} = Astro.props;
+---
+
+<div
+  class:list={['stagger-fade-trigger', className]}
+  data-stagger={stagger}
+  data-y={y}
+  data-duration={duration}
+>
+  <slot />
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const initStaggerFade = () => {
+    const containers = document.querySelectorAll('.stagger-fade-trigger');
+    if (containers.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const container = entry.target as HTMLElement;
+            // ✅ 转换为数组，确保兼容性
+            const children = Array.from(container.children);
+
+            if (children.length === 0) return;
+
+            // 读取配置
+            const staggerTime = Number(container.dataset.stagger || 0.1);
+            const duration = Number(container.dataset.duration || 0.6);
+
+            // 🔥 核心：依次播放动画
+            gsap.to(children, {
+              opacity: 1,
+              y: 0,
+              duration: duration,
+              ease: 'power2.out',
+              // ✅这就是“依次出现”的关键：每个元素间隔 staggerTime 秒
+              stagger: staggerTime,
+              overwrite: 'auto',
+            });
+
+            observer.unobserve(container);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    containers.forEach((el) => {
+      const c = el as HTMLElement;
+      const yDist = Number(c.dataset.y || 30);
+      const children = Array.from(c.children);
+
+      // ✅ 初始化：全部隐藏
+      if (children.length > 0) {
+        gsap.set(children, {
+          opacity: 0,
+          y: yDist,
+        });
+        observer.observe(c);
+      }
+    });
+  };
+
+  document.addEventListener('astro:page-load', initStaggerFade);
+  document.addEventListener('DOMContentLoaded', initStaggerFade);
+</script>

@@ -1,0 +1,212 @@
+---
+// src/components/product/FeatureGrid.astro
+import StaggerFade from '@/components/animation/FadeUp.astro';
+---
+
+{
+  /* max-w-5xl: 限制宽度，保持精致
+  mx-auto: 居中
+  px-6: 左右留白 
+*/
+}
+<section class="mx-auto my-16 max-w-5xl px-6">
+  <StaggerFade class="grid grid-cols-1 gap-5 md:grid-cols-2">
+    {/* ==================== 卡片 1: NDI (蓝色) ==================== */}
+    <div
+      class="group /* 🌞 亮色模式: 白底、浅灰边框、柔和的蓝色阴影 */ /* 🌙 暗色模式: 深灰底、微白边框、无阴影 */ /* 交互: 悬停加深边框颜色 */ relative overflow-hidden rounded-2xl border border-zinc-200 p-6 shadow-xl shadow-blue-100/50 transition-all duration-300 hover:border-blue-300 dark:border-white/10 dark:bg-zinc-900 dark:shadow-none dark:hover:border-blue-500/50"
+    >
+      <div
+        class="absolute -top-6 -right-6 h-24 w-24 rounded-full opacity-60 blur-3xl transition-all group-hover:bg-blue-200 dark:bg-blue-500/10 dark:group-hover:bg-blue-500/20"
+      >
+      </div>
+
+      <div class="relative z-10">
+        <div class="mb-5 flex items-center gap-3">
+          <span
+            class="/* 图标颜色统一: 浅色底深色字 */ inline-flex items-center justify-center rounded-lg bg-blue-50 p-2.5 text-blue-600 ring-1 ring-blue-500/20 ring-inset dark:bg-blue-500/10 dark:text-blue-400 dark:ring-blue-500/20"
+          >
+            <svg
+              class="size-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </span>
+          <h3 class="text-lg font-bold text-zinc-900 dark:text-white">
+            NDI Full Bandwidth
+          </h3>
+        </div>
+
+        <div class="space-y-3">
+          <div
+            class="flex items-baseline justify-between border-b border-zinc-100 pb-2 dark:border-white/5"
+          >
+            <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400"
+              >4K P60</span
+            >
+            <span
+              class="font-mono text-xl font-bold text-zinc-900 dark:text-white"
+              >1 CH</span
+            >
+          </div>
+          <div class="flex items-baseline justify-between pt-1">
+            <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400"
+              >1080 P60</span
+            >
+            <span
+              class="font-mono text-xl font-bold text-zinc-900 dark:text-white"
+              >4 CH</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* ==================== 卡片 2: H.264/H.265 (绿色) ==================== */}
+    <div
+      class="group /* 🌞 亮色模式: 白底、浅灰边框、柔和的绿色阴影 */ /* 🌙 暗色模式 */ relative overflow-hidden rounded-2xl border border-zinc-200 p-6 shadow-xl shadow-emerald-100/50 transition-all duration-300 hover:border-emerald-300 dark:border-white/10 dark:bg-zinc-900 dark:shadow-none dark:hover:border-emerald-500/50"
+    >
+      <div
+        class="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-emerald-100 opacity-60 blur-3xl transition-all group-hover:bg-emerald-200 dark:bg-emerald-500/10 dark:group-hover:bg-emerald-500/20"
+      >
+      </div>
+
+      <div class="relative z-10">
+        <div class="mb-5 flex items-center gap-3">
+          <span
+            class="inline-flex items-center justify-center rounded-lg bg-emerald-50 p-2.5 text-emerald-600 ring-1 ring-emerald-500/20 ring-inset dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20"
+          >
+            <svg
+              class="size-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+              ></path>
+            </svg>
+          </span>
+          <h3 class="text-lg font-bold text-zinc-900 dark:text-white">
+            H.264 / H.265
+          </h3>
+        </div>
+        <div class="space-y-3">
+          <div
+            class="flex items-baseline justify-between border-b border-zinc-100 pb-2 dark:border-white/5"
+          >
+            <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400"
+              >4K P60</span
+            >
+            <span
+              class="font-mono text-xl font-bold text-zinc-900 dark:text-white"
+              >2 CH</span
+            >
+          </div>
+          <div class="flex items-baseline justify-between pt-1">
+            <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400"
+              >1080 P60</span
+            >
+            <span
+              class="font-mono text-xl font-bold text-zinc-900 dark:text-white"
+              >8 CH</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* ==================== 卡片 3: 隔行扫描 (紫色) ==================== */}
+    <div
+      class="group /* 🌞 亮色模式: 白底、浅灰边框、柔和的紫色阴影 */ /* 🌙 暗色模式 */ relative flex flex-col gap-5 overflow-hidden rounded-2xl border border-zinc-200 p-6 shadow-xl shadow-purple-100/50 transition-all duration-300 hover:border-purple-300 md:col-span-2 md:flex-row md:items-center dark:border-white/10 dark:bg-zinc-900 dark:shadow-none dark:hover:border-purple-500/50"
+    >
+      <div
+        class="absolute top-0 -left-6 h-full w-32 bg-purple-100 opacity-60 blur-3xl transition-all group-hover:bg-purple-200 dark:bg-purple-500/10 dark:group-hover:bg-purple-500/20"
+      >
+      </div>
+
+      <div class="z-10 shrink-0">
+        <span
+          class="inline-flex items-center justify-center rounded-lg bg-purple-50 p-3 text-purple-600 ring-1 ring-purple-500/20 ring-inset dark:bg-purple-500/10 dark:text-purple-400 dark:ring-purple-500/20"
+        >
+          <svg
+            class="size-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="z-10">
+        <h3 class="mb-1 text-lg font-bold text-zinc-900 dark:text-white">
+          Professional Interlaced Decoding
+        </h3>
+        <p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          Typically, only professional-grade decoders support interlaced
+          sources. D1 handles
+          <span class="font-bold text-purple-600 dark:text-purple-400"
+            >1080i50 / 1080i60</span
+          >
+          effortlessly, bridging the gap for traditional broadcast workflows.
+        </p>
+      </div>
+    </div>
+
+    {/* ==================== 卡片 4: 工作流 (橙色) ==================== */}
+    <div
+      class="group /* 🌞 亮色模式: 极淡的橙色渐变底(几乎接近白)，让它稍微突出一点点 */ /* 🌙 暗色模式 */ relative overflow-hidden rounded-2xl border border-zinc-200 bg-linear-to-br from-orange-50/30 to-white p-6 shadow-xl shadow-orange-100/50 transition-all duration-300 hover:border-orange-300 md:col-span-2 dark:border-white/10 dark:from-zinc-900 dark:to-black dark:shadow-none dark:hover:border-orange-500/50"
+    >
+      <div
+        class="absolute top-0 right-0 h-full w-1/2 bg-linear-to-l from-orange-100 to-transparent opacity-30 dark:from-orange-500/10"
+      >
+      </div>
+
+      <div
+        class="relative z-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center"
+      >
+        <div>
+          <div class="mb-2 flex items-center gap-2">
+            <span
+              class="rounded-full border border-orange-200 bg-orange-50 px-2 py-0.5 text-[10px] font-bold tracking-wider text-orange-600 uppercase dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-400"
+            >
+              Workflow
+            </span>
+            <h3 class="text-lg font-bold text-zinc-900 dark:text-white">
+              Versatile Stream Handling
+            </h3>
+          </div>
+          <p class="max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
+            Whether it's a simple point-to-point connection or a complex
+            multi-protocol environment, D1 acts as a powerful hub to optimize
+            and simplify your video transmission.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="h-2 w-2 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+          <div class="h-2 w-2 rounded-full bg-zinc-300 dark:bg-zinc-600"></div>
+          <div class="h-2 w-2 animate-pulse rounded-full bg-orange-500"></div>
+          <span
+            class="ml-1 font-mono text-xs font-bold text-orange-600 dark:text-orange-500"
+            >OPTIMIZED</span
+          >
+        </div>
+      </div>
+    </div>
+  </StaggerFade>
+</section>

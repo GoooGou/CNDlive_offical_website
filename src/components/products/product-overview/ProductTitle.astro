@@ -6,6 +6,7 @@ type TitleColor = 'primary' | 'slate' | 'white' | 'blue' | 'gradient';
 interface Props {
   title: string;
   subtitle?: string; // 改为可选，灵活性更高
+  paragraph?: string; // 新增段落描述
   tagline?: string;
 
   // ✨ 新增接口：控制标题大小 (默认 md)
@@ -20,6 +21,7 @@ interface Props {
 const {
   title,
   subtitle,
+  paragraph,
   tagline,
   size = 'md', // 默认中等大小
   color = 'primary', // 默认使用主色
@@ -81,12 +83,16 @@ const colorClasses: Record<TitleColor, string> = {
         </h3>
       )
     }
-
+    {
+      paragraph && (
+        <p class="text-text-main transition-colors duration-300">{paragraph}</p>
+      )
+    }
     {/* 胶囊标签 */}
     {
       tagline && (
         <div class="pt-2">
-          <span class="inline-block rounded-full border border-transparent bg-slate-100 px-4 py-1.5 text-sm font-medium text-slate-600 transition-colors duration-300 md:text-base dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300">
+          <span class="inline-block border border-transparent bg-slate-100 px-4 py-1.5 text-sm font-medium text-slate-600 transition-colors duration-300 md:text-base dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300">
             {tagline}
           </span>
         </div>
