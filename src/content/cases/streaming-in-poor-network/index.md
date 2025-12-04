@@ -19,7 +19,7 @@ In professional live streaming, network reliability is the cornerstone of succes
 ## Case Description:
 
 It was a religious event in a remote village with extremely poor mobile network coverage at Vill Sargundi, Punjab, India. The venue had no wired connection, and signal strength indoors was particularly weak. The event organizers required a stable, high-quality live stream at 5000 kbps to ensure viewers could participate in the event without disruption. The pressure was substantial—this was not merely a technical delivery but a cultural and spiritual transmission that needed to maintain continuity and reverence through flawless technological execution.
-![](/images/1c6a10c9751fcbd6c509dd72fefc295b_MD5.webp)
+![](images/1c6a10c9751fcbd6c509dd72fefc295b_MD5.webp)
 
 ## Solution Overview:
 
@@ -32,10 +32,10 @@ To overcome the connectivity limitations, we deployed the CNDLive X1 bonding enc
 Despite being placed indoors in a low-signal environment, the X1’s intelligent bonding technology dynamically combined all available connections into a single, robust data pipeline. This multi-network approach ensured consistent bandwidth and uninterrupted streaming throughout the event.
 
 X1 Connected with Wireless Video Receiver
-![](/images/40aa354b0cbc5c646bde3cc29071e357_MD5.webp)
+![](images/40aa354b0cbc5c646bde3cc29071e357_MD5.webp)
 
 Camera Connected to Wireless Transmitter
-![](/images/50f8f11c8f6479e9b59d08368a731193_MD5.webp)
+![](images/50f8f11c8f6479e9b59d08368a731193_MD5.webp)
 
 ## Technical Setup
 
