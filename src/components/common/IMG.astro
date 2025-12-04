@@ -1,110 +1,66 @@
 ---
-// src/components/Img.astro
+// 文件: src/components/common/IMG.astro
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
-// ✅ 【修复1】从 'astro' 主包导入 ImageMetadata (适用于 Astro 4.0/5.0)
 import type { ImageMetadata } from 'astro';
 
-// --- 常量定义 ---
-const NOISE_TEXTURE_URI =
-  "data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E";
-
-const LIGHT_GRADIENTS = [
-  'from-blue-100 via-indigo-50 to-purple-100',
-  'from-emerald-50 via-teal-100 to-cyan-100',
-  'from-orange-50 via-amber-50 to-yellow-100',
-  'from-rose-50 via-pink-50 to-fuchsia-100',
-  'from-slate-100 via-zinc-100 to-neutral-200',
-];
-const DARK_GRADIENTS = [
-  'from-blue-900 via-slate-900 to-black',
-  'from-emerald-900 via-teal-950 to-black',
-  'from-orange-900 via-red-950 to-black',
-  'from-purple-900 via-indigo-950 to-black',
-  'from-zinc-800 via-neutral-900 to-black',
-];
-
-// ✅ 【修复2】使用 type + Omit 解决 src 属性类型不兼容问题
-// 不要使用 interface extends，因为原生的 src 是 string，这里我们要覆盖它
+// --- 类型定义 ---
+// 允许 src 为字符串(原生) 或 对象(Astro优化)，或者空
 type Props = Omit<HTMLAttributes<'img'>, 'src'> & {
-  src?: ImageMetadata | string | null | undefined;
+  src: ImageMetadata | string | null | undefined;
   alt: string;
-  title?: string;
+  /** 强制使用原生 <img> 标签 (例如外部CDN链接) */
   raw?: boolean;
-  class?: string;
 };
 
 const {
   src,
   alt,
-  title = 'CNDLive',
   raw = false,
   class: className = '',
   ...rest
 } = Astro.props;
 
-// --- 逻辑判断 ---
-const hasSrc = src !== null && src !== undefined && src !== '';
-const useNative = raw || typeof src === 'string';
-const nativeImageSrc = typeof src === 'object' && src !== null && 'src' in src 
+// --- 逻辑处理 ---
+const isValidSrc = src !== null && src !== undefined && src !== '';
+const isStringSrc = typeof src === 'string';
+const useNative = raw || isStringSrc;
+
+// 获取原生 img 标签需要的字符串路径
+const nativeSrc = !useNative && src && 'src' in src 
   ? src.src 
   : (src as string);
 
-const initial = title.trim().charAt(0).toUpperCase();
-const getGradientClass = (str: string) => {
-  const index = str ? str.length % LIGHT_GRADIENTS.length : 0;
-  return `bg-gradient-to-br ${LIGHT_GRADIENTS[index]} dark:${DARK_GRADIENTS[index]}`;
-};
+// --- 核心功能: 图片加载后的淡入动画 ---
+// 默认透明(opacity-0)，加载完移除透明类
+const transitionClass = "transition-opacity duration-500 ease-in-out opacity-0";
+const onLoadHandler = "this.classList.remove('opacity-0')";
 
-const onLoadHandler = "this.classList.remove('opacity-0'); this.previousElementSibling.style.display='none';";
+if (!isValidSrc) {
+  // 如果没有 src，直接不渲染，或者根据需求渲染一个空占位
+  // 这里选择不渲染，由父组件决定如何处理 "无图" 的情况
+  return null;
+}
 ---
 
 {
-  hasSrc ? (
-    <div class={`relative overflow-hidden bg-gray-100 dark:bg-gray-800 ${className}`}>
-      <div 
-        class="absolute inset-0 z-10 animate-pulse bg-gray-200 dark:bg-gray-700 pointer-events-none" 
-        aria-hidden="true"
-      />
-
-      {
-        useNative ? (
-          <img 
-            src={nativeImageSrc} 
-            alt={alt} 
-            loading="lazy"
-            class="relative z-0 h-full w-full object-cover transition-opacity duration-500 opacity-0"
-            {...rest} 
-            onload={onLoadHandler} 
-          />
-        ) : (
-          <Image 
-            src={src as ImageMetadata} 
-            alt={alt} 
-            class="relative z-0 h-full w-full object-cover transition-opacity duration-500 opacity-0"
-            {...rest} 
-            /* ✅ 【修复3】使用 Spread 语法强制注入 onload，彻底绕过 TS 类型检查 */
-            {...({ onload: onLoadHandler } as any)}
-          />
-        )
-      }
-    </div>
-  ) : (
-    <div
-      role="img"
-      aria-label={alt}
-      title={title}
-      class={`relative flex items-center justify-center overflow-hidden ${getGradientClass(title)} ${className}`}
+  useNative ? (
+    <img
+      src={nativeSrc}
+      alt={alt}
+      loading="lazy"
+      class:list={[transitionClass, className]}
+      onload={onLoadHandler}
       {...rest}
-    >
-      <div
-        class="absolute inset-0 opacity-20 mix-blend-soft-light pointer-events-none"
-        style={`background-image: url('${NOISE_TEXTURE_URI}');`}
-      />
-      <span class="relative z-10 text-4xl font-black text-black/5 mix-blend-overlay select-none md:text-6xl dark:text-white/10">
-        {initial}
-      </span>
-      <div class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-black/5 ring-inset dark:ring-white/10" />
-    </div>
+    />
+  ) : (
+    <Image
+      src={src as ImageMetadata}
+      alt={alt}
+      class:list={[transitionClass, className]}
+      {...rest}
+      /* 绕过 TS 检查注入 onload */
+      {...({ onload: onLoadHandler } as any)}
+    />
   )
 }

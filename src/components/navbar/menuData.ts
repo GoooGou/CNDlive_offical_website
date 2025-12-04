@@ -40,7 +40,7 @@ export const MENU_DATA: NavItem[] = [
         items: [
           {
             label: 'D1 4K HDMI/3G-SDI Decoder',
-            href: '/products/decoder-d1',
+            href: '/products/d1-4k-ip-video-decoder',
             badge: 'New',
             active: true,
           },

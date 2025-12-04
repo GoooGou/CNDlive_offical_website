@@ -3,9 +3,9 @@
 import IMG from '@/components/common/IMG.astro';
 
 interface Props {
-  src: any; // 类型由 IMG 内部处理
+  src: any;
   alt: string;
-  title?: string; // 既用于 Caption，也传给 IMG 生成兜底背景种子
+  title?: string; // 主要用于 Caption，也可以作为 title 属性透传
   raw?: boolean; // 1. 透传控制属性：true = 强制使用原生 img
 }
 
@@ -14,14 +14,17 @@ const { src, alt, title, raw = false } = Astro.props;
 
 <figure class="my-8">
   <div
-    class="border-surface-border relative overflow-hidden rounded-xl border shadow-2xl"
+    class:list={[
+      'border-surface-border relative overflow-hidden rounded-xl border shadow-2xl',
+      // ✅ 新增：添加基础背景色。
+      // 因为 IMG 组件现在有 fade-in 动画，设置背景色可以避免图片加载前出现"空窗期"或透明穿透
+      'bg-zinc-100 dark:bg-zinc-800',
+    ]}
   >
     {
-      /* ✨ 核心修改：
-      直接调用 IMG 组件。
-      - 自动处理 src 是字符串还是对象
-      - 自动处理 raw 参数决定是用 <img> 还是 <Image />
-      - 自动处理无图时的渐变兜底
+      /* ✨ 纯净版 IMG 调用：
+      只负责渲染图片 + 淡入动画。
+      宽高样式 (h-auto w-full) 由这里传入控制。
     */
     }
     <IMG
@@ -33,7 +36,7 @@ const { src, alt, title, raw = false } = Astro.props;
     />
   </div>
 
-  {/* Caption 部分保持不变，依旧负责显示图片下方的文字 */}
+  {/* Caption 部分：显示 title 或 alt */}
   {
     (title || alt) && (
       <figcaption class="mt-2 text-center font-mono text-xs text-zinc-500">

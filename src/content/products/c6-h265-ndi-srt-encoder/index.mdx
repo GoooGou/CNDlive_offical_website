@@ -28,12 +28,12 @@ import {
 } from '@astrojs/starlight/components';
 
 {/* 容器：添加 px-4 防止移动端贴边；调整 py 间距 */}
-import ProductTitle from '@/components/products/overview/ProductTitle.astro';
-import ProductHeroSection from '@/components/products/overview/ProductHeroSection.astro';
+import {ProductOverview} from '@/components/products/product-overview';
+
 import heroimg from 'images/c6-encoder-hero.webp';
 import { Image } from 'astro:assets';
 
-<ProductTitle title="CNDLive C6" description="4K UHD HDMI&SDI Video Encoder" subtitle="Enhanced H.265 Streaming and Recording" tagline="Enhanced H.265 Streaming and Recording" />
+<ProductOverview.Title title="CNDLive C6" description="4K UHD HDMI&SDI Video Encoder" subtitle="Enhanced H.265 Streaming and Recording" tagline="Enhanced H.265 Streaming and Recording" />
 <div align="center">
 
 <Image src={heroimg} alt="c6 编码器" width={600} />
@@ -55,7 +55,7 @@ import ProductFeatureGrid from './overview/ProductFeatureGrid.astro';
 
 ---
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="Dual HDMI&SDI Source"
   description="4K UHD HDMI&SDI Video Encoder"
@@ -76,7 +76,7 @@ import screenshotimg from './images/screen.webp';
 
 ---
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="Powerful Streaming to 8 Destinations"
   description="4K UHD HDMI&SDI Video Encoder"
@@ -95,7 +95,7 @@ import ProtocolsSection from './overview/ProtocolsSection.astro';
 
 ---
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="Instant Streaming to the World!"
   description="4K UHD HDMI&SDI Video Encoder"
@@ -117,7 +117,7 @@ import BigScreen from './images/big-screen.webp';
 
 ---
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="Fast Recording with USB Keypad"
   description="4K UHD HDMI&SDI Video Encoder"
@@ -141,7 +141,7 @@ import UsbKeyboardSection from './overview/UsbKeyboardSection.astro';
 
 ---
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="What’s NEW on the Web UI"
   description="4K UHD HDMI&SDI Video Encoder"
@@ -153,7 +153,7 @@ import UI from './images/ui.webp';
   <PostImage src={UI} alt="c6 encoder Ui" width={1000} />
 </div>
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="Simple but Powerful"
   description="4K UHD HDMI&SDI Video Encoder"
@@ -172,7 +172,7 @@ import Wifi6Section from './overview/Wifi6Section.astro';
 
 ---
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="Simple Workflow"
   description="4K UHD HDMI&SDI Video Encoder"
@@ -185,7 +185,7 @@ import workflowimg from './images/workflow.webp';
   <PostImage src={workflowimg} alt="c6 encoder workflow" width={1000} />
 </div>
 
-<ProductTitle
+<ProductOverview.Title
   size="sm"
   title="More Features"
   description="4K UHD HDMI&SDI Video Encoder"

@@ -1,0 +1,21 @@
+---
+// 文件路径: src/components/HeroImg.astro
+import IMG from '@/components/common/IMG.astro';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  width?: number;
+  className?: string;
+}
+
+const { src, alt, width = 600, className = '' } = Astro.props;
+---
+
+<div
+  class:list={['mx-auto mt-12 flex w-full justify-center', className]}
+  style={{ maxWidth: `${width}px` }}
+>
+  <IMG src={src} alt={alt} class="h-auto w-full" />
+</div>

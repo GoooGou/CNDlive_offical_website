@@ -1,0 +1,91 @@
+---
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src?: ImageMetadata | string | any;
+  alt?: string;
+
+  /** * 图标尺寸控制
+   * 1. 预设: 'sm'(16px) | 'md'(20px) | 'lg'(24px) | 'xl'(32px)
+   * 2. 自定义(覆盖): 直接传 tailwind 类名，如 size="w-10 h-10" 或 size="h-full"
+   * 3. 禁用默认: 传 size="none"，然后在 class 中写尺寸
+   */
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'none' | string;
+
+  class?: string;
+}
+
+const {
+  src,
+  alt = 'icon',
+  // 默认还是 md，但现在你可以轻松覆盖它
+  size = 'md',
+  class: className,
+} = Astro.props;
+
+// --- 1. 尺寸映射 ---
+const sizeMap: Record<string, string> = {
+  sm: 'size-4', // 16px
+  md: 'size-5', // 20px
+  lg: 'size-6', // 24px
+  xl: 'size-8', // 32px
+  none: '', // 关键：传 none 时不输出任何尺寸类
+};
+
+// 逻辑：如果在 map 里找到了就用 map 的值（预设），找不到就直接用传入的字符串（自定义）
+const finalSizeClass = sizeMap[size] !== undefined ? sizeMap[size] : size;
+
+// --- 2. Src 解析逻辑 (保持不变) ---
+let renderType = 'none';
+let finalSrc: any = '';
+let Element: any = null;
+
+if (src) {
+  if (typeof src === 'string') {
+    renderType = 'img';
+    finalSrc = src;
+  } else if (typeof src === 'object' && 'src' in src) {
+    renderType = 'img';
+    finalSrc = src.src;
+  } else if (typeof src === 'function' || typeof src === 'object') {
+    renderType = 'component';
+    Element = src;
+  }
+}
+---
+
+<span
+  class:list={[
+    // 基础类
+    'inline-flex shrink-0 items-center justify-center leading-none',
+    // 颜色继承
+    renderType !== 'img' && 'text-current',
+    // ✅ 应用尺寸 (如果是 none，这里就是空字符串)
+    finalSizeClass,
+    // 外部 class
+    className,
+  ]}
+  aria-hidden="true"
+>
+  {
+    renderType === 'img' ? (
+      <img
+        src={finalSrc}
+        alt={alt}
+        class="h-full w-full object-contain"
+        loading="lazy"
+      />
+    ) : renderType === 'component' ? (
+      <Element />
+    ) : (
+      <slot />
+    )
+  }
+</span>
+
+<style>
+  span > :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+</style>

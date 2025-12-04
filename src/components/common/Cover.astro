@@ -1,9 +1,8 @@
 ---
-// 文件名: Cover.astro
-import IMG from './IMG.astro';
-import { clsx } from 'clsx';
-// ✅ 1. 确保引入了模糊背景组件
+// 文件名: src/components/Cover.astro
+import IMG from '@/components/common/IMG.astro'; // 确保路径正确
 import BlurBG from '@/components/design/background/BlurBackground.astro';
+import { clsx } from 'clsx';
 
 // ===================================
 // Props & Interfaces
@@ -14,15 +13,19 @@ interface Props {
   alt: string;
   title?: string;
   className?: string;
-  raw?: boolean;
+
+  // 样式控制
   variant?: 'hero' | 'list';
-  loading?: 'eager' | 'lazy';
   aspect?: '16/9' | '4/3' | '1/1' | 'auto';
   border?: boolean;
 
+  // 允许强制指定纹理，或传入自定义背景色
   forcePattern?: 'grid' | 'dots' | 'none';
-  // forceBlob 已经不再需要了，因为我们现在用 BlurBG 替代了手动 blob
-  forceBlob?: boolean;
+  color?: string; // ✅ 复用之前的建议，允许传入固定颜色
+
+  // 传递给 IMG 的属性
+  raw?: boolean;
+  loading?: 'eager' | 'lazy';
 }
 
 const {
@@ -30,15 +33,20 @@ const {
   alt,
   title = 'CNDLive',
   className = '',
-  raw = false,
   variant = 'list',
-  loading = variant === 'hero' ? 'eager' : 'lazy',
   aspect = 'auto',
   border = false,
   forcePattern,
+  color,
+  raw = false,
+  loading = variant === 'hero' ? 'eager' : 'lazy',
 } = Astro.props;
 
-// --- 哈希函数 (保持不变) ---
+// --- 逻辑: 判断是否有有效图片 ---
+// 注意：虽然 IMG 内部会检查，但 Cover 需要根据这个决定是否渲染 BlurBG
+const hasImage = src !== null && src !== undefined && src !== '';
+
+// --- 逻辑: 哈希计算 (用于随机颜色/纹理) ---
 const getHashIndex = (str: string) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -46,10 +54,10 @@ const getHashIndex = (str: string) => {
   }
   return Math.abs(hash);
 };
-
 const hashIndex = getHashIndex(title);
 
-// --- 🎨 深色渐变色板 (作为 BlurBG 的底色) ---
+// --- 样式: 背景色与纹理 ---
+// 默认的随机深色渐变
 const gradients = [
   'from-zinc-800 via-neutral-900 to-black',
   'from-slate-900 via-blue-950 to-black',
@@ -58,10 +66,22 @@ const gradients = [
   'from-red-950 via-orange-950 to-black',
 ];
 
-const themeClass = gradients[hashIndex % gradients.length];
-const hasImage = !!src;
+// 如果外部传了 color 则用 color，否则用随机渐变
+const themeClass = color || gradients[hashIndex % gradients.length];
 
-// --- 比例映射 ---
+// 纹理逻辑
+const patternOptions = ['grid', 'dots', 'none'] as const;
+const defaultPattern = patternOptions[hashIndex % 3];
+const enablePattern = hashIndex % 10 !== 0;
+const finalPattern = forcePattern || (enablePattern ? defaultPattern : 'none');
+
+const patternsCss = {
+  none: '',
+  grid: `background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px;`,
+  dots: `background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px;`,
+};
+
+// --- 样式: 比例与文字 ---
 const aspectStyles = {
   '16/9': 'aspect-video',
   '4/3': 'aspect-[4/3]',
@@ -69,7 +89,6 @@ const aspectStyles = {
   auto: '',
 };
 
-// --- 字体与质感样式 ---
 const variantStyles = {
   hero: {
     wrapper: 'p-8 md:p-12',
@@ -82,26 +101,12 @@ const variantStyles = {
     clamp: 'line-clamp-3',
   },
 };
-
 const currentStyle = variantStyles[variant];
-
-// ===================================
-// Pattern 逻辑
-// ===================================
-const patternOptions = ['grid', 'dots', 'none'] as const;
-const defaultPattern = patternOptions[hashIndex % 3];
-const enablePattern = hashIndex % 10 !== 0;
-const finalPattern = forcePattern || (enablePattern ? defaultPattern : 'none');
-
-const patternsCss = {
-  none: '',
-  grid: `background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px;`,
-  dots: `background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px;`,
-};
 ---
 
 <div
   class={clsx(
+    // 基础容器样式：相对定位、隐藏溢出、默认深色背景(防闪烁)
     'group relative w-full h-full overflow-hidden bg-zinc-900',
     aspectStyles[aspect],
     className
@@ -109,35 +114,35 @@ const patternsCss = {
 >
   {
     hasImage ? (
-      /* --- 情况 A: 有图片 --- */
+      /* ================= 🅰️ 有图片模式 ================= */
+      /* 直接使用纯净版 IMG，通过 class 控制布局和悬停效果 */
       <IMG
         src={src}
         alt={alt}
-        title={title}
         raw={raw}
         loading={loading}
         class={clsx(
-          'h-full w-full object-cover duration-700',
-          !raw && 'transition-transform group-hover:scale-105'
+          'h-full w-full object-cover', // 强制填满容器
+          'duration-700 ease-in-out', // 过渡配置
+          !raw && 'transition-transform group-hover:scale-105' // 悬停放大效果
         )}
       />
     ) : (
-      /* --- 情况 B: 无图片，使用 BlurBG + 渐变 --- */
+      /* ================= 🅱️ 无图片模式 (Fallback) ================= */
       <div
         class={clsx(
           'absolute inset-0 h-full w-full overflow-hidden duration-700',
-          // 这里的 themeClass 为 BlurBG 提供一个深色的基调，避免太亮
           'bg-gradient-to-br',
-          themeClass,
+          themeClass, // 应用随机或指定背景色
           !raw && 'transition-transform group-hover:scale-105'
         )}
       >
-        {/* ✅ 2. 嵌入动态模糊光效背景 */}
+        {/* 1. 动态光效 */}
         <div class="absolute inset-0 opacity-80 mix-blend-hard-light">
           <BlurBG />
         </div>
 
-        {/* ✅ 3. 纹理层 (Grid/Dots) 覆盖在光效之上，增加质感 */}
+        {/* 2. 纹理叠加 */}
         <div
           class="absolute inset-0 z-10 opacity-60"
           style={patternsCss[finalPattern as keyof typeof patternsCss]}
@@ -146,13 +151,16 @@ const patternsCss = {
     )
   }
 
-  {/* ================= Layer 2: 内容合成层 (Title & Slot) ================= */}
+  {/* ================= Layer: 内容覆盖层 (标题 & 插槽) ================= */}
   <div
     class={clsx(
       'relative z-20 flex h-full w-full flex-col items-center justify-center text-center',
       currentStyle.wrapper
     )}
   >
+    {
+      /* 只有当没有 Slot 内容 或者 显式需要标题时才渲染标题，这里默认始终渲染标题 */
+    }
     <div class="relative z-10 mx-auto w-full max-w-4xl">
       <h3
         class={clsx(
@@ -166,13 +174,13 @@ const patternsCss = {
       </h3>
     </div>
 
-    {/* 插槽 */}
-    <div class="relative z-30 mt-4">
+    {/* 插槽内容 (例如按钮、标签等) */}
+    <div class="relative z-30 mt-4 empty:hidden">
       <slot />
     </div>
   </div>
 
-  {/* 边框 */}
+  {/* 装饰性边框 */}
   {
     border && (
       <div class="pointer-events-none absolute inset-0 z-40 rounded-[inherit] ring-1 ring-white/10 ring-inset" />
