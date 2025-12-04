@@ -6,6 +6,7 @@ import Cover from '@/components/common/Cover.astro';
 import TableOfContents from '@/components/mdx/TableOfContents.astro';
 import ArticleBody from '../mdx/ArticleBody.astro';
 import PrevNext from './PrevNext.astro';
+import FooterNavigationLinks from '@/components/mdx/FooterNavigationLinks.astro';
 
 interface Props {
   post: any;
@@ -75,6 +76,7 @@ console.log('post.id:', post.id);
       {/* 正文内容 */}
       <ArticleBody post={post} />
       <PrevNext currentSlug={post.id} collectionName={collectionName} />
+      <FooterNavigationLinks />
     </article>
 
     {/* === 右侧：粘性目录 (仅在电脑端显示) === */}

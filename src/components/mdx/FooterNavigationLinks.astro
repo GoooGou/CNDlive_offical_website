@@ -3,59 +3,71 @@
 import Link from './Link.astro';
 // 定义链接数据，方便维护
 const navLinks = [
-    { href: '/', label: '🏠 返回首页', description: '回到主页浏览所有内容。' },
-    { href: '/support', label: '📖 文档中心', description: '获取详细教程、手册和技术支持。' },
-    { href: '/products', label: '📦 产品中心', description: '了解我们的最新产品和解决方案。' },
+  {
+    href: '/',
+    label: '🏠 Back to Home',
+    description: 'Back to the home page.',
+  },
+  {
+    href: '/support',
+    label: '📖 Support Center',
+    description: 'Get detailed tutorials, manuals, and technical support.',
+  },
+  {
+    href: '/products',
+    label: '📦 Product Center',
+    description: 'Learn about our latest products and solutions.',
+  },
 ];
 
 // 允许传入自定义类名，以便在不同位置调整样式
 const { className } = Astro.props;
 
 // 定义卡片的通用样式
-const cardBaseClass = "block p-5 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-[1.02]";
+const cardBaseClass =
+  'block p-5 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-[1.02]';
 
 // 亮色/暗色模式样式定义
-const baseClasses = "bg-surface-card border border-border text-main hover:shadow-xl";
+const baseClasses = 'card hover:shadow-xl';
 ---
 
-<div class={className}>
-    <h3 class="mb-5 text-xl font-bold text-main dark:text-white">快速导航</h3>
-    
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {navLinks.map((link) => (
-            <a 
-                href={link.href} 
-                class:list={[
-                    cardBaseClass, 
-                    baseClasses, 
-                ]}
-            >
-                <div class="flex items-center space-x-3 mb-2">
-                    {/* Emoji 作为大图标，固定大小 */}
-                    <span class="text-3xl leading-none" aria-hidden="true">
-                        {link.label.split(' ')[0]}
-                    </span>
-                    {/* 标题 */}
-                    <span class="text-lg font-extrabold">
-                        {link.label.split(' ').slice(1).join(' ')}
-                    </span>
-                </div>
-                
-                {/* 描述信息 */}
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {link.description}
-                </p>
-                
-                <span class="mt-3 inline-block text-sm font-semibold text-main  group-hover:underline">
-                    立即前往 &rarr;
+<div class:list={['mt-12', { className }]}>
+  <h3 class="text-main mb-5 text-xl font-bold dark:text-white">
+    Quick Navigation
+  </h3>
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    {
+      navLinks.map((link) => (
+        <a href={link.href} class:list={[cardBaseClass, baseClasses, 'group']}>
+          <div class="flex h-full flex-col justify-between">
+            <div>
+              <div class="mb-2 flex items-center space-x-3">
+                {/* Emoji 作为大图标，固定大小 */}
+                <span class="text-3xl leading-none" aria-hidden="true">
+                  {link.label.split(' ')[0]}
                 </span>
-            </a>
-        ))}
-    </div>
+                {/* 标题 */}
+                <span class="text-lg font-extrabold">
+                  {link.label.split(' ').slice(1).join(' ')}
+                </span>
+              </div>
+
+              {/* 描述信息 */}
+              <p class="text-text-main mt-1 text-sm">{link.description}</p>
+            </div>
+
+            <span class="group-hover:text-primary/80 mt-3 inline-block text-sm font-semibold text-white group-hover:underline">
+              GO &rarr;
+            </span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
 </div>
 
 <style>
-/* 确保 clsx 导入 */
-/* 由于 Astro 默认支持 Tailwind CSS，此处无需额外的 CSS 文件导入 */
+  /* 确保 clsx 导入 */
+  /* 由于 Astro 默认支持 Tailwind CSS，此处无需额外的 CSS 文件导入 */
 </style>
-
