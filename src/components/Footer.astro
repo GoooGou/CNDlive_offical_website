@@ -3,6 +3,7 @@
 import { FOOTER_LINKS } from '@/data/footerData';
 import NewsletterForm from '@/components/Newsletter.astro';
 import SocialMediaButton from '@/components/ui/SocialMediaButton.astro';
+import BlurBackground from '@/components/design/background/BlurBackground.astro';
 const currentYear = new Date().getFullYear();
 const { company, products, solutions, support } = FOOTER_LINKS;
 ---
@@ -14,7 +15,7 @@ const { company, products, solutions, support } = FOOTER_LINKS;
   >
   </div>
   <div
-    class="border-primary/30 pointer-events-none absolute top-40 -right-20 h-96 w-96 rotate-45 rounded-full border-t opacity-50"
+    class="pointer-events-none absolute top-40 -right-20 h-96 w-96 rotate-45 rounded-full border-t border-white"
   >
   </div>
 
@@ -27,7 +28,7 @@ const { company, products, solutions, support } = FOOTER_LINKS;
     */
     }
     <div
-      class="my-12 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-zinc-800 pt-16 md:grid-cols-3 lg:grid-cols-5"
+      class="my-12 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-white/50 pt-16 md:grid-cols-3 lg:grid-cols-5"
     >
       {/* 辅助函数：渲染链接列 */}
       {/* 我们直接在这里写逻辑，避免重复代码 */}
@@ -47,7 +48,7 @@ const { company, products, solutions, support } = FOOTER_LINKS;
                 <li>
                   <a
                     href={item.href}
-                    class="/* [关键修改]: (浅灰) -> (白) */ /* 不要用 text-text-muted，因为它在白色模式下是深灰，但在纯黑底上看不清 */ block py-1 text-sm text-zinc-400 transition-colors duration-200 hover:text-white"
+                    class="hover:text-primary block py-1 text-sm text-white transition-all duration-200 hover:underline"
                   >
                     {item.label}
                   </a>
@@ -63,7 +64,7 @@ const { company, products, solutions, support } = FOOTER_LINKS;
         <h4 class="mb-4 text-base font-bold tracking-wide text-white">
           Stay Connected
         </h4>
-        <p class="mb-4 text-sm leading-relaxed text-zinc-400">
+        <p class="mb-4 text-sm leading-relaxed text-white">
           Want to learn more from CNDLive about new product announcements and
           updates?
           <br />
@@ -77,7 +78,7 @@ const { company, products, solutions, support } = FOOTER_LINKS;
 
     {/* 3. 底部版权 */}
     <div
-      class="flex flex-col items-center justify-center gap-4 border-t border-zinc-800 pt-8 text-xs text-zinc-500 md:flex-row"
+      class="flex flex-col items-center justify-center gap-4 border-t border-white/60 pt-8 text-xs text-white md:flex-row"
     >
       <p>Copyright © {currentYear} CNDLive All Rights Reserved.</p>
       <a
@@ -88,4 +89,5 @@ const { company, products, solutions, support } = FOOTER_LINKS;
       </a>
     </div>
   </div>
+  <BlurBackground class="absolute top-0 left-0 h-full w-full" />
 </footer>

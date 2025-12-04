@@ -1,0 +1,101 @@
+---
+interface Props {
+  class?: string;
+  // 新增：支持传入主题名称
+  variant?: 'default' | 'ocean' | 'nebula' | 'forest' | 'midnight';
+  // 依然保留手动覆盖颜色的能力
+  primaryColor?: string;
+  secondaryColor?: string;
+}
+
+// 🌈 预设颜色池
+const THEMES = {
+  default: { primary: '#D20C0C', secondary: '#FF9060' }, // 你的原版
+  ocean: { primary: '#0284c7', secondary: '#22d3ee' }, // 蓝青 (Sky-600 / Cyan-400)
+  nebula: { primary: '#7c3aed', secondary: '#e879f9' }, // 紫粉 (Violet-600 / Fuchsia-400)
+  forest: { primary: '#059669', secondary: '#a3e635' }, // 绿黄 (Emerald-600 / Lime-400)
+  midnight: { primary: '#4b5563', secondary: '#f3f4f6' }, // 灰白 (Gray-600 / Gray-100)
+};
+
+const {
+  class: className,
+  variant = 'default',
+  // 逻辑：如果传入了具体颜色，就用具体的；否则根据 variant 去查表
+  primaryColor = THEMES[variant].primary,
+  secondaryColor = THEMES[variant].secondary,
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'absolute right-0 bottom-0 left-0 h-full w-full overflow-hidden',
+    className,
+  ]}
+>
+  <svg
+    width="100%"
+    height="100%"
+    viewBox="0 0 1920 772"
+    preserveAspectRatio="xMidYMax slice"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="100%" height="100%" fill="black"></rect>
+
+    <g clip-path="url(#footer-clip)">
+      <g filter="url(#footer-blur-1)">
+        <path
+          d="M968 578C616.392 578 63.5 665.017 -24 699.171V843.618L1953.5 857.541V699.171C1925 652.617 1435.5 578 968 578Z"
+          fill={primaryColor}></path>
+      </g>
+      <g filter="url(#footer-blur-2)">
+        <ellipse cx="941" cy="989" rx="1066" ry="266" fill={secondaryColor}
+        ></ellipse>
+      </g>
+    </g>
+
+    <defs>
+      <filter
+        id="footer-blur-1"
+        x="-524"
+        y="78"
+        width="2977.5"
+        height="1279.5"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="BackgroundImageFix"
+          result="shape"></feBlend>
+        <feGaussianBlur stdDeviation="150" result="effect1_foregroundBlur"
+        ></feGaussianBlur>
+      </filter>
+
+      <filter
+        id="footer-blur-2"
+        x="-311.8"
+        y="536.2"
+        width="2505.6"
+        height="905.6"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="BackgroundImageFix"
+          result="shape"></feBlend>
+        <feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur"
+        ></feGaussianBlur>
+      </filter>
+
+      <clipPath id="footer-clip">
+        <rect width="1920" height="772" fill="white"></rect>
+      </clipPath>
+    </defs>
+  </svg>
+</div>
