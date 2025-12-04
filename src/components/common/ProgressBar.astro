@@ -31,7 +31,23 @@
   /* 自定义进度条颜色 - 配合你之前的红色主题 */
   #nprogress .bar {
     background: #ac121f !important; /* Tailwind 的 red-500 */
-    height: 4px !important; /* 进度条高度 */
+    height: 6px !important; /* 进度条高度 */
     z-index: 99999;
+  }
+  /* 2. 自定义“进度头的小光” (Peg) */
+  #nprogress .peg {
+    /* box-shadow 是关键：
+       前两个参数是偏移量，
+       第三个参数是模糊半径（控制光的扩散程度）。
+       
+       建议：把光设为跟进度条一样的颜色，或者稍微亮一点的颜色。
+    */
+    box-shadow:
+      0 0 10px #e42b3a,
+      0 0 5px #e42b3a !important;
+
+    /* 如果你想让光更强，可以增加阴影范围，例如：
+       box-shadow: 0 0 15px #ac121f, 0 0 10px #ff0000 !important; 
+    */
   }
 </style>
