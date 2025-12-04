@@ -1,6 +1,6 @@
 ---
 // 文件名: src/components/Cover.astro
-import IMG from '@/components/common/IMG.astro'; // 确保路径正确
+import IMG from '@/components/common/IMG.astro';
 import BlurBG from '@/components/design/background/BlurBackground.astro';
 import { clsx } from 'clsx';
 
@@ -14,16 +14,18 @@ interface Props {
   title?: string;
   className?: string;
 
-  // 样式控制
   variant?: 'hero' | 'list';
-  aspect?: '16/9' | '4/3' | '1/1' | 'auto';
+  aspect?: '16/9' | '4/3' | '1/1' | 'auto' | string | number;
+  fit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+
   border?: boolean;
 
-  // 允许强制指定纹理，或传入自定义背景色
+  // 纹理与主题
   forcePattern?: 'grid' | 'dots' | 'none';
-  color?: string; // ✅ 复用之前的建议，允许传入固定颜色
+  patternOpacity?: number;
+  color?: string;
+  theme?: 'dark' | 'light';
 
-  // 传递给 IMG 的属性
   raw?: boolean;
   loading?: 'eager' | 'lazy';
 }
@@ -35,18 +37,22 @@ const {
   className = '',
   variant = 'list',
   aspect = 'auto',
+  fit = 'cover',
   border = false,
+
   forcePattern,
+  patternOpacity = 0.5, // 点阵比较细，默认不透明度稍微高一点点
+
   color,
+  theme = 'dark',
+
   raw = false,
   loading = variant === 'hero' ? 'eager' : 'lazy',
 } = Astro.props;
 
-// --- 逻辑: 判断是否有有效图片 ---
-// 注意：虽然 IMG 内部会检查，但 Cover 需要根据这个决定是否渲染 BlurBG
 const hasImage = src !== null && src !== undefined && src !== '';
 
-// --- 逻辑: 哈希计算 (用于随机颜色/纹理) ---
+// --- 样式逻辑计算 ---
 const getHashIndex = (str: string) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -56,48 +62,70 @@ const getHashIndex = (str: string) => {
 };
 const hashIndex = getHashIndex(title);
 
-// --- 样式: 背景色与纹理 ---
-// 默认的随机深色渐变
-const gradients = [
+const darkGradients = [
   'from-zinc-800 via-neutral-900 to-black',
   'from-slate-900 via-blue-950 to-black',
   'from-gray-900 via-indigo-950 to-slate-900',
   'from-emerald-950 via-teal-950 to-gray-900',
   'from-red-950 via-orange-950 to-black',
 ];
+const lightGradients = [
+  'from-blue-50 via-indigo-50 to-white',
+  'from-emerald-50 via-teal-50 to-white',
+  'from-orange-50 via-amber-50 to-white',
+  'from-rose-50 via-pink-50 to-white',
+  'from-slate-100 via-zinc-50 to-white',
+];
+const activePalette = theme === 'light' ? lightGradients : darkGradients;
+const themeClass = color || activePalette[hashIndex % activePalette.length];
 
-// 如果外部传了 color 则用 color，否则用随机渐变
-const themeClass = color || gradients[hashIndex % gradients.length];
+// --- 纹理样式定义 ---
+// ✅ Dots (点阵): 使用灰色，适配亮/暗双模式
+const dotsPatternStyle = {
+  backgroundImage:
+    'radial-gradient(rgba(128,128,128,0.25) 1.5px, transparent 1.5px)',
+  backgroundSize: '20px 20px', // 点的间距
+};
 
-// 纹理逻辑
+const gridPatternStyle = {
+  backgroundImage:
+    'linear-gradient(rgba(128,128,128,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(128,128,128,0.15) 1px, transparent 1px)',
+  backgroundSize: '30px 30px',
+};
+
+// 决定最终纹理 (无图模式使用)
 const patternOptions = ['grid', 'dots', 'none'] as const;
 const defaultPattern = patternOptions[hashIndex % 3];
 const enablePattern = hashIndex % 10 !== 0;
 const finalPattern = forcePattern || (enablePattern ? defaultPattern : 'none');
 
-const patternsCss = {
-  none: '',
-  grid: `background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px;`,
-  dots: `background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px;`,
+const patternsCss: Record<string, any> = {
+  none: {},
+  grid: gridPatternStyle,
+  dots: dotsPatternStyle,
 };
 
-// --- 样式: 比例与文字 ---
-const aspectStyles = {
+// 比例样式
+const aspectPresets: Record<string, string> = {
   '16/9': 'aspect-video',
   '4/3': 'aspect-[4/3]',
   '1/1': 'aspect-square',
   auto: '',
 };
+const presetClass = aspectPresets[String(aspect)];
+const customStyle =
+  !presetClass && aspect !== 'auto' ? { aspectRatio: String(aspect) } : {};
 
+const textColorClass = theme === 'light' ? 'text-zinc-800' : 'text-white';
 const variantStyles = {
   hero: {
     wrapper: 'p-8 md:p-12',
-    text: 'text-3xl sm:text-4xl font-black leading-tight tracking-wide',
+    text: 'text-3xl sm:text-4xl font-black',
     clamp: '',
   },
   list: {
     wrapper: 'p-6',
-    text: 'text-xl md:text-2xl font-bold leading-snug tracking-tight',
+    text: 'text-xl md:text-2xl font-bold',
     clamp: 'line-clamp-3',
   },
 };
@@ -106,84 +134,117 @@ const currentStyle = variantStyles[variant];
 
 <div
   class={clsx(
-    // 基础容器样式：相对定位、隐藏溢出、默认深色背景(防闪烁)
-    'group relative w-full h-full overflow-hidden bg-zinc-900',
-    aspectStyles[aspect],
+    // 基础背景：亮色白灰 / 暗色纯黑
+    'group relative w-full h-full overflow-hidden bg-zinc-50 dark:bg-black',
+    presetClass,
     className
   )}
+  style={customStyle}
 >
   {
-    hasImage ? (
-      /* ================= 🅰️ 有图片模式 ================= */
-      /* 直接使用纯净版 IMG，通过 class 控制布局和悬停效果 */
-      <IMG
-        src={src}
-        alt={alt}
-        raw={raw}
-        loading={loading}
-        class={clsx(
-          'h-full w-full object-cover', // 强制填满容器
-          'duration-700 ease-in-out', // 过渡配置
-          !raw && 'transition-transform group-hover:scale-105' // 悬停放大效果
-        )}
-      />
-    ) : (
-      /* ================= 🅱️ 无图片模式 (Fallback) ================= */
-      <div
-        class={clsx(
-          'absolute inset-0 h-full w-full overflow-hidden duration-700',
-          'bg-gradient-to-br',
-          themeClass, // 应用随机或指定背景色
-          !raw && 'transition-transform group-hover:scale-105'
-        )}
-      >
-        {/* 1. 动态光效 */}
-        <div class="absolute inset-0 opacity-80 mix-blend-hard-light">
-          <BlurBG />
-        </div>
-
-        {/* 2. 纹理叠加 */}
+    /* ===========================================
+    场景 A: 有图模式 (Image Mode)
+    逻辑：纯色背景 + Dots 点阵 + 图片
+  =========================================== */
+  }
+  {
+    hasImage && (
+      <>
+        {/* A1. 背景纹理层 (垫在图片底下) */}
         <div
-          class="absolute inset-0 z-10 opacity-60"
-          style={patternsCss[finalPattern as keyof typeof patternsCss]}
+          class="pointer-events-none absolute inset-0 z-0 opacity-60"
+          style={dotsPatternStyle}
         />
-      </div>
+
+        {/* A2. 图片层 */}
+        <IMG
+          src={src}
+          alt={alt}
+          raw={raw}
+          loading={loading}
+          class={clsx(
+            'absolute inset-0 z-10 h-full w-full duration-700 ease-in-out',
+            `object-${fit}`,
+            !raw && 'transition-transform group-hover:scale-105'
+          )}
+        />
+      </>
     )
   }
 
-  {/* ================= Layer: 内容覆盖层 (标题 & 插槽) ================= */}
-  <div
-    class={clsx(
-      'relative z-20 flex h-full w-full flex-col items-center justify-center text-center',
-      currentStyle.wrapper
-    )}
-  >
-    {
-      /* 只有当没有 Slot 内容 或者 显式需要标题时才渲染标题，这里默认始终渲染标题 */
-    }
-    <div class="relative z-10 mx-auto w-full max-w-4xl">
-      <h3
-        class={clsx(
-          'wrap-break-word hyphens-auto text-white',
-          currentStyle.text,
-          currentStyle.clamp
-        )}
-        style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);"
-      >
-        {title}
-      </h3>
-    </div>
+  {
+    /* ===========================================
+    场景 B: 无图模式 (Fallback Mode)
+    逻辑：渐变背景 + BlurBG 光效 + 纹理 + 标题
+  =========================================== */
+  }
+  {
+    !hasImage && (
+      <>
+        {/* B1. 背景渐变 & 光效 */}
+        <div
+          class={clsx(
+            'absolute inset-0 z-0 h-full w-full bg-gradient-to-br',
+            themeClass,
+            !raw && 'transition-transform duration-700 group-hover:scale-105'
+          )}
+        >
+          {theme === 'dark' && (
+            <div class="absolute inset-0 opacity-60 mix-blend-hard-light">
+              <BlurBG />
+            </div>
+          )}
+        </div>
 
-    {/* 插槽内容 (例如按钮、标签等) */}
-    <div class="relative z-30 mt-4 empty:hidden">
+        {/* B2. 装饰纹理 (根据 hash 或 props 决定) */}
+        <div
+          class="pointer-events-none absolute inset-0 z-10"
+          style={{
+            ...patternsCss[finalPattern],
+            opacity: patternOpacity,
+          }}
+        />
+
+        {/* B3. 标题内容 */}
+        <div
+          class={clsx(
+            'relative z-20 flex h-full w-full flex-col items-center justify-center text-center',
+            currentStyle.wrapper
+          )}
+        >
+          <div class="relative z-10 mx-auto w-full max-w-4xl">
+            <h3
+              class={clsx(
+                'wrap-break-word hyphens-auto',
+                textColorClass,
+                currentStyle.text,
+                currentStyle.clamp
+              )}
+            >
+              {title}
+            </h3>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  {
+    /* ===========================================
+    Layer X: 插槽 & 边框 (始终显示)
+  =========================================== */
+  }
+  <div
+    class="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
+  >
+    <div class="pointer-events-auto">
       <slot />
     </div>
   </div>
 
-  {/* 装饰性边框 */}
   {
     border && (
-      <div class="pointer-events-none absolute inset-0 z-40 rounded-[inherit] ring-1 ring-white/10 ring-inset" />
+      <div class="pointer-events-none absolute inset-0 z-50 rounded-[inherit] ring-1 ring-black/5 ring-inset dark:ring-white/10" />
     )
   }
 </div>
