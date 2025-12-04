@@ -1,4 +1,5 @@
 ---
+// src/components/SidebarTOC.astro
 interface Group {
   id: string;
   title: string;
@@ -14,17 +15,18 @@ const { groups } = Astro.props;
 import SocialMediaButton from '@/components/ui/SocialMediaButton.astro';
 ---
 
-<aside class="hidden lg:block">
-  <div class="sticky top-4 overflow-y-auto pb-10">
-    <nav class="space-y-1 border-l border-white/10">
+<aside class="hidden h-full lg:block">
+  <div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pb-10">
+    <nav class="space-y-1 border-l border-white/10" id="toc-nav">
       {
         groups.map(
           (group) =>
             group.items.length > 0 && (
               <a
                 href={`#${group.id}`}
-                class="group data-[active=true]:border-primary data-[active=true]:text-primary text-text-main hover:text-primary flex items-center border-l-2 border-transparent px-3 py-3 text-sm font-medium transition-colors hover:border-red-500 hover:bg-red-500/10"
+                class="group text-text-main hover:text-primary data-[active=true]:border-primary data-[active=true]:text-primary flex items-center border-l-2 border-transparent px-3 py-3 text-sm font-medium transition-colors hover:border-red-500 hover:bg-red-500/10"
                 data-nav-link
+                data-id={group.id}
               >
                 <span class="truncate">{group.title}</span>
                 <span class="text-text-main ml-auto text-xs opacity-0 transition-opacity group-hover:opacity-100 group-data-[active=true]:opacity-100">
@@ -38,10 +40,10 @@ import SocialMediaButton from '@/components/ui/SocialMediaButton.astro';
 
     {/* CTA 卡片 */}
     <div
-      class="bg-surface-card border-surface-border mt-10 rounded-2xl border p-4"
+      class="border-surface-border bg-surface-card mt-10 rounded-2xl border p-4"
     >
       <h3 class="text-text-main text-sm font-semibold">Need Help?</h3>
-      <p class="text-medium text-text-main/60 text-md mt-2">
+      <p class="text-md text-text-main/60 text-medium mt-2">
         Contact our sales team.
       </p>
       <a
@@ -56,3 +58,98 @@ import SocialMediaButton from '@/components/ui/SocialMediaButton.astro';
     </div>
   </div>
 </aside>
+
+<script>
+  const initScrollSpy = () => {
+    const navLinks = document.querySelectorAll('[data-nav-link]');
+    if (navLinks.length === 0) return;
+
+    // 1. 获取所有对应的 DOM 元素
+    const sections = Array.from(navLinks)
+      .map((link) => {
+        const id = link.getAttribute('data-id');
+        return document.getElementById(id || '');
+      })
+      .filter((item) => item !== null);
+
+    const onScroll = () => {
+      // ✅ 核心配置：判定线 (Offset)
+      // 这条线位于屏幕顶部往下 120px 处。
+      // 只有当章节标题滚到了这条线之上（或正好压线），我们才认为进入了该章节。
+      // 这个值应该略大于你顶部 Header 的高度。
+      const headerOffset = 120;
+
+      let currentSectionId = '';
+
+      // ✅ 核心算法：贪婪匹配
+      // 我们遍历所有章节，看它们相对于视口顶部的位置 (rect.top)
+      for (const section of sections) {
+        if (!section) continue;
+
+        const rect = section.getBoundingClientRect();
+
+        // 如果这个章节的顶部位于判定线之上 (rect.top <= 120)
+        // 说明我们已经滚到了这个章节（或者滚过了它）
+        if (rect.top <= headerOffset) {
+          currentSectionId = section.id;
+        } else {
+          // 因为章节是按顺序排的，如果当前这个还在判定线下面，那后面的肯定更靠下
+          // 所以没必要继续找了，当前的 currentSectionId 就是最新的那个
+          break;
+        }
+      }
+
+      // 特殊情况：如果滚到底部了，强制激活最后一个
+      const isBottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 20;
+      if (isBottom && sections.length > 0) {
+        currentSectionId = sections[sections.length - 1].id;
+      }
+
+      // 如果页面刚加载还在顶部，没有选中任何项，默认选中第一个
+      if (!currentSectionId && sections.length > 0 && window.scrollY < 200) {
+        currentSectionId = sections[0].id;
+      }
+
+      // 更新高亮状态
+      navLinks.forEach((link) => {
+        const id = link.getAttribute('data-id');
+        if (id === currentSectionId) {
+          link.setAttribute('data-active', 'true');
+        } else {
+          link.setAttribute('data-active', 'false');
+        }
+      });
+    };
+
+    // 性能优化：使用 requestAnimationFrame 节流
+    let ticking = false;
+    const scrollHandler = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          onScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // 监听点击：点击时立即高亮，提升用户体验
+    navLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        navLinks.forEach((l) => l.setAttribute('data-active', 'false'));
+        link.setAttribute('data-active', 'true');
+      });
+    });
+
+    // 启动监听
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+
+    // 初始化运行一次 (处理刷新页面时的位置)
+    // 延迟一点点执行，确保图片等布局加载完，坐标准确
+    setTimeout(onScroll, 100);
+  };
+
+  // 兼容 Astro 页面切换
+  document.addEventListener('astro:page-load', initScrollSpy);
+</script>

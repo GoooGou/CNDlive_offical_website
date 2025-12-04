@@ -143,3 +143,14 @@
     @apply bg-surface-card border-surface-border text-text-main border;
   }
 }
+
+/* ⚡️ 关键修复：Scroll Margin */
+/* 这里的 120px 必须 >= JS 里的 headerOffset (120) */
+/* 它的作用是：当点击锚点跳转时，浏览器会自动往下偏移 120px，避免标题被顶部 Header 遮住 */
+
+section[id],
+h1[id],
+h2[id],
+h3[id] {
+  scroll-margin-top: 120px;
+}
