@@ -8,6 +8,8 @@ import partytown from '@astrojs/partytown';
 import astroExpressiveCode from 'astro-expressive-code';
 import vercel from '@astrojs/vercel';
 
+import alpinejs from '@astrojs/alpinejs';
+
 const isDev = process.env.npm_lifecycle_event === 'dev';
 
 // https://astro.build/config
@@ -79,56 +81,48 @@ export default defineConfig({
     cacheDir: 'node_modules/.vite',
   },
 
-  integrations: [
-    // 1. Expressive Code 配置 (必须在 mdx/starlight 之前)
-    // 用于给全站代码块添加 Mac 风格窗口和复制按钮
-    astroExpressiveCode({
-      themes: ['github-dark', 'github-light'],
+  integrations: [// 1. Expressive Code 配置 (必须在 mdx/starlight 之前)
+  // 用于给全站代码块添加 Mac 风格窗口和复制按钮
+  astroExpressiveCode({
+    themes: ['github-dark', 'github-light'],
+    frames: {
+      // ✅ 功能开关放在这里
+      showCopyToClipboardButton: true,
+    },
+    styleOverrides: {
+      // 样式微调放在这里
       frames: {
-        // ✅ 功能开关放在这里
-        showCopyToClipboardButton: true,
+        // e.g. shadowColor: '#000'
       },
-      styleOverrides: {
-        // 样式微调放在这里
-        frames: {
-          // e.g. shadowColor: '#000'
-        },
+    },
+  }), // 2. Starlight 文档系统
+  starlight({
+    title: 'CNDLive Support',
+    defaultLocale: 'root',
+    locales: {
+      root: {
+        label: 'English',
+        lang: 'en',
       },
-    }),
-
-    // 2. Starlight 文档系统
-    starlight({
-      title: 'CNDLive Support',
-      defaultLocale: 'root',
-      locales: {
-        root: {
-          label: 'English',
-          lang: 'en',
-        },
-        'zh-cn': {
-          label: '简体中文',
-          lang: 'zh-CN',
-        },
+      'zh-cn': {
+        label: '简体中文',
+        lang: 'zh-CN',
       },
-      disable404Route: true,
-      sidebar: [
-        {
-          label: '🔙 返回主站',
-          link: '/',
-          attrs: { target: '_blank' },
-        },
-        {
-          label: 'Support Center',
-          autogenerate: { directory: 'support' },
-        },
-      ],
-    }),
-
-    // 3. 其他集成
-    react(),
-    sitemap(),
-    partytown(),
-  ],
+    },
+    disable404Route: true,
+    sidebar: [
+      {
+        label: '🔙 返回主站',
+        link: '/',
+        attrs: { target: '_blank' },
+      },
+      {
+        label: 'Support Center',
+        autogenerate: { directory: 'support' },
+      },
+    ],
+  }), // 3. 其他集成
+  react(), sitemap(), partytown(), alpinejs()],
 
   // 开发环境禁用预加载以提升性能
   prefetch: isDev

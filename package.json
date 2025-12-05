@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/alpinejs": "^0.4.9",
     "@astrojs/mdx": "^4.3.12",
     "@astrojs/partytown": "^2.1.4",
     "@astrojs/react": "^4.4.2",
@@ -18,8 +19,10 @@
     "@astrojs/vercel": "^9.0.2",
     "@fontsource-variable/montserrat": "^5.2.8",
     "@tailwindcss/vite": "^4.1.17",
+    "@types/alpinejs": "^3.13.11",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
+    "alpinejs": "^3.15.2",
     "astro": "^5.16.0",
     "astro-auto-import": "^0.4.5",
     "astro-mermaid": "^1.2.0",
