@@ -85,7 +85,8 @@ const slides = slidesData.map((post: any, index: number) => {
   return {
     title: data.title || 'Untitled',
     description: data.description || 'Discover our latest updates.',
-    image: data.cover || data.image,
+    // ✅ 修改重点：优先使用 slideImage，如果不存在则使用 cover
+    image: data.slideImage || data.cover, 
     href: href,
     btnText: 'Read More',
     tag: tagLabel,
@@ -180,7 +181,6 @@ const slides = slidesData.map((post: any, index: number) => {
             </div>
 
             {/* 2. 图片区域 (右侧) */}
-            {/* ✅ 修改1: 移除 justify-center，改为 justify-start 确保靠左对齐 (w-full 生效) */}
             <div class="order-1 flex items-end justify-start lg:order-2 lg:items-center lg:justify-end">
               <a 
                 href={slide.href} 

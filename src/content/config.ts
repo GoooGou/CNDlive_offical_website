@@ -17,7 +17,7 @@ const createBaseSchema = (image: any) =>
     tags: z.array(z.string()).default([]),
     cover: image().optional(),
     order: z.number().optional(),
-    image: image().optional(),
+    slideImage: image().optional(),
 
     // ✅ 新增：全局幻灯片开关 (默认关闭)
     isSlide: z.boolean().default(false),
@@ -71,7 +71,7 @@ const products = defineCollection({
       author: z.string().default('CNDLive'),
       cover: image(),
       features: z.array(z.string()).optional(),
-      image: image().optional(),
+      slideImage: image().optional(),
       // ✅ 新增：这里也加上 isSlide
       isSlide: z.boolean().default(false),
     }),

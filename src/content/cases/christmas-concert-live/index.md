@@ -11,6 +11,7 @@ tags:
   - 4gbonding
   - encoder
 cover: 'cover/cover.webp'
+# slideImage: 'slide/slide.webp'
 ---
 
 The annual Christmas Concert is fast approaching, and the client wishes to stream the event live so that everyone can join in the festive cheer. To ensure a successful live stream, stable internet service is crucial. However, challenges arise when there is no wired internet on-site and the venue is expected to be crowded with attendees. Let’s explore how we addressed these issues.

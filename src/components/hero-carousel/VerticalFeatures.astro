@@ -12,6 +12,7 @@ interface Props {
 }
 
 interface PostData {
+  slideImage: any;
   title: string;
   description?: string;
   pubDate?: Date | string;
@@ -61,7 +62,7 @@ const slides = latestPosts.map((post: any, index: number) => {
     description:
       data.description ||
       'Discover the latest details in this featured update.',
-    image: data.cover || data.image,
+    image: data.slideImage || data.cover,
     href: `/${collectionId}/${post.id}`,
     btnText: 'Read Article',
     bgClass: BG_PRESETS[themeKey] || 'bg-zinc-900',
