@@ -75,7 +75,7 @@ if (slidesData.length === 0) return null;
 const slides = slidesData.map((post: any, index: number) => {
   const data = post.data;
   const themeKey = THEME_KEYS[index % THEME_KEYS.length];
-  const href = `/${post.collectionName}/${post.slug}`;
+  const href = `/${post.collectionName}/${post.id}`;
 
   // 标签显示
   const tagLabel = post.collectionName === 'products' ? 'Product' : 
