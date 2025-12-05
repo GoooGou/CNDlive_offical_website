@@ -37,7 +37,10 @@ export const MENU_DATA: NavItem[] = [
             label: 'C6 4K HDMI/3G-SDI Encoder',
             href: '/products/c6-h265-ndi-srt-encoder',
           },
-          { label: 'X1 4G Bonding Encoder', href: '#' },
+          {
+            label: 'X1 4G Bonding Encoder',
+            href: '/products/x1-sdi-hdmi-4g-bonding-encoder',
+          },
         ],
       },
       {
