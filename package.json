@@ -16,6 +16,7 @@
     "@astrojs/rss": "^4.0.14",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/starlight": "^0.36.3",
+    "@astrojs/svelte": "^7.2.2",
     "@astrojs/vercel": "^9.0.2",
     "@fontsource-variable/montserrat": "^5.2.8",
     "@tailwindcss/vite": "^4.1.17",
@@ -39,8 +40,10 @@
     "react-dom": "^19.2.0",
     "remark-wiki-link": "^2.0.1",
     "starlight-obsidian": "^0.10.1",
+    "svelte": "^5.45.5",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3",
     "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {

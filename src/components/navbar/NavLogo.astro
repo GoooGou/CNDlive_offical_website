@@ -1,42 +1,109 @@
 ---
 // src/components/navbar/NavLogo.astro
+// 1. 导入 JSON 文件 (这样它会打包进 JS，不用网络请求，速度更快)
+// 假设你把 json 放到了 src/assets/ 目录下
+import logoData from '@/assets/logo.json';
+// 如果你不想移动文件，也可以保留 fetch 方式，但 import 速度最快
 ---
 
-<a href="/" class="block">
-  <div id="nav-logo-container" class="h-20 w-32 md:w-40"></div>
+<a href="/" class="block" aria-label="Home">
+  <div
+    id="nav-logo-container"
+    class="relative h-20 w-32 overflow-hidden md:w-40"
+  >
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 171 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.5351 2.8418H6.31621C4.39696 2.8418 2.8418 4.43091 2.8418 6.39016V25.4881C2.8418 27.4482 4.39779 29.0364 6.31621 29.0364H28.3818V2.8418H31.642L46.7489 29.0373H50.444V2.8418H72.0755C73.9948 2.8418 75.5499 4.43091 75.5499 6.39016V25.4881C75.5499 27.4482 73.9939 29.0364 72.0755 29.0364H57.6177"
+        stroke="#AC121F"
+        stroke-width="5.68361"
+        stroke-linejoin="round"></path>
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M105.355 26.287V30.5773H87.3971C85.3502 30.5773 83.6904 28.8822 83.6904 26.7918V9.82227H87.8914V26.287H105.355Z"
+        fill="#AC121F"></path>
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M113.975 9.82227V30.5774H109.774V13.6079L113.975 9.82227Z"
+        fill="#AC121F"></path>
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M145.581 9.82227L134.352 28.8385C133.71 29.9212 132.583 30.5723 131.34 30.5774H131.325C130.089 30.5774 128.962 29.9363 128.315 28.8638L116.861 9.82227H121.799L131.32 25.6687L140.671 9.82227H145.581Z"
+        fill="#AC121F"></path>
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M170.198 26.2862V30.5766H150.326C148.279 30.5766 146.619 28.8823 146.619 26.7918V13.6079C146.619 11.5174 148.279 9.82227 150.326 9.82227H170.999L167.293 14.1126H150.82V26.2871H170.198V26.2862Z"
+        fill="#AC121F"></path>
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M161.805 21.6595H149.427V17.3691H165.511L161.805 21.6595Z"
+        fill="#AC121F"></path>
+    </svg>
+
+    <div id="lottie-wrapper" class="absolute inset-0 h-full w-full"></div>
+  </div>
 </a>
 
 <script>
-  import lottie from 'lottie-web';
+  // 使用 light 版本减小体积 (如果你的 logo 用到了复杂效果，可能需要改回 'lottie-web')
+  import lottie from 'lottie-web/build/player/lottie_light';
 
-  // 用于存储动画实例，方便销毁
+  // 重新获取数据 (Astro 的 script 模块化特性)
+  import animationData from '@/assets/logo.json';
+
   let animationInstance: any = null;
 
   const initLogo = () => {
-    const container = document.getElementById('nav-logo-container');
+    const wrapper = document.getElementById('lottie-wrapper');
+    const staticPlaceholder = document.getElementById(
+      'static-logo-placeholder'
+    );
 
-    if (container) {
-      // 1. 更稳健的清理方式：如果有旧动画实例，先销毁它
-      // 这比 innerHTML = '' 更安全，能停止后台的计时器和未完成的请求
+    if (wrapper) {
+      // 1. 清理旧实例
       if (animationInstance) {
         animationInstance.destroy();
       }
 
-      // 保险起见，再清空一次 DOM
-      container.innerHTML = '';
+      // 注意：这里不要清空 nav-logo-container 的 innerHTML
+      // 否则静态图会瞬间消失，造成闪烁。我们只清空 lottie-wrapper
+      wrapper.innerHTML = '';
 
-      // 2. 加载新动画并赋值给实例变量
+      // 2. 加载新动画
       animationInstance = lottie.loadAnimation({
-        container: container,
+        container: wrapper, // 挂载到 wrapper，而不是整个 container
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path: '/logo.json',
+        animationData: animationData, // 使用 import 的数据，不用 path
+      });
+
+      // 3. 监听加载完成事件，实现无缝切换
+      // 当 Lottie 渲染出第一帧后，隐藏静态 SVG
+      animationInstance.addEventListener('DOMLoaded', () => {
+        if (staticPlaceholder) {
+          // 加上淡出动画或者直接隐藏
+          staticPlaceholder.style.opacity = '0';
+          staticPlaceholder.style.transition = 'opacity 0.2s';
+
+          // 稍微延迟后彻底移除（可选）
+          setTimeout(() => {
+            staticPlaceholder.style.display = 'none';
+          }, 200);
+        }
       });
     }
   };
 
-  // 3. 只使用 astro:page-load
-  // 它涵盖了“首次加载”和“页面切换”两种情况，所以下面不需要再写 initLogo() 了
   document.addEventListener('astro:page-load', initLogo);
 </script>

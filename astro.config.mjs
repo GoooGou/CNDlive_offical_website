@@ -10,6 +10,8 @@ import vercel from '@astrojs/vercel';
 
 import alpinejs from '@astrojs/alpinejs';
 
+import svelte from '@astrojs/svelte';
+
 const isDev = process.env.npm_lifecycle_event === 'dev';
 
 // https://astro.build/config
@@ -83,6 +85,7 @@ export default defineConfig({
 
   integrations: [// 1. Expressive Code 配置 (必须在 mdx/starlight 之前)
   // 用于给全站代码块添加 Mac 风格窗口和复制按钮
+  // 2. Starlight 文档系统
   astroExpressiveCode({
     themes: ['github-dark', 'github-light'],
     frames: {
@@ -95,7 +98,7 @@ export default defineConfig({
         // e.g. shadowColor: '#000'
       },
     },
-  }), // 2. Starlight 文档系统
+  }), // 3. 其他集成
   starlight({
     title: 'CNDLive Support',
     defaultLocale: 'root',
@@ -121,8 +124,7 @@ export default defineConfig({
         autogenerate: { directory: 'support' },
       },
     ],
-  }), // 3. 其他集成
-  react(), sitemap(), partytown(), alpinejs()],
+  }), react(), sitemap(), partytown(), alpinejs(), svelte()],
 
   // 开发环境禁用预加载以提升性能
   prefetch: isDev
