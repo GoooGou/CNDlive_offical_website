@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import NewsCover from './Cover.astro'; // 复用你的封面组件
+import Cover from './Cover.astro'; // 复用你的封面组件
 
 interface Props {
   post: any;
@@ -24,18 +24,25 @@ const formatDate = (date: Date) => {
 <a href={href} class="group flex h-full items-start gap-5">
   {/* 左侧小图 */}
   <div
-    class="border-surface-border aspect-4/3 w-32 shrink-0 overflow-hidden rounded-xl border transition-colors duration-300 sm:w-48"
+    class="border-surface-border w-32 shrink-0 overflow-hidden rounded-xl border transition-colors duration-300 sm:w-48"
   >
-    <NewsCover
+    <Cover
       src={post.data.cover}
       alt={post.data.title}
       title={post.data.title}
       className="h-full w-full"
+      aspect="16/9"
     />
   </div>
 
   {/* 右侧文字 */}
   <div class="flex flex-1 flex-col space-y-2">
+    {/* 3. 标题 */}
+    <h3
+      class="text-text-main group-hover:text-primary line-clamp-2 text-lg leading-tight font-bold transition-colors"
+    >
+      {post.data.title}
+    </h3>
     {/* 1. 元信息: 作者 • 日期 */}
     <div
       class="text-text-muted flex items-center gap-2 text-xs transition-colors"
@@ -57,13 +64,6 @@ const formatDate = (date: Date) => {
         </div>
       )
     }
-
-    {/* 3. 标题 */}
-    <h3
-      class="text-text-main group-hover:text-primary line-clamp-2 text-lg leading-tight font-bold transition-colors"
-    >
-      {post.data.title}
-    </h3>
 
     {/* 4. 描述 */}
     <p
