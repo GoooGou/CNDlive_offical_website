@@ -8,9 +8,29 @@ const { groups = [] } = Astro.props;
 ---
 
 <div
-  class="mega-menu-container invisible fixed top-20 left-0 z-40 w-full -translate-y-4 border-b border-white/10 bg-[#050505] opacity-0 backdrop-blur-xl transition-all duration-500 ease-in-out group-hover/menu-item:visible group-hover/menu-item:translate-y-0 group-hover/menu-item:opacity-100"
+  class="mega-menu-container invisible fixed top-20 left-0 z-40 w-full -translate-y-4 border-b border-white/10 bg-[#050505] opacity-0 backdrop-blur-xl transition-all duration-300 ease-in-out group-hover/menu-item:visible group-hover/menu-item:translate-y-0 group-hover/menu-item:opacity-100"
 >
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+  <div
+    class="mx-auto flex max-w-7xl flex-row items-center justify-between gap-8 px-6 lg:px-8"
+  >
+    <a
+      href="/products"
+      class="hover:text-primary card flex items-center rounded-md border-b-2 p-4 text-sm font-bold text-white"
+      >Products Center
+      <svg
+        class="icon"
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="5136"
+        width="32"
+        height="32"
+        ><path
+          d="M614.4 507.733333l29.866667 29.866667-29.866667 29.866667-115.2 115.2-29.866667-34.133334 115.2-115.2L469.333333 422.4l29.866667-29.866667 115.2 115.2zM533.333333 896C332.8 896 170.666667 733.866667 170.666667 533.333333S332.8 170.666667 533.333333 170.666667 896 332.8 896 533.333333 733.866667 896 533.333333 896z m0-42.666667c174.933333 0 320-145.066667 320-320S708.266667 213.333333 533.333333 213.333333 213.333333 358.4 213.333333 533.333333 358.4 853.333333 533.333333 853.333333z"
+          fill="currentColor"
+          p-id="5137"></path></svg
+      >
+    </a>
     <div class="grid grid-cols-4 gap-x-8 gap-y-10 py-8">
       {
         groups.map((group: any) => (
@@ -24,14 +44,14 @@ const { groups = [] } = Astro.props;
                 <li>
                   <a
                     href={item.href}
-                    class="mega-menu-link -ml-2 flex items-center gap-2 rounded-md px-2 py-1 text-sm leading-6 text-gray-400 hover:bg-white/5 hover:text-white"
+                    class="mega-menu-link hover:bg-primary/5 hover:text-primary -ml-2 flex items-center gap-2 rounded-md px-2 py-1 text-sm leading-6 text-white/90"
                   >
                     <span class="group-hover:bg-primary/50 h-4 w-1 rounded-full bg-transparent" />
 
                     <span class="link-text relative">{item.label}</span>
 
                     {item.badge && (
-                      <span class="bg-primary/10 text-primary ml-auto rounded-full px-2 py-0.5 text-xs font-medium">
+                      <span class="ml-auto rounded-full bg-green-500 px-2 py-0.5 text-xs font-medium text-white">
                         {item.badge}
                       </span>
                     )}
