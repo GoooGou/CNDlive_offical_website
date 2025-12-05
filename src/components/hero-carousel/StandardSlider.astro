@@ -149,7 +149,7 @@ const slides = slidesData.map((post: any, index: number) => {
     :style="`transform: translateX(-${activeSlide * 100}%)`"
   >
     {slides.map((slide) => (
-      <div class={`relative h-full w-full flex-shrink-0 flex items-center justify-center ${slide.bgClass}`}>
+      <div class={`relative h-full w-full shrink-0 flex items-center justify-center ${slide.bgClass}`}>
         
         {/* 内容容器 */}
         <div class="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col justify-center gap-8 px-6 py-12 lg:grid lg:h-auto lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-0">
@@ -180,23 +180,23 @@ const slides = slidesData.map((post: any, index: number) => {
             </div>
 
             {/* 2. 图片区域 (右侧) */}
-            <div class="order-1 flex items-end justify-center lg:order-2 lg:items-center lg:justify-end">
+            {/* ✅ 修改1: 移除 justify-center，改为 justify-start 确保靠左对齐 (w-full 生效) */}
+            <div class="order-1 flex items-end justify-start lg:order-2 lg:items-center lg:justify-end">
               <a 
                 href={slide.href} 
-                class="group/image relative block w-full max-w-[400px] lg:max-w-xl duration-300" 
+                class="group/image relative block w-full lg:max-w-xl duration-300" 
                 aria-label={`Read more about ${slide.title}`}
               >
                 {slide.image ? (
                   <Image
                     src={slide.image}
                     alt={slide.title}
-                    /* ✅ 核心修改：恢复圆角、阴影和边框样式 */
                     class="aspect-video w-full object-contain rounded-2xl shadow-2xl ring-1 ring-white/10" 
                     width={800}
                     height={450}
                   />
                 ) : (
-                  /* 占位符也恢复圆角、阴影和边框 */
+                  /* 占位符也使用 w-full */
                   <div class="aspect-video flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-2xl ring-1 ring-white/10">
                     <span class="text-xs tracking-widest text-white/30">NO IMAGE</span>
                   </div>
