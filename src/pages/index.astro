@@ -13,16 +13,22 @@ import { Reveal } from '@/components/ui/Reveal';
 import NewsSection from '@/components/sections/NewSection.astro';
 import CaseSection from '@/components/sections/CaseSection.astro';
 import SolutionSection from '@/components/sections/SolutionSection.astro';
+import VerticalFeatures from '@/components/hero-carousel/VerticalFeatures.astro';
+import StandardSlider from '@/components/hero-carousel/StandardSlider.astro';
 ---
 
 <Layout title="CNDLive home - Streaming the Moment ">
   <Main>
-    {/* 1. Hero 轮播图 - 首屏关键内容，保持 client:load */}
+    <!-- {/* 1. Hero 轮播图 - 首屏关键内容，保持 client:load */}
     <Reveal client:load layout="full">
       <HeroCarousel client:load slides={slidesData} />
+    </Reveal> -->
+    {/* 2. 标准轮播图 - 改为 client:idle 延迟加载 */}
+    <Reveal client:idle layout="full">
+      <StandardSlider />
     </Reveal>
 
-    {/* 2. Logo 跑马灯 - 改为 client:idle 延迟加载 */}
+    {/* 3. Logo 跑马灯 - 改为 client:idle 延迟加载 */}
     <Reveal client:idle layout="full">
       <LogoMarquee />
     </Reveal>
@@ -31,10 +37,15 @@ import SolutionSection from '@/components/sections/SolutionSection.astro';
     <Reveal client:idle layout="full">
       <Intro />
     </Reveal>
+    {/* 4. Hero 案例轮播图 - 改为 client:idle */}
 
-    {/* 4. 新闻列表 - 改为 client:idle */}
+    {/* 5. 新闻列表 - 改为 client:idle */}
     <Reveal client:idle layout="narrow">
       <NewsSection />
+    </Reveal>
+    {/* 4. 案例列表 - 改为 client:idle */}
+    <Reveal client:idle layout="full">
+      <VerticalFeatures collectionId="cases" />
     </Reveal>
     {/* 6. 解决方案列表 - 改为 client:idle */}
     <Reveal client:idle layout="narrow">

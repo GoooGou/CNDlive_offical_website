@@ -5,37 +5,28 @@ import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 
 // ----------------------------------------------------------------------------
-// 🛠️ 1. 提取公共 Schema 生成器 (DRY 原则)
+// 1. 公共 Schema (加入了 isSlide 开关)
 // ----------------------------------------------------------------------------
-// 这涵盖了 news, cases, blogs, learning, solutions 共有的字段
 const createBaseSchema = (image: any) =>
   z.object({
     title: z.string(),
     description: z.string(),
-
-    // ✅ 优化：日期自动生成
-    // 如果 MD 文件里没写 pubDate，默认使用当前构建时间 (new Date())
     pubDate: z.date().default(() => new Date()),
-
     updatedDate: z.date().optional(),
-
-    // ✅ 优化：作者默认值
-    // 如果没写 author，默认为 'CNDLive'，省去每次都写的麻烦
     author: z.string().default('CNDLive'),
-
-    // ✅ 优化：标签默认值
-    // 如果没写 tags，默认为空数组 []，防止报错
     tags: z.array(z.string()).default([]),
-
     cover: image().optional(),
     order: z.number().optional(),
+    image: image().optional(),
+
+    // ✅ 新增：全局幻灯片开关 (默认关闭)
+    isSlide: z.boolean().default(false),
   });
 
 // ----------------------------------------------------------------------------
-// 📂 2. 定义集合
+// 2. 定义集合
 // ----------------------------------------------------------------------------
 
-// 使用公共 Schema 的集合
 const news = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/news' }),
   schema: ({ image }) => createBaseSchema(image),
@@ -58,22 +49,10 @@ const learning = defineCollection({
 
 const solutions = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/solutions' }),
-  // Solutions 直接复用公共 Schema，因为它现在的字段跟上面完全一致了
   schema: ({ image }) => createBaseSchema(image),
 });
 
-// Pages 比较简单，单独定义
-const pages = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
-  schema: () =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      order: z.number().optional(),
-    }),
-});
-
-// Products 结构特殊，单独定义
+// Products (结构特殊，单独加 isSlide)
 const products = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/products' }),
   schema: ({ image }) =>
@@ -86,32 +65,43 @@ const products = defineCollection({
         'NDI Converter',
         'Manage & IP Gateway',
       ]),
-      // 这里的日期也加上默认值
       pubDate: z.date().default(() => new Date()),
       isNew: z.boolean().default(false),
       order: z.number().default(99),
       author: z.string().default('CNDLive'),
-      cover: image(), // 必填
+      cover: image(),
       features: z.array(z.string()).optional(),
+      image: image().optional(),
+      // ✅ 新增：这里也加上 isSlide
+      isSlide: z.boolean().default(false),
     }),
 });
 
-// Starlight Docs
+const pages = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
+  schema: () =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      order: z.number().optional(),
+    }),
+});
+
 const docs = defineCollection({
   loader: docsLoader(),
   schema: docsSchema(),
 });
 
 // ----------------------------------------------------------------------------
-// 📤 3. 导出
+// 3. 导出
 // ----------------------------------------------------------------------------
 export const collections = {
   news,
-  pages,
-  solutions,
-  docs,
-  products,
   cases,
   blogs,
   learning,
+  solutions,
+  products,
+  pages,
+  docs,
 };

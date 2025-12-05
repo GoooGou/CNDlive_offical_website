@@ -1,0 +1,243 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets'; // 重新引入原生的 Image 组件
+
+// ==========================================
+// 1. 配置与类型
+// ==========================================
+
+const BG_PRESETS: Record<string, string> = {
+  black: 'bg-zinc-900',
+  midnight: 'bg-slate-900',
+  sunset: 'bg-indigo-950',
+  forest: 'bg-green-950',
+};
+const THEME_KEYS = Object.keys(BG_PRESETS);
+
+// ==========================================
+// 2. 核心逻辑：全站聚合 + 筛选
+// ==========================================
+
+let slidesData: any[] = [];
+
+try {
+  // 1. 并行获取所有集合
+  const [news, cases, blogs, solutions, products] = await Promise.all([
+    getCollection('news'),
+    getCollection('cases'),
+    getCollection('blogs'),
+    getCollection('solutions'),
+    getCollection('products'),
+  ]);
+
+  // 2. 合并
+  const allContent = [
+    ...news.map((item) => ({ ...item, collectionName: 'news' })),
+    ...cases.map((item) => ({ ...item, collectionName: 'cases' })),
+    ...blogs.map((item) => ({ ...item, collectionName: 'blogs' })),
+    ...solutions.map((item) => ({ ...item, collectionName: 'solutions' })),
+    ...products.map((item) => ({ ...item, collectionName: 'products' })),
+  ];
+
+  // 3. 筛选 isSlide: true
+  // @ts-ignore
+  const featuredPosts = allContent.filter((p) => p.data.isSlide === true);
+
+  // Debug: 在终端打印找到了多少篇 (调试用)
+  console.log(`[StandardSlider] Found ${featuredPosts.length} featured slides.`);
+
+  // 4. 排序 (按日期倒序)
+  const sortFn = (a: any, b: any) => {
+    return new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf();
+  };
+
+  // 5. 截取 (最多 5 张)
+  if (featuredPosts.length > 0) {
+    slidesData = featuredPosts.sort(sortFn).slice(0, 5);
+  } else {
+    // 保底策略
+    console.log('[StandardSlider] No slides found, using fallback news.');
+    slidesData = news.sort(sortFn).slice(0, 3).map((item) => ({
+      ...item,
+      collectionName: 'news',
+    }));
+  }
+} catch (error) {
+  console.error('[StandardSlider] Error:', error);
+}
+
+if (slidesData.length === 0) return null;
+
+// ==========================================
+// 3. 视图数据转换
+// ==========================================
+
+const slides = slidesData.map((post: any, index: number) => {
+  const data = post.data;
+  const themeKey = THEME_KEYS[index % THEME_KEYS.length];
+  const href = `/${post.collectionName}/${post.slug}`;
+
+  // 标签显示
+  const tagLabel = post.collectionName === 'products' ? 'Product' : 
+                   post.collectionName === 'cases' ? 'Case Study' : 
+                   post.collectionName === 'news' ? 'News' : 'Featured';
+
+  return {
+    title: data.title || 'Untitled',
+    description: data.description || 'Discover our latest updates.',
+    image: data.cover || data.image,
+    href: href,
+    btnText: 'Read More',
+    tag: tagLabel,
+    bgClass: BG_PRESETS[themeKey] || 'bg-zinc-900',
+  };
+});
+---
+
+<div
+  x-data={`{
+    activeSlide: 0,
+    totalSlides: ${slides.length},
+    duration: 6000, 
+    timer: null,
+
+    init() {
+      this.startTimer();
+    },
+
+    next() {
+      this.activeSlide = (this.activeSlide + 1) % this.totalSlides;
+      this.resetTimer();
+    },
+
+    prev() {
+      this.activeSlide = (this.activeSlide - 1 + this.totalSlides) % this.totalSlides;
+      this.resetTimer();
+    },
+
+    goTo(index) {
+      this.activeSlide = index;
+      this.resetTimer();
+    },
+
+    startTimer() {
+      this.timer = setInterval(() => {
+        this.next();
+      }, this.duration);
+    },
+
+    stopTimer() {
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+    },
+
+    resetTimer() {
+      this.stopTimer();
+      this.startTimer();
+    }
+  }`}
+  @mouseenter="stopTimer()"
+  @mouseleave="startTimer()"
+  class="group relative h-[600px] w-full overflow-hidden bg-black text-white lg:h-[450px]"
+>
+  
+  {/* 滑动轨道 */}
+  <div
+    class="flex h-full w-full transition-transform duration-500 ease-in-out will-change-transform"
+    :style="`transform: translateX(-${activeSlide * 100}%)`"
+  >
+    {slides.map((slide) => (
+      <div class={`relative h-full w-full flex-shrink-0 flex items-center justify-center ${slide.bgClass}`}>
+        
+        {/* 内容容器 */}
+        <div class="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col justify-center gap-8 px-6 py-12 lg:grid lg:h-auto lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-0">
+            
+            {/* 1. 文字区域 (左侧) */}
+            <div class="order-2 flex flex-col justify-start lg:order-1 lg:justify-center">
+              <div class="mb-4">
+                <span class="inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-bold tracking-wider text-white/90 uppercase backdrop-blur-sm">
+                  {slide.tag}
+                </span>
+              </div>
+
+              <h2 class="mb-4 text-2xl font-bold leading-tight md:text-3xl lg:mb-6 lg:text-4xl line-clamp-2">
+                {slide.title}
+              </h2>
+
+              <p class="mb-8 line-clamp-3 text-base text-white/80 lg:mb-10 lg:line-clamp-4 lg:text-lg">
+                {slide.description}
+              </p>
+
+              <a
+                href={slide.href}
+                class="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white transition-transform hover:scale-105 hover:bg-primary/90"
+              >
+                {slide.btnText}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </a>
+            </div>
+
+            {/* 2. 图片区域 (右侧) */}
+            <div class="order-1 flex items-end justify-center lg:order-2 lg:items-center lg:justify-end">
+              <a 
+                href={slide.href} 
+                class="group/image relative block w-full max-w-[400px] lg:max-w-xl duration-300" 
+                aria-label={`Read more about ${slide.title}`}
+              >
+                {slide.image ? (
+                  <Image
+                    src={slide.image}
+                    alt={slide.title}
+                    /* ✅ 核心修改：恢复圆角、阴影和边框样式 */
+                    class="aspect-video w-full object-contain rounded-2xl shadow-2xl ring-1 ring-white/10" 
+                    width={800}
+                    height={450}
+                  />
+                ) : (
+                  /* 占位符也恢复圆角、阴影和边框 */
+                  <div class="aspect-video flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-2xl ring-1 ring-white/10">
+                    <span class="text-xs tracking-widest text-white/30">NO IMAGE</span>
+                  </div>
+                )}
+              </a>
+            </div>
+
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  {/* 左箭头 */}
+  <button 
+    @click="prev()"
+    class="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-all hover:bg-white hover:text-black lg:flex"
+    aria-label="Previous Slide"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+
+  {/* 右箭头 */}
+  <button 
+    @click="next()"
+    class="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-all hover:bg-white hover:text-black lg:flex"
+    aria-label="Next Slide"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+
+  {/* 底部圆点 */}
+  <div class="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3">
+    {slides.map((_, index) => (
+      <button
+        @click={`goTo(${index})`}
+        class="h-2.5 rounded-full transition-all duration-300"
+        :class={`activeSlide === ${index} ? 'w-8 bg-white' : 'w-2.5 bg-white/40 hover:bg-white/60'`}
+        aria-label={`Go to slide ${index + 1}`}
+      ></button>
+    ))}
+  </div>
+
+</div>
