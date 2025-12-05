@@ -5,6 +5,7 @@ import ProductTabs from '@/components/products/ProductTabs.astro';
 import Cover from '@/components/common/Cover.astro';
 import type { CollectionEntry } from 'astro:content';
 import { SITE_CONFIG } from '@/global.config';
+
 interface Props {
   post: CollectionEntry<'products'>;
   activeTabId: 'overview' | 'tech-specs' | 'download';
@@ -13,22 +14,18 @@ interface Props {
 }
 
 const { post, activeTabId, customSpecs, customDownloads } = Astro.props;
-
 const { title, description, cover, features } = post.data;
+
 const specsData = customSpecs;
 const downloadsData = customDownloads;
 const baseUrl = `/products/${post.id}`;
+
 // 1. 生成 Tab 菜单
 const tabItems = [{ id: 'overview', label: 'Overview', href: baseUrl }];
 
 const hasBanner = SITE_CONFIG.showPromotionBanner;
-
-// 2. 直接根据是否有 Banner，决定 sticky 的数值
-// 如果有 Banner (40px) + Nav (64px) = 104px -> 对应 tailwind 的 top-28 或 top-30
-// 如果无 Banner (0px)  + Nav (64px) = 64px  -> 对应 tailwind 的 top-16
+// 2. Sticky 定位计算
 const stickyTopClass = hasBanner ? 'top-30' : 'top-20';
-
-console.log(stickyTopClass);
 
 if (specsData && specsData.length > 0) {
   tabItems.push({
@@ -46,7 +43,7 @@ if (downloadsData && downloadsData.length > 0) {
   });
 }
 
-// 2. JSON-LD Schema 生成逻辑 (保留)
+// 3. Schema 生成
 const generateProductSchema = (post: CollectionEntry<'products'>) => {
   const siteUrl =
     Astro.site?.toString().replace(/\/$/, '') || 'https://cndlive.com';
@@ -72,9 +69,6 @@ const generateProductSchema = (post: CollectionEntry<'products'>) => {
 const productSchema = generateProductSchema(post);
 ---
 
-{
-  /* 注意：如果 ContentLayout 有问题，可能是因为外部的 Layout.astro 结构冲突导致 */
-}
 <ContentLayout
   title={title}
   description={description}
@@ -82,11 +76,18 @@ const productSchema = generateProductSchema(post);
   breadcrumbItems={[]}
   schema={productSchema}
 >
-  {/* Hero 区域容器：transition:persist 确保它在 Tab 切换时不闪烁 */}
+  {
+    /* 【关键修复】Hero 区域容器
+      1. 移除了 transition:persist (这是导致闪烁的元凶)
+      2. 改用 transition:animate="none"
+      原理：只要 transition:name 相同，Astro 会自动匹配前后两个页面的这个区域。
+      设置 animate="none" 让它在切换 Tab 时不要淡入淡出，视觉上就是静止的，效果和 persist 一样但更稳定。
+  */
+  }
   <div
     class="not-content mx-auto mb-10 max-w-6xl px-4"
     transition:name={`product-shell-${post.id}`}
-    transition:persist
+    transition:animate="none"
   >
     {/* 面包屑 */}
     <nav
@@ -178,7 +179,8 @@ const productSchema = generateProductSchema(post);
     </div>
   </div>
 
-  {/* Tab 导航 - 修复语法，确保 sticky 正常工作 */}
+  {/* Tab 导航 */}
+  {/* animate="none" 确保导航条在切换 Tab 时也不会闪烁 */}
   <div
     class:list={[
       'sticky z-30 mb-8 border-b border-(--color-border) bg-(--color-bg-base)/80 backdrop-blur-md transition-colors duration-300',
@@ -192,7 +194,7 @@ const productSchema = generateProductSchema(post);
     </div>
   </div>
 
-  {/* 内容插槽 */}
+  {/* 内容插槽：只有这里会有 fade 动画 */}
   <div class="mx-auto min-h-[40vh] max-w-6xl" transition:animate="fade">
     <slot />
   </div>

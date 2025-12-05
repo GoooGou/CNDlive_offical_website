@@ -8,7 +8,7 @@ const { groups = [] } = Astro.props;
 ---
 
 <div
-  class="mega-menu-container invisible fixed top-20 left-0 z-40 w-full border-b border-white/10 bg-[#050505] opacity-0 backdrop-blur-xl transition-all duration-300 ease-in-out group-hover/menu-item:visible group-hover/menu-item:opacity-100"
+  class="mega-menu-container invisible fixed top-20 left-0 z-40 w-full -translate-y-4 border-b border-white/10 bg-[#050505] opacity-0 backdrop-blur-xl transition-all duration-500 ease-in-out group-hover/menu-item:visible group-hover/menu-item:translate-y-0 group-hover/menu-item:opacity-100"
 >
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="grid grid-cols-4 gap-x-8 gap-y-10 py-8">
@@ -47,16 +47,13 @@ const { groups = [] } = Astro.props;
 </div>
 
 <style>
-  /* 强制关闭样式 
-    优先级 (!important) 高于 Tailwind 的 group-hover，
-    但我们不删除 Tailwind 的类，只在需要隐藏时挂载这个 class
-  */
+  /* 强制关闭样式 */
   .force-close {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
-    transform: translateY(-5px); /* 轻微上移，增加收起感 */
-    transition: none !important; /* 瞬间消失，不要过渡，防止闪烁 */
+    transform: translateY(-1rem) !important;
+    transition: none !important;
   }
 
   /* 点击时的链接高亮锁定 */
@@ -71,8 +68,7 @@ const { groups = [] } = Astro.props;
     const containers = document.querySelectorAll('.mega-menu-container');
     const links = document.querySelectorAll('.mega-menu-link');
 
-    // 1. 初始化清理：确保页面刚加载时，没有残留的关闭状态
-    // (这步修复了“移上去不显示”的问题，万一有残留会立刻被清掉)
+    // 1. 初始化清理
     containers.forEach((c) => c.classList.remove('force-close'));
 
     // 2. 点击事件处理
@@ -82,32 +78,14 @@ const { groups = [] } = Astro.props;
         const container = currentLink.closest('.mega-menu-container');
 
         if (container) {
-          // 锁定当前链接高亮 (视觉反馈)
+          // 锁定当前链接高亮
           currentLink.classList.add('link-clicked');
-          // 强制隐藏菜单 (解决 View Transition 闪烁)
+          // 强制隐藏菜单
           container.classList.add('force-close');
         }
       });
     });
-
-    // 3. 鼠标移出重置 (保险起见)
-    // 如果用户点了链接但立刻移开了鼠标，或者是按了返回键，
-    // 我们确保当鼠标再次进入父级区域时，菜单能重新显示
-    containers.forEach((container) => {
-      // 监听父级(li)的鼠标离开事件比较麻烦，
-      // 这里我们用 transitionend 或者简单的定时器来移除“强制关闭锁”
-      // 但最简单的是：只要鼠标再次 hover 进来，如果发现有锁，解开它。
-      // 这里的逻辑是：如果用户重新 hover 到了菜单原本的位置（虽然它现在不可见），
-      // 或者 hover 到了导航栏的触发区，CSS 会尝试显示它。
-      // 我们只需确保在页面加载时（page-load）清理掉 .force-close 即可。
-    });
   };
 
-  // 关键：在 Astro 页面加载/切换完成后，必须重新初始化
-  // 这会执行上面的 "step 1"，移除 .force-close，让菜单恢复可显示状态
   document.addEventListener('astro:page-load', initMegaMenu);
-
-  // 额外修复：如果在同一个页面点了链接没跳转(比如锚点)，鼠标移开后需要恢复
-  // 但由于这里使用了 pointer-events: none，鼠标已经无法触发菜单的事件了
-  // 所以主要依赖 astro:page-load 来重置状态。
 </script>
