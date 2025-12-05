@@ -4,11 +4,11 @@
 
 <button
   type="button"
-  class="theme-toggle-btn relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-400 transition-colors hover:bg-white/10 hover:text-white focus:outline-none"
+  class="theme-toggle-btn relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors hover:bg-white/10 focus:outline-none"
   aria-label="Toggle theme"
 >
   <svg
-    class="sun-icon h-5 w-5 opacity-100 transition-opacity duration-300 dark:hidden dark:opacity-0"
+    class="sun-icon h-5 w-5 text-orange-400 opacity-100 transition-opacity duration-300 dark:hidden dark:opacity-0"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
@@ -23,7 +23,7 @@
   </svg>
 
   <svg
-    class="moon-icon hidden h-5 w-5 opacity-0 transition-opacity duration-300 dark:block dark:opacity-100"
+    class="moon-icon hidden h-5 w-5 text-blue-400 opacity-0 transition-opacity duration-300 dark:block dark:opacity-100"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
@@ -48,7 +48,6 @@
   };
 
   const initTheme = () => {
-    // 1. 设置初始主题 (保持不变)
     const theme = (() => {
       if (
         typeof localStorage !== 'undefined' &&
@@ -68,12 +67,10 @@
       document.documentElement.classList.add('dark');
     }
 
-    // 2. 关键修改：使用 class 选择所有按钮 (桌面端 + 移动端)
+    // 使用 class 选择所有按钮 (确保移动端和桌面端都生效)
     const btns = document.querySelectorAll('.theme-toggle-btn');
 
-    // 3. 遍历每一个按钮并绑定事件
     btns.forEach((btn) => {
-      // 防止重复绑定的安全措施
       btn.removeEventListener('click', handleToggleClick);
       btn.addEventListener('click', handleToggleClick);
     });
