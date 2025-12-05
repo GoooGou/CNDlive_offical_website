@@ -133,20 +133,27 @@ const canonicalUrl = new URL(pathname, siteUrl).href;
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
 
     <script is:inline>
-      function applyTheme() {
-        const storedTheme =
-          typeof localStorage !== 'undefined' && localStorage.getItem('theme');
-        if (storedTheme === 'light') {
-          document.documentElement.classList.remove('dark');
-        } else {
-          document.documentElement.classList.add('dark');
-          if (!storedTheme) {
-            localStorage.setItem('theme', 'dark');
-          }
+      const theme = (() => {
+        if (
+          typeof localStorage !== 'undefined' &&
+          localStorage.getItem('theme')
+        ) {
+          return localStorage.getItem('theme');
         }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+
+      if (theme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
       }
-      applyTheme();
-      document.addEventListener('astro:after-swap', applyTheme);
+
+      // 监听 storage 变化（可选，为了多标签页同步）
+      window.localStorage.setItem('theme', theme);
     </script>
     <link rel="canonical" href={canonicalUrl} />
   </head>
