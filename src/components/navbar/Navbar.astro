@@ -1,0 +1,132 @@
+---
+// src/components/navbar/Navbar.astro
+import { MENU_DATA } from '@/components/navbar/menuData';
+import NavLogo from './NavLogo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import ContactBTN from './ContactBTN.astro'; // 确保文件名大小写正确
+import MegaMenu from './MegaMenu.astro';
+import MobileMenu from './MobileMenu.astro';
+
+const hasSubMenu = (type: string) => type === 'mega' || type === 'dropdown';
+---
+
+<nav
+  class="relative z-[1000] h-20 border-b border-white/10 bg-[#050505] text-white backdrop-blur-md"
+>
+  <div class="mx-auto h-full px-6 lg:px-8">
+    <div class="flex h-full items-center justify-between">
+      {/* Logo */}
+      <div class="flex shrink-0 items-center">
+        <NavLogo />
+      </div>
+
+      {/* 桌面端菜单 */}
+      <div class="hidden h-full items-center space-x-8 lg:flex">
+        {
+          MENU_DATA.map((item) => (
+            <div class="group/menu-item relative flex h-full items-center">
+              <a
+                href={item.href || '#'}
+                class="hover:border-primary relative z-50 flex h-full items-center gap-1 border-t-4 border-transparent px-1 text-sm font-bold tracking-wide text-white/80 transition-colors hover:text-white"
+              >
+                {item.label}
+                {hasSubMenu(item.type) && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="mt-0.5 opacity-50 transition-transform duration-300 group-hover/menu-item:rotate-180 group-hover/menu-item:opacity-100"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                )}
+              </a>
+
+              {/* 修复 1: Mega Menu 使用 as any 规避类型报错 */}
+              {item.type === 'mega' && (
+                <MegaMenu groups={(item.groups || []) as any} />
+              )}
+
+              {/* 修复 2: 普通 Dropdown - 我已手动重写 class，删除了所有非法字符 */}
+              {item.type === 'dropdown' && (
+                <div class="invisible absolute top-full left-0 w-56 -translate-y-2 opacity-0 transition-all duration-300 group-hover/menu-item:visible group-hover/menu-item:translate-y-0 group-hover/menu-item:opacity-100">
+                  <div class="mt-0 rounded-xl border border-white/10 bg-[#0a0a0a] p-2 shadow-2xl">
+                    {item.items?.map((sub) => (
+                      <a
+                        href={sub.href}
+                        class="block rounded-lg px-4 py-2 text-sm text-gray-400 hover:bg-white/5 hover:text-white"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        }
+      </div>
+
+      {/* 右侧功能区 */}
+      <div class="flex items-center space-x-6">
+        <div class="hidden lg:block">
+          <ThemeToggle />
+        </div>
+        <div class="hidden lg:block">
+          <ContactBTN href="/contact">Contact US</ContactBTN>
+        </div>
+      </div>
+
+      {/* 移动端汉堡按钮 */}
+      <div class="flex items-center gap-4 lg:hidden">
+        <ThemeToggle />
+        <button
+          id="mobile-menu-btn"
+          class="p-2 text-gray-300 hover:text-white focus:outline-none"
+          aria-label="Toggle Menu"
+        >
+          {/* Menu Icon */}
+          <svg
+            id="icon-menu"
+            class="block h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+
+          {/* Close Icon */}
+          <svg
+            id="icon-close"
+            class="hidden h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+{/* 引入 MobileMenu 组件 (交互逻辑脚本都在这里面，Navbar 不需要额外写脚本) */}
+<MobileMenu />

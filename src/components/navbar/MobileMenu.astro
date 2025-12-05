@@ -1,0 +1,194 @@
+---
+// src/components/navbar/MobileMenu.astro
+import { MENU_DATA } from '@/components/navbar/menuData';
+import { SITE_CONFIG } from '@/global.config';
+// 容错配置
+const paddingTopClass = SITE_CONFIG?.showPromotionBanner ? 'pt-36' : 'pt-24';
+const hasSubMenu = (item: any) =>
+  item.type === 'mega' || item.type === 'dropdown';
+---
+
+<div
+  id="mobile-menu-overlay"
+  class:list={[
+    'fixed inset-0 z-999 h-dvh w-screen translate-x-full bg-[#050505] transition-transform duration-300 ease-in-out lg:hidden',
+    'overflow-y-auto overscroll-contain pb-20',
+    paddingTopClass,
+  ]}
+>
+  <div class="space-y-6 px-6">
+    {/* 菜单内容渲染 (保持不变) */}
+    {
+      MENU_DATA.map((item, index) => (
+        <div class="border-b border-white/5 pb-4 last:border-0">
+          {hasSubMenu(item) ? (
+            <div class="accordion-group">
+              <button
+                type="button"
+                class="accordion-btn flex w-full items-center justify-between py-2 text-lg font-medium text-white"
+              >
+                {item.label}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="icon-chevron transition-transform duration-300"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              <div class="accordion-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                <div class="space-y-4 pt-4 pl-4">
+                  {item.type === 'mega' ? (
+                    (item.groups || []).map((group: any) => (
+                      <div class="flex flex-col gap-2">
+                        <div class="text-xs font-bold tracking-wider text-gray-500 uppercase">
+                          {group.title}
+                        </div>
+                        <div class="flex flex-col gap-3 border-l border-white/10 pl-3">
+                          {group.items?.map((sub: any) => (
+                            <a
+                              href={sub.href}
+                              class="mobile-link active:text-primary block text-sm text-gray-300"
+                            >
+                              {sub.label}
+                              {sub.badge && (
+                                <span class="ml-2 rounded bg-[#5BA63D] px-1.5 py-0.5 text-[10px] text-white">
+                                  {sub.badge}
+                                </span>
+                              )}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div class="flex flex-col gap-4">
+                      {item.items?.map((sub: any) => (
+                        <a
+                          href={sub.href}
+                          class="mobile-link active:text-primary block text-sm text-gray-300"
+                        >
+                          {sub.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={item.href}
+              class="mobile-link active:text-primary block py-2 text-lg font-medium text-white"
+            >
+              {item.label}
+            </a>
+          )}
+        </div>
+      ))
+    }
+    <div class="pt-6">
+      <a
+        href="/contact"
+        class="mobile-link border-primary text-primary hover:bg-primary block w-full rounded-full border py-3 text-center font-bold transition hover:text-white"
+      >
+        Contact US
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* 仅保留箭头旋转样式，菜单滑入改用 JS 类名切换 */
+  .accordion-btn.expanded .icon-chevron {
+    transform: rotate(180deg);
+  }
+</style>
+
+<script>
+  const initMobileMenu = () => {
+    console.log('✅ Mobile Menu Script Initialized');
+
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    const iconMenu = document.getElementById('icon-menu');
+    const iconClose = document.getElementById('icon-close');
+
+    if (!menuBtn || !overlay) {
+      console.error('❌ Elements missing! Check Navbar IDs.');
+      return;
+    }
+
+    // --- 1. 切换菜单 (直接操作 Tailwind 类名) ---
+    const toggleMenu = (e: Event) => {
+      e.stopPropagation();
+      console.log('🖱️ Click Triggered!'); // 调试点击
+
+      // 检查当前是否包含隐藏类 (translate-x-full)
+      const isHidden = overlay.classList.contains('translate-x-full');
+
+      if (isHidden) {
+        // 打开菜单
+        overlay.classList.remove('translate-x-full');
+        overlay.classList.add('translate-x-0'); // 强制移入
+
+        iconMenu?.classList.add('hidden');
+        iconClose?.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      } else {
+        // 关闭菜单
+        overlay.classList.remove('translate-x-0');
+        overlay.classList.add('translate-x-full'); // 强制移出
+
+        iconMenu?.classList.remove('hidden');
+        iconClose?.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    };
+
+    menuBtn.onclick = toggleMenu;
+
+    // --- 2. 链接点击关闭 ---
+    document.querySelectorAll('.mobile-link').forEach((link) => {
+      // @ts-ignore
+      link.onclick = () => {
+        if (overlay.classList.contains('translate-x-0')) {
+          overlay.classList.remove('translate-x-0');
+          overlay.classList.add('translate-x-full');
+          iconMenu?.classList.remove('hidden');
+          iconClose?.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      };
+    });
+
+    // --- 3. 手风琴逻辑 ---
+    document.querySelectorAll('.accordion-btn').forEach((btn) => {
+      // @ts-ignore
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const currentBtn = e.currentTarget as HTMLElement;
+        const content = currentBtn.nextElementSibling as HTMLElement;
+        if (!content) return;
+
+        currentBtn.classList.toggle('expanded');
+        if (content.style.maxHeight) {
+          content.style.maxHeight = '';
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      };
+    });
+  };
+
+  document.addEventListener('astro:page-load', initMobileMenu);
+  initMobileMenu();
+</script>

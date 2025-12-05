@@ -1,0 +1,47 @@
+---
+// src/components/ui/AnimatedButton.astro
+
+// 1. 定义 Props
+// 在 Astro 中，通过 Astro.props 获取传入的参数
+// class 是保留字，所以我们通常将其重命名为 className 或直接使用 class:list
+const { href = '#', class: className, ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  {...rest}
+  class:list={[
+    // 基础样式
+    'group border-primary text-primary hover:bg-primary relative inline-flex items-center justify-center overflow-hidden rounded-full border px-8 py-2 text-sm font-bold transition-all duration-300 hover:text-white',
+    // 外部传入的样式
+    className,
+  ]}
+>
+  {/* --- 按钮文本 --- */}
+  {/* <slot /> 相当于 React 中的 {children} */}
+  <span class="transition-all duration-300 group-hover:translate-x-3">
+    <slot />
+  </span>
+
+  {/* --- 箭头图标容器 --- */}
+  <span
+    class="absolute -left-10 z-10 flex items-center opacity-0 transition-all duration-300 group-hover:left-4 group-hover:opacity-100"
+  >
+    {/* 直接内联 Lucide ArrowRight 的 SVG 代码，无需引入库 */}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="h-4 w-4"
+    >
+      <path d="M5 12h14"></path>
+      <path d="m12 5 7 7-7 7"></path>
+    </svg>
+  </span>
+</a>

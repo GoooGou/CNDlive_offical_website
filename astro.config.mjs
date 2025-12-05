@@ -12,7 +12,6 @@ const isDev = process.env.npm_lifecycle_event === 'dev';
 
 // https://astro.build/config
 export default defineConfig({
-  
   output: 'static', // 确保你的官网是静态输出
   adapter: vercel({}),
   site: 'https://cndlive.com',
@@ -75,7 +74,7 @@ export default defineConfig({
     build: {
       assetsInlineLimit: 4096,
       cssCodeSplit: true,
-      chunkSizeWarningLimit: 1000,
+      chunkSizeWarningLimit: 2000,
     },
     cacheDir: 'node_modules/.vite',
   },

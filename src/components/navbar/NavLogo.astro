@@ -1,0 +1,39 @@
+---
+// src/components/navbar/NavLogo.astro
+---
+
+<a href="/" class="block">
+  <div id="nav-logo-container" class="h-20 w-32 md:w-40"></div>
+</a>
+
+<script>
+  import lottie from 'lottie-web';
+  // ❌ 删除这一行： import logoAnimation from '../../public/logo.json';
+
+  const initLogo = () => {
+    const container = document.getElementById('nav-logo-container');
+
+    if (container) {
+      // 1. 防止重复加载：每次初始化前清空容器
+      // 否则切换页面回来可能会出现两个 Logo 重叠
+      container.innerHTML = '';
+
+      lottie.loadAnimation({
+        container: container,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        // ✅ 修改重点：使用 path 代替 animationData
+        // 因为文件在 public/logo.json，所以路径是 '/logo.json'
+        path: '/logo.json',
+      });
+    }
+  };
+
+  // 2. 支持 Astro View Transitions
+  // 确保每次页面跳转完成后，动画都能重新加载
+  document.addEventListener('astro:page-load', initLogo);
+
+  // 3. 兜底：首次加载也运行
+  initLogo();
+</script>

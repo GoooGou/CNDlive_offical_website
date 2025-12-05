@@ -1,6 +1,7 @@
 ---
 // src/components/Header.astro
-import Navbar from '@/components/navbar/Navbar.jsx';
+// import Navbar from '@/components/navbar/Navbar.jsx';
+import Navbar from './Navbar.astro';
 // ✅ 引入 Astro 组件
 import PromotionBanner from '@/components/ui/PromotionBanner.astro';
 import { SITE_CONFIG } from '@/global.config';
@@ -16,7 +17,8 @@ const spacerHeight = SITE_CONFIG.showPromotionBanner ? 'h-[120px]' : 'h-20';
 
   {/* 2. 主导航栏 */}
   <div id="main-navbar" class="w-full bg-[#050505]">
-    <Navbar client:load />
+    <Navbar />
+    <!-- <Navbar client:load /> -->
   </div>
 </header>
 
